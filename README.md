@@ -1,6 +1,8 @@
 # T-watch-2020
 a watch project for the TTGO T-watch-2020 version 1
 
+This builds with Arduino IDE version 1.8.13
+
 I've written "new" watch code.
 I took bits from Dan Geiger's watch code (https://www.instructables.com/.../Lilygo-T-Watch-2020.../),
 and bits from SimpleWatch (the shipped demo), and added the following:
