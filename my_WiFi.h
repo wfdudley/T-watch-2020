@@ -1,6 +1,7 @@
-
 // my_WiFi.h
-//
+// this is the "generic" version.
+// edit to add all the WiFi credentials you'd like to connect to
+
 #ifndef __MYWIFI_H__
 #define __MYWIFI_H__
 
