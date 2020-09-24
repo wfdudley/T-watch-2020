@@ -7,6 +7,7 @@
 
   2020 09 23 -- added sound and alarm values to general_config
 
+  W.F.Dudley Jr.
 */
 #ifndef DUDLEY_WATCH_H
 #define DUDLEY_WATCH_H
