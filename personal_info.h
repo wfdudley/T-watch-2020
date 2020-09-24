@@ -1,3 +1,6 @@
+// edit this to have the IP, username, password of your MQTT server
+// also edit MY_TIMEZONE to show your "home" timezone.
+
 #define MQTT_IP0 192
 #define MQTT_IP1 168
 #define MQTT_IP2 1
