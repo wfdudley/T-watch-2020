@@ -15,7 +15,6 @@
 // ---------------
 #include "config.h"
 #include <SPIFFS.h>	// includes FS.h
-// #include <soc/rtc.h>
 #include <WiFi.h>
 #include <WiFiUdp.h>
 
@@ -95,19 +94,45 @@ void low_energy(void) {
             WiFi.mode(WIFI_OFF);
             // rtc_clk_cpu_freq_set(RTC_CPU_FREQ_2M);
             setCpuFrequencyMhz(20);
+	    // Serial.println(F("before gpio_wakeup_enable() party."));
 
-            gpio_wakeup_enable ((gpio_num_t)AXP202_INT, GPIO_INTR_LOW_LEVEL);
-            gpio_wakeup_enable ((gpio_num_t)BMA423_INT1, GPIO_INTR_HIGH_LEVEL);
-            esp_sleep_enable_gpio_wakeup ();
+	    esp_err_t erret;
+            erret = gpio_wakeup_enable ((gpio_num_t)AXP202_INT, GPIO_INTR_LOW_LEVEL);
+	    if(erret != ESP_OK) {
+	      Serial.println(F("gpio_wakeup_enable failed for AXP202_INT"));
+	    }
+            erret = gpio_wakeup_enable ((gpio_num_t)BMA423_INT1, GPIO_INTR_HIGH_LEVEL);
+	    if(erret != ESP_OK) {
+	      Serial.println(F("gpio_wakeup_enable failed for BMA423_INT"));
+	    }
+	    // Serial.println(F("gpio_wakeup_enable(RTC_INT, LOW_LEVEL)"));
+            erret = gpio_wakeup_enable ((gpio_num_t)RTC_INT, GPIO_INTR_LOW_LEVEL);
+	    if(erret != ESP_OK) {
+	      Serial.println(F("gpio_wakeup_enable failed for RTC_INT"));
+	    }
+	    erret = esp_sleep_enable_gpio_wakeup();
+	    if(erret != ESP_OK) {
+	      Serial.println(F("esp_sleep_enable_gpio_wakeup() failed"));
+	    }
             esp_light_sleep_start();
         }
     } else {
         ttgo->startLvglTick();
         ttgo->displayWakeup();
-        ttgo->rtc->syncToSystem();
+        ttgo->rtc->syncToSystem();	// set OS clock to RTC clock
 	if(general_config.stepcounter_filter) {
 	  // updateStepCounter(ttgo->bma->getCounter());
 	  step_counter = ttgo->bma->getCounter();
+	}
+	if(rtcIrq) {
+	  Serial.println(F("wake from sleep, we see rtc alarm"));
+	  rtcIrq = 0;
+	  disable_rtc_alarm();
+	  if(general_config.alarm_enable && !alarm_active) {
+	    alarm_active = true;
+	    beep(general_config.alarm_sound);
+	    next_beep = millis() + 250;
+	  }
 	}
 #if LVGL_BATTERY_ICON
         updateBatteryLevel();
@@ -154,11 +179,7 @@ void displayTime(uint8_t update_type) {
 }
 
 void Serial_timestamp(void) {
-  tnow = ttgo->rtc->getDateTime();
-  hh = tnow.hour;
-  mm = tnow.minute;
-  ss = tnow.second;
-  Serial.printf("%d:%02d:%02d UTC\n", hh, mm, ss);
+  Serial.printf("%s UTC\n", ttgo->rtc->formatDateTime());
 }
 
 void quickBuzz(void) {
@@ -254,7 +275,6 @@ void setup() {
   //Initialize lvgl
   ttgo->lvgl_begin();
 
-#if 1
   // Enable BMA423 interrupt ，
   // The default interrupt configuration,
   // you need to set the acceleration parameters, please refer to the BMA423_Accel example
@@ -300,7 +320,26 @@ void setup() {
 	  portYIELD_FROM_ISR ();
       }
   }, FALLING);
-#endif
+
+  pinMode(RTC_INT, INPUT_PULLUP);
+  attachInterrupt(RTC_INT, [] {
+      rtcIrq = 1;
+      BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+      EventBits_t  bits = xEventGroupGetBitsFromISR(isr_group);
+      if (bits & WATCH_FLAG_SLEEP_MODE)
+      {
+	  //! For quick wake up, use the group flag
+	  xEventGroupSetBitsFromISR(isr_group, WATCH_FLAG_SLEEP_EXIT | WATCH_FLAG_AXP_IRQ, &xHigherPriorityTaskWoken);
+      } else
+      {
+	  uint8_t data = Q_EVENT_AXP_INT;
+	  xQueueSendFromISR(g_event_queue_handle, &data, &xHigherPriorityTaskWoken);
+      }
+      if (xHigherPriorityTaskWoken)
+      {
+	  portYIELD_FROM_ISR ();
+      }
+  }, FALLING);
 
   // Check if the RTC clock matches, if not, use compile time
   // ttgo->rtc->check();
@@ -308,24 +347,13 @@ void setup() {
   // Synchronize time to system time
   ttgo->rtc->syncToSystem();
 
+  if(general_config.alarm_enable) {
+    enable_rtc_alarm();
+  }
+
   Serial_timestamp();
   // Serial.printf("DARKGREY = %x = %d\n", TFT_DARKGREY, TFT_DARKGREY);
 
-#ifdef LILYGO_WATCH_HAS_BUTTON
-    /*
-        ttgo->button->setClickHandler([]() {
-            Serial.println("Button2 Pressed");
-        });
-    */
-
-    //Set the user button long press to restart
-    ttgo->button->setLongClickHandler([]() {
-        Serial.println("Pressed Restart Button,Restart now ...");
-        delay(1000);
-        esp_restart();
-    });
-#endif
-  
   ttgo->openBL(); // Turn on the backlight
   initialAnalog = true;
   displayTime(2); // Full redraw
@@ -333,6 +361,9 @@ void setup() {
   alarm_active = false;
   next_beep = 0;
   my_idle();
+  if (power->isVBUSPlug()) {
+    beep(0);
+  }
 }
 
 void loop(void) {
@@ -372,6 +403,16 @@ uint8_t data;
   }
 
   //! Normal polling
+  if(rtcIrq) {
+    Serial.println(F("Polled for rtc alarm"));
+    rtcIrq = 0;
+    disable_rtc_alarm();
+    if(general_config.alarm_enable && !alarm_active) {
+      alarm_active = true;
+      beep(general_config.alarm_sound);
+      next_beep = millis() + 250;
+    }
+  }
   if (xQueueReceive(g_event_queue_handle, &data, 5 / portTICK_RATE_MS) == pdPASS) {
     switch (data) {
       case Q_EVENT_BMA_INT:
@@ -456,18 +497,22 @@ uint8_t data;
       have_run_app = true;
     }
     else if(mSelect == (CWCIRCLE + 11)) {
+      Serial.println(F("cw circle"));
       appMQTT();
       have_run_app = true;
     }
     else if(mSelect == (CCWCIRCLE + 11)) {
+      Serial.println(F("ccw circle"));
       appSettings();
       have_run_app = true;
     }
     else if(mSelect == (RIGHT + 11)) {
+      Serial.println(F("right"));
       appBattery();
       have_run_app = true;
     }
     else if(mSelect == (LEFT + 11)) {
+      Serial.println(F("left"));
       if(alarm_active) {
 	alarm_active = false;
 	next_beep = 0;
