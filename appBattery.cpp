@@ -64,7 +64,7 @@ float vbus_v, vbus_c, batt_v;
   while(ttgo->getTouch(x, y)) {	// Wait for release
     my_idle();
   }
-  beep(general_config.alarm_sound);
+  beep(8);
   //Clear screen 
   tft->fillScreen(TFT_BLACK);
   // ttgo->setBrightness(255);       // 0-255
