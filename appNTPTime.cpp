@@ -70,7 +70,7 @@ void appNTPTime(void) {
     }
   }
 
-  // Get the current data
+  // Get the current date/time
   RTC_Date tnow = ttgo->rtc->getDateTime();
 
   hh = tnow.hour;
