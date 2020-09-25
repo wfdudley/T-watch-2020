@@ -40,6 +40,7 @@ EXTERN uint8_t home_ss;
 EXTERN RTC_Date tnow;
 EXTERN uint8_t local_hour;
 EXTERN uint8_t local_minute;
+EXTERN boolean rtcIrq;
 
 // this is neat, but we store chosen_skin in general_config, so . . .
 // EXTERN void (*watch_fun_pointer)(uint8_t);
@@ -95,6 +96,9 @@ void bright_check (void);
 void my_idle(void);
 void draw_button_menu (uint8_t, struct menu_item *, uint8_t, uint8_t, bool, char *, struct mqdata *, uint8_t);
 void flash_menu_item (uint8_t, struct menu_item *, uint8_t, uint8_t, bool, int, int, struct mqdata *, boolean, uint8_t);
+void enable_rtc_alarm(void);
+void disable_rtc_alarm(void);
+void Serial_timestamp(void);
 
 EXTERN boolean date_is_up;
 EXTERN boolean steps_is_up;
