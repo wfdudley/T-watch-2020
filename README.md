@@ -23,9 +23,13 @@ a function to set the time from NTP
 
 storage for multiple WiFi credential sets, so the watch can connect to any SSID you regularly visit
 
-an alarm clock function (but I don't yet know how to schedule a wake from sleep
+an alarm clock function
 
 the worlds stupidest "paint" program
 
 Also, my code recognizes 6 gestures (left, right, up, down, cw circle, ccw circle).
 (It turns out that the touch sensor chip claims to recognize gestures, but it doesn't.)
+
+To use this code, edit personal_info.h to have the IP, port, username, password of your MQTT server
+(assuming you have one).  Edit my_WiFi.h to have the SSID's, passwords, and timezones of all the
+WiFi access points you want your watch to connect with.  Finally, compile and upload to your watch.
