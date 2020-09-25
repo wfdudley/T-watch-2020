@@ -22,6 +22,83 @@ static lv_obj_t *btn1, *btn2, *slider1, *slider2;
 static lv_obj_t *slider1_label, *slider2_label;
 static lv_obj_t *slider1_name, *slider2_name, *b2label;
 
+void enable_rtc_alarm(void) {
+struct tm timeinfo;
+uint8_t hh, mm;
+int8_t ahh, amm;
+time_t utc_time, unix_time;
+    Serial.println(F("enable_rtc_alarm()"));
+    Serial_timestamp();
+    ttgo->rtc->disableAlarm();
+    // get alarm time from general_config.alarm_h and alarm_m
+    tnow = ttgo->rtc->getDateTime();
+    hh = tnow.hour;
+    mm = tnow.minute;
+#if TEST_VERSION
+    // schedule the alarm for a minute or two in the future
+    amm = mm + 1 + (tnow.second > 30);
+    if(amm > 59) {
+	amm %= 60;
+	ahh = hh + 1;
+	ahh %= 24;
+    }
+#else
+    // This is hacky but I don't know a better way to convert local time
+    // to UTC time.  I keep UTC in the rtc chip so that we can display
+    // the time in any timezone.  If you travel, you only need to change
+    // the timezone to keep the watch displaying correct local time.
+    timeinfo.tm_hour = tnow.hour;
+    timeinfo.tm_min  = tnow.minute;
+    timeinfo.tm_sec  = tnow.second;
+    timeinfo.tm_mday = tnow.day;
+    timeinfo.tm_mon  = tnow.month - 1;
+    timeinfo.tm_year = tnow.year - 1900;
+    // now timeinfo contains GMT/UTC time
+    utc_time = mktime(&timeinfo);
+    unix_time = timelocal(utc_time);
+    memcpy(&timeinfo, localtime(&unix_time), sizeof(struct tm)/sizeof(char));
+    // now timeinfo contains local time
+    Serial.print(F("NOW, LOCAL timezone: "));
+    Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
+    int8_t hh_offset = timeinfo.tm_hour - hh;	// local - utc = hh_offset
+    int8_t mm_offset = timeinfo.tm_min  - mm;	// local - utc = mm_offset
+    // local - utc = mm_o
+    // mm_o - local = - utc
+    // local - mm_o = utc
+    Serial.printf("offset to convert local to UTC: %d hours, %d minutes\n", hh_offset, mm_offset);
+    // convert alarm time to UTC
+    ahh = general_config.alarm_h - hh_offset;
+    amm = general_config.alarm_m - mm_offset;
+    if(amm < 0) {
+      amm += 60;
+      ahh --;
+    }
+    if(amm > 59) {
+      amm %= 60;
+      ahh ++;
+    }
+    if(ahh < 0) {
+      ahh += 24;
+    }
+    Serial.printf("alarm time as UTC = %d:%02d\n", ahh, amm);
+#if 0
+    Serial.print(F("alarm time, LOCAL timezone: "));
+    Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
+#endif
+    // put UTC alarm time in the rtc alarm registers
+    // BUT FOR NOW:
+#endif
+    Serial.printf("setting alarm for %d:%02d\n", ahh, amm);
+    ttgo->rtc->setAlarm(ahh, amm, PCF8563_NO_ALARM, PCF8563_NO_ALARM);
+    ttgo->rtc->enableAlarm();
+}
+
+void disable_rtc_alarm(void) {
+    ttgo->rtc->disableAlarm();
+    ttgo->rtc->resetAlarm();
+    Serial.println(F("disable_rtc_alarm()"));
+}
+
 static void button_handler(lv_obj_t *obj, lv_event_t event) {
     // Serial.printf("button_handler() event = %d\n", (int)event);
     if (event == LV_EVENT_CLICKED && !event_result) {
@@ -342,6 +419,12 @@ int16_t i, max_bounds, nx, ny, x, y, x0, y0, xmax, ymax, points;
 		goto Exit;
 	      case 2 :
 		general_config.alarm_enable = event_value;
+		if(general_config.alarm_enable) {
+		  enable_rtc_alarm();
+		}
+		else {
+		  disable_rtc_alarm();
+		}
 		lv_label_set_text(b2label, 
 		  (general_config.alarm_enable) ? "alarm ON" : "alarm OFF");
 		break;
