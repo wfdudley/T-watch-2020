@@ -44,18 +44,18 @@ void Room::show(void) {
   int xCoord = this->x * roomWidth;
   int yCoord = this->y * roomWidth;
   if (this->walls[0]) {
-    tft->drawLine(xCoord, yCoord, 
+    tft->drawLine(xCoord, yCoord, // top
 		  xCoord + this->roomWidth, yCoord, TFT_RED);
   }
-  if (this->walls[1]) {
+  if (this->walls[1]) {		// right
     tft->drawLine(xCoord + this->roomWidth, yCoord, 
 		  xCoord + this->roomWidth, yCoord + this->roomWidth, TFT_RED);
   }
-  if (this->walls[2]) {
+  if (this->walls[2]) {		// bottom
     tft->drawLine(xCoord, yCoord + this->roomWidth, 
 		  xCoord + this->roomWidth, yCoord + this->roomWidth, TFT_RED);
   }
-  if (this->walls[3]) {
+  if (this->walls[3]) {		// left
     tft->drawLine(xCoord, yCoord, 
 		  xCoord, yCoord + this->roomWidth, TFT_RED);
   }
@@ -72,8 +72,12 @@ void Room::removeWall(int w) {
   this->walls[w] = false;
 }
 
-void Room::visit() {
-  this->visited = true;
+bool Room::hasWall(int w) {
+  return this->walls[w];
+}
+
+void Room::visit(bool setact) {
+  this->visited = setact;
 }
 
 int Room::getPositionInVector(int size) {
