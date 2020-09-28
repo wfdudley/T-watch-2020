@@ -15,8 +15,9 @@ class Room {
     Room(int i, int j, int rw);
     void removeWalls(Room &r);
     void removeWall(int wall);
+    bool hasWall(int wall);
     void printWalls();
-    void visit();
+    void visit(bool setact);
     void show();
     int getPositionInVector(int size);
     int getX();
