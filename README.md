@@ -15,7 +15,7 @@ step counter; MQTT monitor and control
 
 7 pages of Settings in two groups (alarm and "other") using the LVGL framework
 
-the start of a "maze" game
+A "maze" game.  Swipe or tilt watch left, right, up, down to move your cursor.  Try to move it to the red endpoint.
 
 a stopwatch
 
