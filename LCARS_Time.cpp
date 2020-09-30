@@ -100,10 +100,11 @@ static uint8_t last_dday;
   // Serial.println(F("LCARS_Time"));
   ttgo->power->adc1Enable(AXP202_VBUS_VOL_ADC1 | AXP202_VBUS_CUR_ADC1 | AXP202_BATT_CUR_ADC1 | AXP202_BATT_VOL_ADC1, true);
 
+  get_time_in_tz(tzindex);
+#if 0
   // Get the current data
   tnow = ttgo->rtc->getDateTime();
-#define TIME_IS_GMT 1
-#if TIME_IS_GMT
+
 struct tm timeinfo;
 time_t utc_time, unix_time;
   timeinfo.tm_hour = tnow.hour;
@@ -134,14 +135,8 @@ time_t utc_time, unix_time;
   dday = timeinfo.tm_mday;
   mmonth = 1 + timeinfo.tm_mon;
   yyear = 1900 + timeinfo.tm_year;
-#else
-  hh = tnow.hour;
-  mm = tnow.minute;
-  ss = tnow.second;
-  dday = tnow.day;
-  mmonth = tnow.month;
-  yyear = tnow.year;
 #endif
+  // these is used for the alarm function:
   local_hour = hh;
   local_minute = mm;
 
