@@ -2,6 +2,7 @@
 a watch project for the TTGO T-watch-2020 version 1
 
 This builds with Arduino IDE version 1.8.13
+Requires the AceTime library.
 
 I've written "new" watch code.
 I took bits from Dan Geiger's watch code (https://www.instructables.com/.../Lilygo-T-Watch-2020.../),
@@ -33,3 +34,12 @@ Also, my code recognizes 6 gestures (left, right, up, down, cw circle, ccw circl
 To use this code, edit personal_info.h to have the IP, port, username, password of your MQTT server
 (assuming you have one).  Edit my_WiFi.h to have the SSID's, passwords, and timezones of all the
 WiFi access points you want your watch to connect with.  Finally, compile and upload to your watch.
+
+From the watch display, the following gestures work:
+
+swipe down  : go to app select screen
+swipe right : run Battery app to see battery charge level, etc.
+swipe left  : run alarm settings.  If alarm is beeping, silence alarm.
+CW circle   : run MQTT app
+CCW circle  : run Settings app.
+
