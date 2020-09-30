@@ -238,6 +238,8 @@ void update_clock_face(void) {
 
 void Analog_Time(uint8_t fullUpdate) {
   // Get the current time and date
+  get_time_in_tz(tzindex);
+#if 0
   tnow = ttgo->rtc->getDateTime();
 #define TIME_IS_GMT 1
 #if TIME_IS_GMT
@@ -278,6 +280,7 @@ time_t utc_time, unix_time;
   dday = tnow.day;
   mmonth = tnow.month;
   yyear = tnow.year;
+#endif
 #endif
   local_hour = hh;
   local_minute = mm;
