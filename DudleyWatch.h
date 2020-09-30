@@ -153,7 +153,7 @@ EXTERN uint8_t chosen_skin;
 EXTERN int step_counter;
 EXTERN int last_step_counter;
 
-#define CONFIG_REVISION 12345L
+#define CONFIG_REVISION 12346L
 typedef struct config_t {
     long magic_number;
     uint8_t clock_skin;
@@ -164,8 +164,8 @@ typedef struct config_t {
     uint8_t default_brightness;
     uint8_t screensaver_timeout;	// in seconds
     uint8_t stepcounter_filter;		// 0 to disable, 1,2,3,4 for filters
-    int8_t home_tzindex;
-    int8_t local_tzindex;
+    uint32_t home_tzindex;
+    uint32_t local_tzindex;
     boolean alarm_enable;
     uint8_t alarm_h;
     uint8_t alarm_m;
