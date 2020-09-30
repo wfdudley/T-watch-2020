@@ -10,11 +10,7 @@
 #include <WiFi.h>
 #include <WiFiUdp.h>
 #include <Wire.h>
-#include "Timezone.h"
-
-#define __TZMAIN__
-
-#include "my_tz.h"      // define "my" timezones
+#include "my_tz.h"
 
 #define __WIFIMAIN__
 
@@ -103,7 +99,7 @@ int APserver_loop(void) {
 }
 
 boolean is_known_tzone (int8_t tzind) {
-  for(int k = 0 ; k < sizeof(tz_opts)/sizeof(TZ_OPT) ; k++) {
+  for(int k = 0 ; k < sizeof_tz_opts ; k++) {
     if(tzind == tz_opts[k].tzone) {
       return true;
     }
