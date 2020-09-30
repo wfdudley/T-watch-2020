@@ -101,41 +101,7 @@ static uint8_t last_dday;
   ttgo->power->adc1Enable(AXP202_VBUS_VOL_ADC1 | AXP202_VBUS_CUR_ADC1 | AXP202_BATT_CUR_ADC1 | AXP202_BATT_VOL_ADC1, true);
 
   get_time_in_tz(tzindex);
-#if 0
-  // Get the current data
-  tnow = ttgo->rtc->getDateTime();
 
-struct tm timeinfo;
-time_t utc_time, unix_time;
-  timeinfo.tm_hour = tnow.hour;
-  timeinfo.tm_min  = tnow.minute;
-  timeinfo.tm_sec  = tnow.second;
-  timeinfo.tm_mday = tnow.day;
-  timeinfo.tm_mon  = tnow.month - 1;
-  timeinfo.tm_year = tnow.year - 1900;
-#if 0
-  if(!(tnow.second % 5)) {
-    Serial.print(F("UTC time: "));
-    Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
-  }
-#endif
-  utc_time = mktime(&timeinfo);
-  unix_time = timelocal(utc_time);
-  memcpy(&timeinfo, localtime(&unix_time), sizeof(struct tm)/sizeof(char));
-#if 0
-  if(!(tnow.second % 5)) {
-    Serial.printf("tzindex = %d, local time: ", tzindex);
-    Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
-  }
-#endif
-  hh = timeinfo.tm_hour;
-  mm = timeinfo.tm_min;
-  ss = timeinfo.tm_sec;
-  // wday = timeinfo.tm_wday;
-  dday = timeinfo.tm_mday;
-  mmonth = 1 + timeinfo.tm_mon;
-  yyear = 1900 + timeinfo.tm_year;
-#endif
   // these is used for the alarm function:
   local_hour = hh;
   local_minute = mm;
