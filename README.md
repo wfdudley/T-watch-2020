@@ -40,8 +40,12 @@ WiFi access points you want your watch to connect with.  Finally, compile and up
 From the watch display, the following gestures work:
 
 swipe down  : go to app select screen
+
 swipe right : run Battery app to see battery charge level, etc.
+
 swipe left  : run alarm settings.  If alarm is beeping, silence alarm.
+
 CW circle   : run MQTT app
+
 CCW circle  : run Settings app.
 
