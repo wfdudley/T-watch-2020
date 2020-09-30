@@ -11,9 +11,8 @@
 #include <Ethernet.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
-// #include <DNS.h>
+#include <AceTime.h>
 
-#include "my_tz.h"
 #include "my_WiFi.h"
 #define __MQTT_MAIN__
 #include "appMQTT.h"
