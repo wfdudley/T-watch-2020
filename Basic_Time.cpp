@@ -15,9 +15,10 @@
 byte xcolon = 0; // location of the colon
 
 boolean if_not_home_tz(void) {
-struct tm timeinfo;
-time_t utc_time, unix_time;
   if(general_config.home_tzindex != tzindex) {
+#if 0
+  struct tm timeinfo;
+  time_t utc_time, unix_time;
     timeinfo.tm_hour = tnow.hour;
     timeinfo.tm_min  = tnow.minute;
     timeinfo.tm_sec  = tnow.second;
@@ -32,6 +33,13 @@ time_t utc_time, unix_time;
     home_hh = timeinfo.tm_hour;
     home_mm = timeinfo.tm_min;
     home_ss = timeinfo.tm_sec;
+#else
+    get_time_in_tz(general_config.home_tzindex);
+    home_hh = hh;
+    home_mm = mm;
+    home_ss = ss;
+    get_time_in_tz(tzindex);
+#endif
     return true;
   }
   return false;
@@ -43,6 +51,8 @@ void Basic_Time(uint8_t fullUpdate) {
   byte ypos = 90;
 
   // Get the current data
+  get_time_in_tz(tzindex);
+#if 0
   tnow = ttgo->rtc->getDateTime();
 #define TIME_IS_GMT 1
 #if TIME_IS_GMT
@@ -83,6 +93,7 @@ time_t utc_time, unix_time;
   dday = tnow.day;
   mmonth = tnow.month;
   yyear = tnow.year;
+#endif
 #endif
   local_hour = hh;
   local_minute = mm;
