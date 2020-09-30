@@ -12,7 +12,9 @@ choice of Analog, "Basic digital", or LCARS watch face  (LCARS and Basic derived
 
 the ability to show time in your local time zone plus your home time zone if you're travelling
 
-step counter; MQTT monitor and control
+step counter
+
+MQTT monitor and control
 
 7 pages of Settings in two groups (alarm and "other") using the LVGL framework
 
