@@ -30,7 +30,7 @@ int16_t x, y;
 
   draw_button_menu(1, skin_menu, 1, 2, true, "Pick a Watch Style", NULL, 1);
   do {
-    mSelect = poll_swipe_or_menu_press();	// poll for touch, returns 0-15
+    mSelect = poll_swipe_or_menu_press(12);	// poll for touch, returns 0-15
 #if 0
     if(mSelect > -1) {
       Serial.printf("poll_swipe... returns %d\n", mSelect);

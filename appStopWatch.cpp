@@ -59,7 +59,7 @@ int mSelect;
   flash_menu_item(3, swatch_menu, 1, 2, true, 3, 2, NULL, true, 0);
 
   while(1) {
-    mSelect = poll_swipe_or_menu_press();	// poll for touch, returns 0-15
+    mSelect = poll_swipe_or_menu_press(12);	// poll for touch, returns 0-15
 //  if(mSelect > -1) {
 //    Serial.printf("mSelect = %d\n", mSelect);
 //  }

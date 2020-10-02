@@ -17,7 +17,7 @@ uint8_t modeMenu(void) {
 int mSelect = 0; // The currently highlighted app
   draw_keyboard(app_labels, 1, true, "pick an app");
   while(1) {
-    mSelect = poll_swipe_or_menu_press(); // poll for touch/swipe, returns 0-15
+    mSelect = poll_swipe_or_menu_press(12); // poll for touch/swipe, returns 0-15
     // mSelect = get_numerical_button_press();
     if (mSelect != -1 && mSelect < 11) {
       int row, col;

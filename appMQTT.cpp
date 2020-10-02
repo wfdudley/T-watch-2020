@@ -162,11 +162,13 @@ uint16_t icolor;
 }
 
 #define DBG_GESTURES 0
-int poll_swipe_or_menu_press(void) {
+int poll_swipe_or_menu_press(int num_choices) {
 uint32_t lasttouch, interval;
 int16_t nx, ny, x, y, x0, y0, xmax, ymax, amax, points;
 enum SWIPE_DIR resdir;
   resdir = NODIR;
+  if(num_choices < 14) { num_choices = 12; }
+  else { num_choices = 16; }
   int xdir = 0;
   int ydir = 0;
   x0 = -1;
@@ -254,13 +256,13 @@ enum SWIPE_DIR resdir;
 #if DBG_GESTURES
 	Serial.println(F("found CW CIRCLE"));
 #endif
-	return(11 + CWCIRCLE);
+	return(num_choices - 1 + CWCIRCLE);
       }
       if(strstr(dir_order, "ULDR")) {
 #if DBG_GESTURES
 	Serial.println(F("found CCW CIRCLE"));
 #endif
-	return(11 + CCWCIRCLE);
+	return(num_choices - 1 + CCWCIRCLE);
       }
     }
     else if(amax > 60) { // moved across 1/4 of the screen, so probably a swipe
@@ -272,27 +274,53 @@ enum SWIPE_DIR resdir;
       resdir = 
 	(dir == 'x') ? ((xdir > 0) ? RIGHT : LEFT ) :
 			(ydir > 0) ? DOWN : UP;
-      return resdir + 11;
+      return resdir + num_choices - 1;
     }
     else {	// must be button press
-      if (y < 85) {
-	if (x < 80) return 0;
-	else if (x > 160) return 2;
-	else return 1;
+      if(num_choices == 12) {
+	if (y < 85) {
+	  if (x < 80) return 0;
+	  else if (x > 160) return 2;
+	  else return 1;
+	}
+	else if (y < 135) {
+	  if (x < 80) return 3;
+	  else if (x > 160) return 5;
+	  else return 4;
+	}
+	else if (y < 185) {
+	  if (x < 80) return 6;
+	  else if (x > 160) return 8;
+	  else return 7;
+	}
+	else if (x < 80) return 9;
+	else if (x > 160) return 11;
+	else return 10;
       }
-      else if (y < 135) {
-	if (x < 80) return 3;
-	else if (x > 160) return 5;
-	else return 4;
+      else {	// must be 16 choices
+	if (y < 85) {
+	  if (x < 60) return 0;
+	  else if (x < 120) return 1;
+	  else if (x < 180) return 2;
+	  else return 3;
+	}
+	else if (y < 135) {
+	  if (x < 60) return 4;
+	  else if (x < 120) return 5;
+	  else if (x < 180) return 6;
+	  else return 7;
+	}
+	else if (y < 185) {
+	  if (x < 60) return 8;
+	  else if (x < 120) return 9;
+	  else if (x < 180) return 10;
+	  else return 11;
+	}
+	if (x < 60) return 12;
+	else if (x < 120) return 13;
+	else if (x < 180) return 14;
+	else return 15;
       }
-      else if (y < 185) {
-	if (x < 80) return 6;
-	else if (x > 160) return 8;
-	else return 7;
-      }
-      else if (x < 80) return 9;
-      else if (x > 160) return 11;
-      else return 10;
     }
   }
   return -1;
@@ -446,8 +474,8 @@ Top:  if(current_menu == sensor_menu1) {
       // Serial.println(F("before draw_button_menu()"));
       draw_button_menu(3, current_menu, 1, 2, true, menu_label, menu_data_p, 0);
       while(1) {
-	// Serial.println(F("before poll_swipe_or_menu_press()"));
-	mSelect = poll_swipe_or_menu_press();	// poll for touch, returns 0-15
+	// Serial.println(F("before poll_swipe_or_menu_press(12)"));
+	mSelect = poll_swipe_or_menu_press(12);	// poll for touch, returns 0-15
 	if (mSelect != -1 && mSelect <= 11) {	// if user touched something
 	  int col = mSelect % 3;
 	  int row = mSelect / 3;

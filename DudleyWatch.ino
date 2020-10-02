@@ -35,6 +35,60 @@ bool lenergy = false;
 
 uint32_t targetTime = 0;       // for next 1 second display update
 
+using namespace ace_time;
+
+#if 0
+void create_timezones() {
+  int i = 0;
+  auto belgradeTz  = manager.createForZoneInfo(&zonedb::kZoneEurope_Belgrade);
+  tz_opts[i].tzone = belgradeTz.zoneId();
+  tz_opts[i++].tzname = "Belgrade";
+  auto romeTz  = manager.createForZoneInfo(&zonedb::kZoneEurope_Rome);
+  tz_opts[i].tzone = romeTz.zoneId();
+  tz_opts[i++].tzname = "Rome";
+  auto gmtTz  = manager.createForZoneInfo(&zonedb::kZoneGMT);
+  tz_opts[i].tzone = gmtTz.zoneId();
+  tz_opts[i++].tzname = "GMT";
+  auto madridTz  = manager.createForZoneInfo(&zonedb::kZoneEurope_Madrid);
+  tz_opts[i].tzone = madridTz.zoneId();
+  tz_opts[i++].tzname = "Madrid";
+  auto londonTz  = manager.createForZoneInfo(&zonedb::kZoneEurope_London);
+  tz_opts[i].tzone = londonTz.zoneId();
+  tz_opts[i++].tzname = "London";
+  // Azores
+  // Oscar
+  // Greenland
+  // Atlantic CAN
+  auto est5edtTz = manager.createForZoneInfo(&zonedb::kZoneAmerica_New_York);
+  tz_opts[i].tzone = est5edtTz.zoneId();
+  tz_opts[i++].tzname = "New York";
+  auto centralTz = manager.createForZoneInfo(&zonedb::kZoneAmerica_Chicago);
+  tz_opts[i].tzone = centralTz.zoneId();
+  tz_opts[i++].tzname = "Chicago";
+  auto mountainTz = manager.createForZoneInfo(&zonedb::kZoneAmerica_Denver);
+  tz_opts[i].tzone = mountainTz.zoneId();
+  tz_opts[i++].tzname = "Mountain";
+  auto arizonaTz = manager.createForZoneInfo(&zonedb::kZoneAmerica_Phoenix);
+  tz_opts[i].tzone = arizonaTz.zoneId();
+  tz_opts[i++].tzname = "Arizona";
+  auto pacificTz = manager.createForZoneInfo(&zonedb::kZoneAmerica_Los_Angeles);
+  tz_opts[i].tzone = pacificTz.zoneId();
+  tz_opts[i++].tzname = "Pacific LAX";
+  // Alaska
+  // W. Alaska
+  // Hawaii
+ auto melbourneTz = manager.createForZoneInfo(&zonedb::kZoneAustralia_Melbourn);
+  tz_opts[i].tzone = melbourneTz.zoneId();
+  tz_opts[i++].tzname = "Melbourne";
+  auto perthTz  = manager.createForZoneInfo(&zonedb::kZoneAustralia_Perth);
+  tz_opts[i].tzone = perthTz.zoneId();
+  tz_opts[i++].tzname = "Perth";
+  auto chinaTz = manager.createForZoneInfo(&zonedb::kZoneAsia_Hong_Kong);
+  tz_opts[i].tzone = chinaTz.zoneId();
+  tz_opts[i++].tzname = "China";
+}
+#endif
+
 void bright_check (void) {
 static uint8_t old_brightness;
   if (power->isVBUSPlug()) {
@@ -468,13 +522,16 @@ uint8_t data;
 
     int mSelect;
     boolean have_run_app = false;
-    mSelect = poll_swipe_or_menu_press();	// poll for touch, returns 0-15
-    // Serial.printf("p_s... = %d\n", mSelect);
-    if (mSelect != -1 && mSelect <= 11) {	// if user touched something
+    mSelect = poll_swipe_or_menu_press(12);	// poll for touch, returns 0-15
+    // if(mSelect >= 0) {
+      // Serial.printf("p_s... = %d\n", mSelect);
+    // }
+    // if (mSelect != -1 && mSelect <= 11) {	// if user touched something
       // this is a bad idea, it's too easy to accidentally
       // start an app and run down the battery.
-    }
-    else if(mSelect == (DOWN + 11)) {	// swipe is 12 = up, 13 = down, 14, or 15
+    // }
+    // else
+    if(mSelect == (DOWN + 11)) {	// swipe is 12 = up, 13 = down, 14, or 15
       // This is where the app selected from the menu is launched
       uint8_t choice = modeMenu();
       if(choice != 0x1b) {

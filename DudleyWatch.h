@@ -76,6 +76,7 @@ void appPaint(void);		// paint program
 void skinMenu(void);		// set clock style ("skin")
 void appStopWatch(void);	// stop watch
 void alarmSettings(void);	// alarm clock settings
+void appCalculator(void);	// calculator
 
 void LCARS_Time(uint8_t);
 void Basic_Time(uint8_t);
@@ -122,7 +123,7 @@ EXTERN struct menu_item watch_apps[]
     { "MQTT Ctrl",   "", (void *)&appMQTT },
     { "Battery",     "", (void *)&appBattery },
     { "Maze",        "", (void *)&appMaze },
-    { "Set Time",    "", (void *)&appSetTime },
+    { "Calc",        "", (void *)&appCalculator },
     { "NTP Time",    "", (void *)&appNTPTime },
     { "Skin Select", "", (void *)&skinMenu },
     { "Level",       "", (void *)&appLevel },
@@ -138,7 +139,7 @@ EXTERN const char *app_labels[]
 #ifdef __MAIN__
 		      = {
 			  "Jupiter", "MQTT", "Battery",
-			  "Maze", "Set Time", "NTP",
+			  "Maze", "Calc", "NTP",
 			  "Skin", "Level", "Paint",
 			  "StopWatch", "Settings", "Clock"
 			}
@@ -184,7 +185,7 @@ EXTERN const char *swipe_names[]
 #endif
 ;
 
-int poll_swipe_or_menu_press(void);
+int poll_swipe_or_menu_press(int);
 
 #define DL(x) Serial.print(x)
 #define DLn(x) Serial.println(x)
