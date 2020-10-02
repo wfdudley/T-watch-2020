@@ -51,3 +51,19 @@ CW circle   : run MQTT app
 
 CCW circle  : run Settings app.
 
+In the scientific calculator, the following gestures work:
+
+swipe right : exit app
+
+swipe down  : push value onto stack
+
+swipe up    : pop stack and discard the value
+
+swipe left  : backspace to erase most recently typed digit
+
+CW circle   : put the value of pi on the top of the stack (3.141...)
+
+CCW circle  : switch to second keyboard, where most of the transcendental functions live, plus "CHS" (change sign), "CLX" (clear "x" or top of stack), swap X <-> Y
+
+To compute 2 + 3, do: 2, swipe down, 3, +
+
