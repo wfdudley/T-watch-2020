@@ -30,6 +30,8 @@ an alarm clock function
 
 the worlds stupidest "paint" program
 
+Polish postfix scientific calculator.
+
 Also, my code recognizes 6 gestures (left, right, up, down, cw circle, ccw circle).
 (It turns out that the touch sensor chip claims to recognize gestures, but it doesn't.)
 
