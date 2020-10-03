@@ -72,11 +72,13 @@ void appLevel(void);		// Bubble Level (accel test)
 void appBattery(void);		// "all" battery info
 void appNTPTime(void);		// set time using NTP
 void appMQTT(void);		// MQTT app
+void appLife(void);		// Conway's game of life
 void appPaint(void);		// paint program
 void skinMenu(void);		// set clock style ("skin")
 void appStopWatch(void);	// stop watch
 void alarmSettings(void);	// alarm clock settings
 void appCalculator(void);	// calculator
+void switch_menu(void);		// switch apps menu page
 
 void LCARS_Time(uint8_t);
 void Basic_Time(uint8_t);
@@ -114,21 +116,23 @@ EXTERN boolean charge_cable_connected;
 extern uint8_t number_of_sounds; // leave lower case, defined in play_sound.cpp
 EXTERN boolean alarm_active;
 EXTERN uint32_t next_beep;	// the next time the alarm beep should sound
+EXTERN struct menu_item *app_menu_ptr; // which watch_apps menu is in current use?
+EXTERN const char **app_label_ptr; // which app_labels array is in current use?
 
 // this maps NUMBER to app.  The name field is just decorative (used for debug).
 EXTERN struct menu_item watch_apps[]
 #ifdef __MAIN__
 = {
-    { "Jupiter",     "", (void *)&jSats },
+    { "StopWatch",   "", (void *)&appStopWatch },
     { "MQTT Ctrl",   "", (void *)&appMQTT },
     { "Battery",     "", (void *)&appBattery },
-    { "Maze",        "", (void *)&appMaze },
+    { "",            "", NULL },
     { "Calc",        "", (void *)&appCalculator },
     { "NTP Time",    "", (void *)&appNTPTime },
     { "Skin Select", "", (void *)&skinMenu },
     { "Level",       "", (void *)&appLevel },
-    { "Paint",       "", (void *)&appPaint },
-    { "StopWatch",   "", (void *)&appStopWatch },
+    { "Alarm Set.",  "", (void *)&alarmSettings },
+    { "Apps 2",      "", (void *)&switch_menu },
     { "Settings",    "", (void *)&appSettings },
     { "Clock",       "", NULL }
 }
@@ -138,10 +142,41 @@ EXTERN struct menu_item watch_apps[]
 EXTERN const char *app_labels[]
 #ifdef __MAIN__
 		      = {
-			  "Jupiter", "MQTT", "Battery",
-			  "Maze", "Calc", "NTP",
-			  "Skin", "Level", "Paint",
-			  "StopWatch", "Settings", "Clock"
+			  "Stopwatch", "MQTT", "Battery",
+			  "", "Calc", "NTP",
+			  "Skin", "Level", "Alarm",
+			  "Apps 2", "Settings", "Clock"
+			}
+#endif
+;
+
+
+EXTERN struct menu_item watch_apps2[]
+#ifdef __MAIN__
+= {
+    { "Jupiter",     "", (void *)&jSats },
+    { "",            "", NULL },
+    { "Maze",        "", (void *)&appMaze },
+    { "",            "", NULL },
+    { "Paint",       "", (void *)&appPaint },
+    { "",            "", NULL },
+    { "Life",        "", (void *)&appLife },
+    { "",            "", NULL },
+    { "",            "", NULL },
+    { "Apps 1",      "", (void *)&switch_menu },
+    { "",            "", NULL },
+    { "Clock",       "", NULL }
+}
+#endif
+;
+
+EXTERN const char *app_labels2[]
+#ifdef __MAIN__
+		      = {
+			  "Jupiter", "", "Maze",
+			  "", "Paint", "",
+			  "Life", "", "",
+			  "Apps 1", "", "Clock"
 			}
 #endif
 ;

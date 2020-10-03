@@ -48,48 +48,35 @@ WiFiServer APserver(80);
 #endif
 
 void appNTPTime(void) {
-  connect_to_wifi_and_get_time(true);
-  ttgo->tft->setTextColor(TFT_YELLOW, TFT_BLACK);
-  ttgo->tft->drawString("WiFi Access Points",  0, 5, 2);
-  ttgo->tft->setTextColor(TFT_GREEN, TFT_BLACK);
-  ttgo->tft->setCursor(0, 30);
-  ttgo->tft->print("SSID");
-  ttgo->tft->setCursor(150, 30);
-  ttgo->tft->print("RSSI");
-  if(number_of_networks) {
-    for (int i = 0; i < number_of_networks && i < 8; ++i) {
-      strncpy(ssid, WiFi.SSID(i).c_str(), sizeof(ssid));
-      ttgo->tft->setCursor(0, 45 + (15 * i));
-      ttgo->tft->print(ssid);
-      ttgo->tft->setCursor(150, 45 + (15 * i));
-      ttgo->tft->print(WiFi.RSSI(i));
+  if(!connect_to_wifi_and_get_time(true)) {
+    // Get the current date/time
+    RTC_Date tnow = ttgo->rtc->getDateTime();
+
+    hh = tnow.hour;
+    mm = tnow.minute;
+    ss = tnow.second;
+    dday = tnow.day;
+    mmonth = tnow.month;
+    yyear = tnow.year;
+
+    tft->setTextSize(2);
+    tft->setCursor(5, 210);
+    tft->printf("%02d:%02d:%02d %02d/%02d/%4d", hh, mm, ss, mmonth, dday, yyear);
+    // my vars are: Hh, Mm, Ss, Year, Month, Day);
+    // put a delay() here eventually.
+    int16_t x, y;
+    while (!ttgo->getTouch(x, y)) {	// Wait for touch
+      my_idle();
     }
+    while (ttgo->getTouch(x, y)) {	// Wait for release
+      my_idle();
+    }
+    //Clear screen 
+    ttgo->tft->fillScreen(TFT_BLACK);
   }
-
-  // Get the current date/time
-  RTC_Date tnow = ttgo->rtc->getDateTime();
-
-  hh = tnow.hour;
-  mm = tnow.minute;
-  ss = tnow.second;
-  dday = tnow.day;
-  mmonth = tnow.month;
-  yyear = tnow.year;
-
-  tft->setTextSize(2);
-  tft->setCursor(5, 210);
-  tft->printf("%02d:%02d:%02d %02d/%02d/%4d", hh, mm, ss, mmonth, dday, yyear);
-  // my vars are: Hh, Mm, Ss, Year, Month, Day);
-  // put a delay() here eventually.
-  int16_t x, y;
-  while (!ttgo->getTouch(x, y)) {	// Wait for touch
-    my_idle();
+  else {
+    appSetTime();
   }
-  while (ttgo->getTouch(x, y)) {	// Wait for release
-    my_idle();
-  }
-  //Clear screen 
-  ttgo->tft->fillScreen(TFT_BLACK);
 }
 
 // stub; this was a web server to get access point information
@@ -115,11 +102,11 @@ int best_strength;
 int best_scan_result;
 char ssid[50];
     if(verbose) {
-      tft->setTextColor(TFT_GREEN, TFT_BLACK);
       tft->fillScreen(TFT_BLACK);
+      ttgo->tft->setTextColor(TFT_YELLOW, TFT_BLACK);
       tft->setTextDatum(MC_DATUM);
       tft->setTextSize(1);
-      tft->drawString("Scan Network", half_width, half_height);
+      tft->drawString("Scan Network", half_width, 5, 2);
       tft->setTextDatum(TL_DATUM);
     }
 
@@ -128,15 +115,34 @@ char ssid[50];
     delay(100);
 
     number_of_networks = WiFi.scanNetworks();
-    if(verbose) {
-      ttgo->tft->fillScreen(TFT_BLACK);
-    }
     if(number_of_networks == 0) {
       if(verbose) {
+	ttgo->tft->setTextColor(TFT_ORANGE, TFT_BLACK);
+	tft->setTextDatum(MC_DATUM);
         ttgo->tft->drawString("no SSIDs found", half_width, half_height);
+	tft->setTextDatum(TL_DATUM);
       }
     }
     else {
+      if(verbose) {
+	tft->setTextDatum(TL_DATUM);
+	ttgo->tft->setTextColor(TFT_YELLOW, TFT_BLACK);
+	ttgo->tft->drawString("WiFi Access Points",  0, 15, 2);
+	ttgo->tft->setTextColor(TFT_GREEN, TFT_BLACK);
+	ttgo->tft->setCursor(0, 30);
+	ttgo->tft->print("SSID");
+	ttgo->tft->setCursor(150, 30);
+	ttgo->tft->print("RSSI");
+	if(number_of_networks) {
+	  for (int i = 0; i < number_of_networks && i < 8; ++i) {
+	    strncpy(ssid, WiFi.SSID(i).c_str(), sizeof(ssid));
+	    ttgo->tft->setCursor(0, 45 + (15 * i));
+	    ttgo->tft->print(ssid);
+	    ttgo->tft->setCursor(150, 45 + (15 * i));
+	    ttgo->tft->print(WiFi.RSSI(i));
+	  }
+	}
+      }
 #if DBGCLK
       Serial.printf("Found %d SSIDs:\n", number_of_networks);
       Serial.printf("%32.32s %4s\n", "SSID", "RSSI", "CHANNEL");
