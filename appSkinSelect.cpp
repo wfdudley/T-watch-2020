@@ -30,13 +30,13 @@ int16_t x, y;
 
   draw_button_menu(1, skin_menu, 1, 2, true, "Pick a Watch Style", NULL, 1);
   do {
-    mSelect = poll_swipe_or_menu_press(12);	// poll for touch, returns 0-15
+    mSelect = poll_swipe_or_menu_press(12);	// poll for touch or gesture
 #if 0
     if(mSelect > -1) {
       Serial.printf("poll_swipe... returns %d\n", mSelect);
     }
 #endif
-    if(mSelect != -1 && mSelect <= 11) {	// if user touched something
+    if(mSelect > -1 && mSelect < NODIR) {	// if user touched something
       switch(mSelect) {
 	case 0 :
 	case 1 :
@@ -68,7 +68,7 @@ int16_t x, y;
       }
       goto Exit;
     }
-    // swipe is 12,13,14,15 (UP+11, DOWN+11, etc)
+    // swipe is 32,33,34,35 (UP, DOWN, etc)
   } while(1);
 
 Exit:

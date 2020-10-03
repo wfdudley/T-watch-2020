@@ -526,12 +526,12 @@ uint8_t data;
     // if(mSelect >= 0) {
       // Serial.printf("p_s... = %d\n", mSelect);
     // }
-    // if (mSelect != -1 && mSelect <= 11) {	// if user touched something
+    // if (mSelect != -1 && mSelect < NODIR) {	// if user touched something
       // this is a bad idea, it's too easy to accidentally
       // start an app and run down the battery.
     // }
     // else
-    if(mSelect == (DOWN + 11)) {	// swipe is 12 = up, 13 = down, 14, or 15
+    if(mSelect == (DOWN)) {	// swipe is 32 = up, 33 = down, 34, or 35
       // This is where the app selected from the menu is launched
       uint8_t choice = modeMenu();
       if(choice != 0x1b) {
@@ -539,22 +539,22 @@ uint8_t data;
       }
       have_run_app = true;
     }
-    else if(mSelect == (CWCIRCLE + 11)) {
+    else if(mSelect == CWCIRCLE) {
       Serial.println(F("cw circle"));
       appMQTT();
       have_run_app = true;
     }
-    else if(mSelect == (CCWCIRCLE + 11)) {
+    else if(mSelect == CCWCIRCLE) {
       Serial.println(F("ccw circle"));
       appSettings();
       have_run_app = true;
     }
-    else if(mSelect == (RIGHT + 11)) {
+    else if(mSelect == RIGHT) {
       Serial.println(F("right"));
       appBattery();
       have_run_app = true;
     }
-    else if(mSelect == (LEFT + 11)) {
+    else if(mSelect == LEFT) {
       Serial.println(F("left"));
       if(alarm_active) {
 	alarm_active = false;

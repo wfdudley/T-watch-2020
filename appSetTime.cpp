@@ -46,7 +46,7 @@ uint16_t icolor;
   ttgo->tft->drawCentreString(b_labels[ino], xtvals[col], yvals[row]+5, font);
 }
 
-void draw_keyboard (const char **b_labels, uint8_t font, bool leave_room_for_label, char *top_label) {
+void draw_keyboard (uint8_t num_keys, const char **b_labels, uint8_t font, bool leave_room_for_label, char *top_label) {
 uint8_t yvals[4], yh, row, col;
 uint16_t icolor;
   ttgo->tft->fillScreen(TFT_BLACK);
@@ -68,18 +68,32 @@ uint16_t icolor;
     yvals[3] = 180;
     yh = 60;
   }
-  int16_t xvals[3] = { 0, 83, 164 };
-  int16_t xtvals[3] = { 41, 120, 200 };
+  int16_t xvals[4];
+  int16_t xtvals[4];
+  xvals[0] = 0;
+  if(num_keys == 12) {
+    for(int i = 0 ; i < 3 ; i++) {
+      xvals[i]  = i * (246 / 3);
+      xtvals[i] = xvals[i] + (246 / 6);
+    }
+  }
+  else {
+    for(int i = 0 ; i < 4 ; i++) {
+      xvals[i]  = i * (248 / 4);
+      xtvals[i] = xvals[i] + (248 / 8);
+    }
+  }
   // note: space at the top do display what is typed
   // was ttgo->tft->fillRect(0, 35, 80, 50, TFT_BLUE);
   // number keys are 80 x 50, four rows of three
   // x=0, 81, 161, y=35, 85, 135, 185
   ttgo->tft->setTextColor(TFT_GREEN);
   for(row = 0 ; row < 4 ; row++) {
-    for(col = 0 ; col < 3 ; col++) {
-      int ino = col + (row * 3);
+    for(col = 0 ; col < (num_keys / 4) ; col++) {
+      int ino = col + (row * (num_keys / 4));
       icolor = (!strcmp(b_labels[ino], "CANCEL") || !strcmp(b_labels[ino], "DONE")) ? TFT_DARKGREY : TFT_BLUE ;
-      ttgo->tft->fillRoundRect(xvals[col], yvals[row], 75, yh-5, 6, icolor);
+      ttgo->tft->fillRoundRect(xvals[col], yvals[row],
+	(num_keys == 12) ? 75 : 55, yh-5, 6, icolor);
       ttgo->tft->drawCentreString(b_labels[ino], xtvals[col], yvals[row]+5, font);
     }
   }
@@ -98,7 +112,7 @@ void appSetTime(void) {
 
   //Draw the numerical keypad:
 
-  draw_keyboard(number_labels, 2, true, NULL);
+  draw_keyboard(12, number_labels, 2, true, NULL);
 
   int wl = 0; // Track the current number selected
   byte curnum = 1;  // Track which digit we are on

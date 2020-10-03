@@ -34,45 +34,6 @@ const char button_values2[] = {'s', 'c', 't', '_',
 // todo:
 // second keyboard with functions like "CHS" (change sign), sin, cos, tan
 
-void draw_keyboard_16 (const char **b_labels, uint8_t font, bool leave_room_for_label, char *top_label) {
-uint8_t yvals[4], yh, row, col;
-uint16_t icolor;
-  ttgo->tft->fillScreen(TFT_BLACK);
-  if(leave_room_for_label) {
-    yvals[0] = 35;
-    yvals[1] = 85;
-    yvals[2] = 135;
-    yvals[3] = 185;
-    yh = 50;
-    if(top_label) {
-      ttgo->tft->setTextColor(TFT_GREEN);
-      ttgo->tft->drawCentreString( top_label, half_width, 5, font);
-    }
-  }
-  else {
-    yvals[0] =   0;
-    yvals[1] =  60;
-    yvals[2] = 120;
-    yvals[3] = 180;
-    yh = 60;
-  }
-  int16_t xvals[4] = { 0, 62, 124, 186 };
-  int16_t xtvals[4] = { 31, 91, 152, 218 };
-  // note: space at the top do display what is typed
-  // was ttgo->tft->fillRect(0, 35, 80, 50, TFT_BLUE);
-  // number keys are 80 x 50, four rows of three
-  // x=0, 81, 161, y=35, 85, 135, 185
-  ttgo->tft->setTextColor(TFT_GREEN);
-  for(row = 0 ; row < 4 ; row++) {
-    for(col = 0 ; col < 4 ; col++) {
-      int ino = col + (row * 4);
-      icolor = (!strcmp(b_labels[ino], "CANCEL") || !strcmp(b_labels[ino], "DONE")) ? TFT_DARKGREY : TFT_BLUE ;
-      ttgo->tft->fillRoundRect(xvals[col], yvals[row], 55, yh-5, 6, icolor);
-      ttgo->tft->drawCentreString(b_labels[ino], xtvals[col], yvals[row]+5, font);
-    }
-  }
-}
-
 static float stack[5];
 
 void push(float x) {
@@ -104,12 +65,15 @@ int last_len, current_kbd;
     }
     memset(ibuf, '\0', sizeof(ibuf)/sizeof(char));
     memset(buf, '\0', sizeof(buf)/sizeof(char));
-    draw_keyboard_16(current_kbd ? calc_labels2 : calc_labels1, 4, true, "");
+    draw_keyboard(16, current_kbd ? calc_labels2 : calc_labels1, 4, true, "");
     do {
 	my_idle();
-	mSelect = poll_swipe_or_menu_press(16); // poll for touch/swipe, returns 0-19
+	mSelect = poll_swipe_or_menu_press(16); // poll for touch or gesture
+	if(mSelect >= 0) {
+	  Serial.printf("mSelect = %d\n", mSelect);
+	}
 	c = 0xff;
-	if(mSelect >= 0 && mSelect < 16) {
+	if(mSelect >= 0 && mSelect < NODIR) {
 	  if(current_kbd) {
 	    c = button_values2[mSelect];
 	  }
@@ -117,21 +81,21 @@ int last_len, current_kbd;
 	    c = button_values1[mSelect];
 	  }
 	}
-	else if(mSelect == 15 + LEFT) {	// swipe left == backspace
+	else if(mSelect == LEFT) {	// swipe left == backspace
 	  c = 0x08;
 	}
-	else if(mSelect == 15 + UP) {	// swipe up == pop
+	else if(mSelect == UP) {	// swipe up == pop
 	  c = 'P';
 	}
-	else if(mSelect == 15 + DOWN) {	// swipe down == push
+	else if(mSelect == DOWN) {	// swipe down == push
 	  c = '=';
 	}
-	else if(mSelect == 15 + CWCIRCLE) {	// swipe cw == pi
+	else if(mSelect == CWCIRCLE) {	// swipe cw == pi
 	  c = 'p';
 	}
-	else if(mSelect == 15 + CCWCIRCLE) {	// swipe ccw -> switch kbd
+	else if(mSelect == CCWCIRCLE) {	// swipe ccw -> switch kbd
 	  current_kbd ^= 1;
-	  draw_keyboard_16(current_kbd ? calc_labels2 : calc_labels1, 4, true, buf);
+	  draw_keyboard(16, current_kbd ? calc_labels2 : calc_labels1, 4, true, buf);
 	  // tft->setTextColor(TFT_GREEN);
 	  // tft->drawCentreString( buf, x, 5, 4);
 	}
@@ -282,7 +246,7 @@ int last_len, current_kbd;
 	  tft->drawCentreString( buf, x, 5, 4);
 	  last_len = strlen(buf);
 	}
-	else if(mSelect == 15 + RIGHT) {	// exit
+	else if(mSelect == RIGHT) {	// exit
 	    tft->fillScreen(TFT_BLACK);		// clear screen
 	    return;
 	}

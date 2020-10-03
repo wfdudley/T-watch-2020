@@ -203,7 +203,7 @@ int16_t xpos, ypos;
     do {
       my_idle();
       // walls are: 0,1,2,3 -> up, right, down, left
-      mSelect = poll_swipe_or_menu_press(12);	// poll for touch, returns 0-15
+      mSelect = poll_swipe_or_menu_press(12);	// poll for touch or gesture
       int next = -1;
       if(mSelect == -1) {
 	ttgo->bma->getAccel(acc);
@@ -216,28 +216,28 @@ int16_t xpos, ypos;
 #if DEBUGGAME
 	  Serial.println(F("tilt right"));
 #endif
-	  mSelect = RIGHT + 11;
+	  mSelect = RIGHT;
 	}
 	else if(xpos < (0 - TILT_THRESH) && abs(ypos) < TILT_MIN ) {
 #if DEBUGGAME
 	  Serial.println(F("tilt left"));
 #endif
-	  mSelect = LEFT + 11;
+	  mSelect = LEFT;
 	}
 	if(ypos > TILT_THRESH && abs(xpos) < TILT_MIN ) {
 #if DEBUGGAME
 	  Serial.println(F("tilt down"));
 #endif
-	  mSelect = DOWN + 11;
+	  mSelect = DOWN;
 	}
 	if(ypos < (0 - TILT_THRESH) && abs(xpos) < TILT_MIN ) {
 #if DEBUGGAME
 	  Serial.println(F("tilt up"));
 #endif
-	  mSelect = UP + 11;
+	  mSelect = UP;
 	}
       }
-      if(mSelect == (UP + 11)) { // swipe 12 = up, 13 = down, left = 14, rt = 15
+      if(mSelect == (UP)) { // swipe 32 = up, 33 = down, left = 34, rt = 35
 #if DEBUGGAME
 	Serial.println(F("up"));
 #endif
@@ -249,7 +249,7 @@ int16_t xpos, ypos;
 	  next = hasNeighbour(mazeGrid, *current, 0);
 	}
       }
-      else if(mSelect == (DOWN + 11)) {
+      else if(mSelect == DOWN) {
 #if DEBUGGAME
 	Serial.println(F("down"));
 #endif
@@ -261,7 +261,7 @@ int16_t xpos, ypos;
 	  next = hasNeighbour(mazeGrid, *current, 2);
 	}
       }
-      else if(mSelect == (LEFT + 11)) {
+      else if(mSelect == LEFT) {
 #if DEBUGGAME
 	Serial.println(F("left"));
 #endif
@@ -273,7 +273,7 @@ int16_t xpos, ypos;
 	  next = hasNeighbour(mazeGrid, *current, 3);
 	}
       }
-      else if(mSelect == (RIGHT + 11)) {
+      else if(mSelect == RIGHT) {
 #if DEBUGGAME
 	Serial.println(F("right"));
 #endif
@@ -285,7 +285,7 @@ int16_t xpos, ypos;
 	  next = hasNeighbour(mazeGrid, *current, 1);
 	}
       }
-      else if(mSelect == (CWCIRCLE + 11)) {
+      else if(mSelect == CWCIRCLE) {
 	touched = true;
 	break;
       }

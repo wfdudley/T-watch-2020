@@ -256,13 +256,13 @@ enum SWIPE_DIR resdir;
 #if DBG_GESTURES
 	Serial.println(F("found CW CIRCLE"));
 #endif
-	return(num_choices - 1 + CWCIRCLE);
+	return(CWCIRCLE);
       }
       if(strstr(dir_order, "ULDR")) {
 #if DBG_GESTURES
 	Serial.println(F("found CCW CIRCLE"));
 #endif
-	return(num_choices - 1 + CCWCIRCLE);
+	return(CCWCIRCLE);
       }
     }
     else if(amax > 60) { // moved across 1/4 of the screen, so probably a swipe
@@ -274,7 +274,7 @@ enum SWIPE_DIR resdir;
       resdir = 
 	(dir == 'x') ? ((xdir > 0) ? RIGHT : LEFT ) :
 			(ydir > 0) ? DOWN : UP;
-      return resdir + num_choices - 1;
+      return resdir;
     }
     else {	// must be button press
       if(num_choices == 12) {
@@ -475,8 +475,8 @@ Top:  if(current_menu == sensor_menu1) {
       draw_button_menu(3, current_menu, 1, 2, true, menu_label, menu_data_p, 0);
       while(1) {
 	// Serial.println(F("before poll_swipe_or_menu_press(12)"));
-	mSelect = poll_swipe_or_menu_press(12);	// poll for touch, returns 0-15
-	if (mSelect != -1 && mSelect <= 11) {	// if user touched something
+	mSelect = poll_swipe_or_menu_press(12);	// poll for touch or gesture
+	if (mSelect > -1 && mSelect < NODIR) {	// if user touched something
 	  int col = mSelect % 3;
 	  int row = mSelect / 3;
 	  flash_menu_item(3, current_menu, 1, 2, true, row, col, menu_data_p, true, 0);
@@ -536,35 +536,32 @@ Top:  if(current_menu == sensor_menu1) {
 	    }
 	  }
 	}
-	else if(mSelect > 11) {
-	  swipe = (enum SWIPE_DIR)(mSelect - 11);
-	  if(swipe != NODIR) {
-	    Serial.printf("swipe %s, ", swipe_names[(int)swipe]);
-	    char *mname;
-	    switch(swipe) {
-	      case UP :
-		current_menu = ctrl_menu1;
-		mname = "ctrl_menu1";
-		break;
-	      case DOWN :
-		current_menu = ctrl_menu2;
-		mname = "ctrl_menu2";
-		break;
-	      case LEFT :	// show the screen to the right
-		current_menu = sensor_menu2;
-		mname = "sensor_menu2";
-		break;
-	      case RIGHT :	// show the screen to the left
-		current_menu = sensor_menu1;
-		mname = "sensor_menu1";
-		break;
-	    }
-	    Serial.printf("user chose menu %s\n", mname);
-	    if(last_current_menu != current_menu) {
-		goto Top;
-	    }
-	    break;
+	else if(mSelect > NODIR) {
+	  Serial.printf("swipe %s, ", swipe_names[mSelect - (int)NODIR]);
+	  char *mname;
+	  switch(mSelect) {
+	    case UP :
+	      current_menu = ctrl_menu1;
+	      mname = "ctrl_menu1";
+	      break;
+	    case DOWN :
+	      current_menu = ctrl_menu2;
+	      mname = "ctrl_menu2";
+	      break;
+	    case LEFT :	// show the screen to the right
+	      current_menu = sensor_menu2;
+	      mname = "sensor_menu2";
+	      break;
+	    case RIGHT :	// show the screen to the left
+	      current_menu = sensor_menu1;
+	      mname = "sensor_menu1";
+	      break;
 	  }
+	  Serial.printf("user chose menu %s\n", mname);
+	  if(last_current_menu != current_menu) {
+	      goto Top;
+	  }
+	  break;
 	}
 	my_idle();
 	if (mqttClient.connected()) {

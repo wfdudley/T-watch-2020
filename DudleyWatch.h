@@ -89,7 +89,7 @@ void draw_step_counter_rjust (uint16_t, uint16_t, uint16_t, uint16_t, uint8_t);
 
 void quickBuzz(void);
 void beep(int8_t);
-void draw_keyboard(const char **, uint8_t, bool, char *);
+void draw_keyboard(uint8_t, const char **, uint8_t, bool, char *);
 void flash_keyboard_item (const char **, uint8_t, bool, int, int);
 int get_numerical_button_press(void);
 void dummyTime(void);
@@ -177,7 +177,7 @@ typedef struct config_t {
 
 EXTERN CONFIGGEN general_config;
 
-enum SWIPE_DIR { NODIR, UP, DOWN, LEFT, RIGHT, CWCIRCLE, CCWCIRCLE };
+enum SWIPE_DIR { NODIR=31, UP, DOWN, LEFT, RIGHT, CWCIRCLE, CCWCIRCLE };
 
 EXTERN const char *swipe_names[]
 #ifdef __MAIN__
