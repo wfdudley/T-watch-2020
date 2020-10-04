@@ -1,7 +1,15 @@
 # T-watch-2020
 a watch project for the TTGO T-watch-2020 version 1
 
-This builds with Arduino IDE version 1.8.13.  It requires the AceTime library.
+This builds with Arduino IDE version 1.8.13.  It also requires:
+<UL>
+  <LI><A HREF="https://github.com/Xinyuan-LilyGO/TTGO_TWatch_Library" TARGET=_blank>The "official" watch library</A>
+  </LI>
+  <LI><A HREF="https://github.com/bxparks/AceTime" TARGET=_blank>The AceTime library</A>
+  </LI>
+  <LI><A HREF="https://github.com/Bodmer/TFT_eSPI" TARGET=_blank>Bodmer's TFT_eSPI library</A>
+  </LI>
+</UL>      
 
 I've written "new" watch code.
 I took bits from Dan Geiger's watch code (https://www.instructables.com/.../Lilygo-T-Watch-2020.../),
