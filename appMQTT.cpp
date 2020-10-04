@@ -428,19 +428,17 @@ enum SWIPE_DIR swipe;
       }
       if(verbose) {
 	tft->setTextColor(TFT_GREEN, TFT_BLACK);
-	tft->fillScreen(TFT_BLACK);
 	tft->setTextSize(1);
-	tft->drawString("Connected to", 0, 20);
-	sprintf(buff, "%s channel %d", BestAP.ssid, BestAP.channel);
-	tft->drawString(buff, 0, 30);
+	tft->setCursor(0, 50 + (15 * 8));
+	tft->printf("Connected to %s channel %d", BestAP.ssid, BestAP.channel);
+	tft->setCursor(0, 50 + (15 * 9));
+	tft->print(F("Trying to connect to "));
+	tft->print(MQTTserver);
+	tft->setCursor(0, 50 + (15 * 10));
+	tft->print(F("my ip is: "));
+	tft->print(WiFi.localIP());
       }
-      tft->setCursor(0, 40);
-      tft->setTextColor(TFT_GREEN, TFT_BLACK);
-      tft->print(WiFi.localIP());
-      tft->setCursor(0, 50);
-      tft->print("Trying to connect to ");
-      tft->print(MQTTserver);
-      Serial.printf("Trying to connect to ");
+      Serial.print(F("Trying to connect to "));
       Serial.print(MQTTserver);
       Serial.printf(" on port %d.\n", general_config.mqtt_port);
       Serial.printf("mqtt user = %s, passwd = %s\n",
@@ -450,6 +448,9 @@ enum SWIPE_DIR swipe;
       mqttClient.setCallback(MQTTcallback);
 
       mqtt_reconnect();
+      if(verbose) {
+	delay(2000);
+      }
     }
     current_menu = sensor_menu1;
     this_sec = millis();

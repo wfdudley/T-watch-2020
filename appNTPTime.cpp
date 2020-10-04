@@ -126,20 +126,24 @@ char ssid[50];
     else {
       if(verbose) {
 	tft->setTextDatum(TL_DATUM);
-	ttgo->tft->setTextColor(TFT_YELLOW, TFT_BLACK);
-	ttgo->tft->drawString("WiFi Access Points",  0, 15, 2);
-	ttgo->tft->setTextColor(TFT_GREEN, TFT_BLACK);
-	ttgo->tft->setCursor(0, 30);
-	ttgo->tft->print("SSID");
-	ttgo->tft->setCursor(150, 30);
-	ttgo->tft->print("RSSI");
+	tft->setTextColor(TFT_YELLOW, TFT_BLACK);
+	tft->drawString("WiFi Access Points",  0, 18, 2);
+	tft->setTextColor(TFT_GREEN, TFT_BLACK);
+	tft->setCursor(0, 35);
+	tft->print("SSID");
+	tft->setCursor(150, 35);
+	tft->print("chan");
+	tft->setCursor(200, 35);
+	tft->print("RSSI");
 	if(number_of_networks) {
 	  for (int i = 0; i < number_of_networks && i < 8; ++i) {
 	    strncpy(ssid, WiFi.SSID(i).c_str(), sizeof(ssid));
-	    ttgo->tft->setCursor(0, 45 + (15 * i));
-	    ttgo->tft->print(ssid);
-	    ttgo->tft->setCursor(150, 45 + (15 * i));
-	    ttgo->tft->print(WiFi.RSSI(i));
+	    tft->setCursor(0, 50 + (15 * i));
+	    tft->print(ssid);
+	    tft->setCursor(150, 50 + (15 * i));
+            tft->print(WiFi.channel(i));
+	    tft->setCursor(200, 50 + (15 * i));
+	    tft->print(WiFi.RSSI(i));
 	  }
 	}
       }
@@ -332,6 +336,11 @@ int err, ecnt, this_wifi;
       Serial.println(F("couldn't get wifi connection in 80 seconds!"));
 #endif
       return 1;
+    }
+    if(verbose) {
+      tft->setTextColor(TFT_YELLOW, TFT_BLACK);
+      tft->setCursor(0, 50 + (15 * 8));
+      tft->printf("Connected to %s channel %d", BestAP.ssid, BestAP.channel);
     }
 
     //init and get the time

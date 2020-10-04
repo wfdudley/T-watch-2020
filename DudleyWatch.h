@@ -79,6 +79,7 @@ void appStopWatch(void);	// stop watch
 void alarmSettings(void);	// alarm clock settings
 void appCalculator(void);	// calculator
 void switch_menu(void);		// switch apps menu page
+void appBitcoin(void);		// Bitcoin value checker
 
 void LCARS_Time(uint8_t);
 void Basic_Time(uint8_t);
@@ -162,7 +163,7 @@ EXTERN struct menu_item watch_apps2[]
     { "",            "", NULL },
     { "Life",        "", (void *)&appLife },
     { "",            "", NULL },
-    { "",            "", NULL },
+    { "Bitcoin",     "", (void *)&appBitcoin },
     { "Apps 1",      "", (void *)&switch_menu },
     { "",            "", NULL },
     { "Clock",       "", NULL }
@@ -175,7 +176,7 @@ EXTERN const char *app_labels2[]
 		      = {
 			  "Jupiter", "", "Maze",
 			  "", "Paint", "",
-			  "Life", "", "",
+			  "Life", "", "BTC",
 			  "Apps 1", "", "Clock"
 			}
 #endif
