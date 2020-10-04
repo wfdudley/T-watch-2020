@@ -26,6 +26,8 @@ and bits from SimpleWatch (the shipped demo), and added many new features.
   </LI>
   <LI>Dan's "LCARS" watch face has been enhanced with step counter, battery charge icon, more.
   </LI>
+  <LI>Dan's Bitcoin app is mostly unchanged.
+  </LI>
 </UL>
 <H4>New Features</H4>
 <ul>
