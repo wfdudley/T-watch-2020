@@ -32,6 +32,7 @@ struct menu_item{
 void Analog_Time(uint8_t);
 void LCARS_Time(uint8_t);
 void Basic_Time(uint8_t);
+void LilyGo_Time(uint8_t);
 boolean if_not_home_tz(void);
 
 EXTERN uint8_t home_hh;
@@ -49,9 +50,10 @@ EXTERN struct menu_item skin_menu[]
 #ifdef __MAIN__
   = {
       { "Analog", "", (void *)&Analog_Time },
-      { "LCARS", "",  (void *)&LCARS_Time  },
-      { "Basic", "",  (void *)&Basic_Time  },
-      { "Exit",  "",  NULL      }
+      { "LCARS",  "", (void *)&LCARS_Time  },
+      { "Basic",  "", (void *)&Basic_Time  },
+      { "LilyGo", "", (void *)&LilyGo_Time }
+//    { "Exit",  "",  NULL      }
     }
 #endif
     ;
@@ -60,6 +62,7 @@ EXTERN struct menu_item skin_menu[]
 #define LCARS 1
 #define BASIC 2
 #define ANALOG 3
+#define LILYGO 4
 
 uint8_t modeMenu(void);	// app selector
 

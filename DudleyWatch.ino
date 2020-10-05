@@ -151,6 +151,9 @@ void displayTime(uint8_t update_type) {
 	case ANALOG :
 	    Analog_Time(update_type);
 	    break;
+	case LILYGO :
+	    LilyGo_Time(update_type);
+	    break;
 	case BASIC :
 	default :
 	    Basic_Time(update_type);

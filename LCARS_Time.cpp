@@ -101,7 +101,6 @@ static uint8_t last_dday;
   ttgo->power->adc1Enable(AXP202_VBUS_VOL_ADC1 | AXP202_VBUS_CUR_ADC1 | AXP202_BATT_CUR_ADC1 | AXP202_BATT_VOL_ADC1, true);
 
   get_time_in_tz(tzindex);
-
   // these is used for the alarm function:
   local_hour = hh;
   local_minute = mm;

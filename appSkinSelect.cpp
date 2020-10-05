@@ -18,6 +18,7 @@ SKIN skins[] = {
     { "LCARS", LCARS },
     { "Basic", BASIC },
     { "Analog", ANALOG },
+    { "Lilygo", LILYGO }
 };
 
 const int maxSkins = sizeof(skins)/sizeof(SKIN); // number of skins
@@ -63,7 +64,9 @@ int16_t x, y;
 	case 9 :
 	case 10 :
 	case 11 :
-	  // Serial.println(F("9 10 11 -> Exit"));
+	  chosen_skin = LILYGO;
+	  // watch_fun_pointer = (void (*)(uint8_t))skin_menu[3].next_menu;
+	  // Serial.println(F("9 10 11 -> LilyGo"));
 	  break;
       }
       goto Exit;
