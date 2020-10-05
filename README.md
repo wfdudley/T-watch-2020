@@ -16,7 +16,7 @@ I took bits from Dan Geiger's watch code (https://www.instructables.com/.../Lily
 and bits from SimpleWatch (the shipped demo), and added many new features.
 <H4>Existing Features</H4>
 <UL>
-  <LI>Jupiter's moon's calculator
+  <LI>Dan's Jupiter's moon's calculator is mostly unchanged.
   </LI>
   <LI>Dan's accelerometer demo is now tarted up a little as a "Level"
   </LI>
@@ -31,7 +31,7 @@ and bits from SimpleWatch (the shipped demo), and added many new features.
 </UL>
 <H4>New Features</H4>
 <ul>
-  <LI> choice of Analog, "Basic digital", or LCARS watch face  (LCARS and Basic derived from Dan Geiger's watch).
+  <LI> choice of Analog, "Basic digital", "LilyGoGui", or LCARS watch face  LCARS and Basic are derived from Dan Geiger's watch.  LilyGoGui derived from the demo code that comes with the watch.
   </LI>
   <LI> The ability to show time in your local time zone plus your home time zone if you're travelling
   </LI>
