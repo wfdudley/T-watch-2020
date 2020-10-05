@@ -31,7 +31,7 @@ and bits from SimpleWatch (the shipped demo), and added many new features.
 </UL>
 <H4>New Features</H4>
 <ul>
-  <LI> choice of Analog, "Basic digital", "LilyGoGui", or LCARS watch face  LCARS and Basic are derived from Dan Geiger's watch.  LilyGoGui derived from the demo code that comes with the watch.
+  <LI> choice of Analog, "Basic digital", "LilyGoGui", or LCARS watch face.  LCARS and Basic are derived from Dan Geiger's watch.  LilyGoGui derived from the demo code that comes with the watch.
   </LI>
   <LI> The ability to show time in your local time zone plus your home time zone if you're travelling
   </LI>
