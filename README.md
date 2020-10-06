@@ -60,6 +60,8 @@ and bits from SimpleWatch (the shipped demo), and added many new features.
   </LI>
   <LI> Battery level icon, "is plugged into charger" icon, and step counter icon.
   </LI>
+  <LI> The WiFi access points database is now stored in a file acc_pts.txt in the SPIFFs filesystem.  If you try to use the NTP function to connect to a new access point, appNTP will open up a settings page where you can enter the password and timezone for this new access point, and then it will be appended to the file acc_pts.txt.
+  </LI>
 </UL>
 
 <H4>Using this code on your watch</H4>
