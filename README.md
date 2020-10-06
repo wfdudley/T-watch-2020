@@ -11,7 +11,6 @@ This builds with Arduino IDE version 1.8.13.  It also requires:
   </LI>
 </UL>      
 
-I've written "new" watch code.
 I took bits from Dan Geiger's watch code (https://www.instructables.com/.../Lilygo-T-Watch-2020.../),
 and bits from SimpleWatch (the shipped demo), and added many new features.
 <H4>Existing Features</H4>
@@ -45,7 +44,7 @@ and bits from SimpleWatch (the shipped demo), and added many new features.
   </LI>
   <LI> A simple stopwatch
   </LI>
-  <LI> A function to set the time from NTP.  If that fails, run's Dan Geiger's "SetTime" app.)
+  <LI> A function to set the time from NTP.  If that fails, run's Dan Geiger's "SetTime" app.
   </LI>
   <LI> Storage for multiple WiFi credential sets, so the watch can connect to any SSID you regularly visit
   </LI>
