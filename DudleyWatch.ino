@@ -191,19 +191,10 @@ bool is_sleeping;
 void setup() {
 
   Serial.begin(115200);
-  if (!SPIFFS.begin(true)) {
-      Serial.println(F("An Error has occurred while mounting SPIFFS"));
-  }
-#if 0
-  bool formatted = SPIFFS.format();
-  if(formatted){
-      Serial.println(F("Success formatting"));
-  }
-  else{
-      Serial.println(F("Error formatting"));
-  }
-#endif
   Serial.print("booting DudleyWatch . . . ");
+  if(!SPIFFS.begin(true)) {
+    Serial.println(F("An Error has occurred while mounting SPIFFS"));
+  }
   pinMode(4, OUTPUT);	// vibrator motor pin
   EEPROM.begin(EEPROM_SIZE);
   EEPROM_readAnything(0, general_config); // get saved settings
@@ -357,8 +348,6 @@ void setup() {
   }
   app_menu_ptr = &watch_apps[0];
   app_label_ptr = &app_labels[0];
-  Serial.printf("app[2] = %s\n", app_menu_ptr[2].name);
-  Serial.printf("label[2] = %s\n", app_label_ptr[2]);
 }
 
 void loop(void) {

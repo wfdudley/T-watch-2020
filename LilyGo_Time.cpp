@@ -29,8 +29,8 @@ LV_FONT_DECLARE(digital_play_st_24);
 LV_FONT_DECLARE(gracetians_32);
 LV_FONT_DECLARE(exninja_22);
 
-lv_obj_t *hours, *minute, *second, *day, *dow, *month, *year, *am_pm;
-lv_obj_t *bat, *temp_text, *str2;
+static lv_obj_t *hours, *minute, *second, *day, *dow, *month, *year, *am_pm;
+static lv_obj_t *bat, *temp_text, *str2;
 
 lv_obj_t *setupGUI(void) {
     static lv_style_t cont_style;
@@ -86,7 +86,7 @@ lv_obj_t *setupGUI(void) {
     //Slogan below the top horizontal line
     lv_obj_t *row_down_line = lv_label_create(view, nullptr);
     lv_obj_add_style(row_down_line, LV_OBJ_PART_MAIN, &model_style);
-    lv_label_set_text(row_down_line, "Designed by lewis");
+    lv_label_set_text(row_down_line, "DudleyWatch");
     lv_obj_align(row_down_line, line1, LV_ALIGN_OUT_BOTTOM_LEFT, 10, 2);
 
     // bottom left horizontal line
@@ -325,7 +325,7 @@ void LilyGo_Time(uint8_t fullUpdate) {
     per = ttgo->power->getBattPercentage();
   } while(per > 100);
   temp = ttgo->power->getTemp();
-  Serial.printf("raw temp = %f, cooked = %.1f\n", temp, temp/6.0);
+  // Serial.printf("raw temp = %f, cooked = %.1f\n", temp, temp/6.0);
   if(fullUpdate) {
     setupGUI();
   }

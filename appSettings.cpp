@@ -414,12 +414,13 @@ Exit:
 static void page1_create(lv_obj_t * parent) {
 static char buf[4];	// max 3 bytes for number plus 1 null
   lv_obj_t *label;
-  lv_page_set_scrl_layout(parent, LV_LAYOUT_PRETTY_TOP);
+  // lv_page_set_scrl_layout(parent, LV_LAYOUT_PRETTY_TOP);
   lv_disp_size_t disp_size = lv_disp_get_size_category(NULL);
   // LV_DISP_SIZE_SMALL = disp_size = 0 !
   // lv_coord_t grid_w = lv_page_get_width_grid(parent, disp_size <= LV_DISP_SIZE_SMALL ? 1 : 2, 1);
   lv_obj_t * h = lv_cont_create(parent, NULL);
-  lv_obj_set_width(h, LV_DPI * 2);
+  // lv_obj_set_width(h, LV_DPI * 2);
+  lv_obj_set_width(h, 240);
   lv_obj_set_height(h, 200);
 
   lv_obj_t * slider1 = lv_slider_create(h, NULL);
