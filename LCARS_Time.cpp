@@ -5,14 +5,14 @@
 //
 // heavily modified by W.F.Dudley Jr.
 
+#include <AceTime.h>
 #include <time.h>
 #include <soc/rtc.h>
 #include "config.h"
 #include "DudleyWatch.h"
 #include "my_tz.h"
 
-char *shortMonths[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-			"Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+using namespace ace_time;
 
 // this will display 80% when percentage is between 70% and 90%
 // fully charged battery never exceeds 98% as far as I can tell.
@@ -172,7 +172,7 @@ static uint8_t last_dday;
 
     // write month
     tft->setTextColor(TFT_WHITE);
-    tft->drawString(shortMonths[mmonth-1], 9, 194, 2);
+    tft->drawString(DateStrings().monthShortString(mmonth), 9, 194, 2);
   }
   else if(fullUpdate == 1) {
     tft->fillRoundRect(40, 20, 196, 80, 20, TFT_BLACK); // big upper cut-out

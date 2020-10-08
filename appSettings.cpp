@@ -16,9 +16,9 @@ static uint8_t slider_num;
 static uint8_t button_num;
 static uint8_t dropdown_num;
 
-static lv_obj_t *btn1, *btn2, *slider1, *slider2;
+static lv_obj_t *btn1, *btn2, *btn3, *slider1, *slider2;
 static lv_obj_t *slider1_label, *slider2_label;
-static lv_obj_t *slider1_name, *slider2_name, *b2label;
+static lv_obj_t *slider1_name, *slider2_name, *b2label, *b3label;
 
 static void button_handler(lv_obj_t *obj, lv_event_t event) {
     // Serial.printf("button_handler() event = %d\n", (int)event);
@@ -29,7 +29,9 @@ static void button_handler(lv_obj_t *obj, lv_event_t event) {
 	lv_obj_t * label = lv_obj_get_child(obj, NULL);
 	char * txt = lv_label_get_text(label);
 	// Serial.printf("button label is %s\n", txt);
-	button_num = (strcmp(txt, "Done")) ? 2 : 1 ;
+	if(!strcmp(txt, "Done")) { button_num = 1; }
+	else if(!strncmp(txt, "Step", 4)) { button_num = 2; }
+	else { button_num = 3; }
 	Serial.printf("handler label = %s, button_num = %d\n", txt, button_num);
 	// lv_label_set_text_fmt(label, "Button: %d", cnt);
 	return;
@@ -40,7 +42,9 @@ static void button_handler(lv_obj_t *obj, lv_event_t event) {
 	lv_obj_t * label = lv_obj_get_child(obj, NULL);
 	char * txt = lv_label_get_text(label);
 	// Serial.printf("button label is %s\n", txt);
-	button_num = (strcmp(txt, "Done")) ? 2 : 1 ;
+	if(!strcmp(txt, "Done")) { button_num = 1; }
+	else if(!strncmp(txt, "Step", 4)) { button_num = 2; }
+	else { button_num = 3; }
 	Serial.printf("handler label = %s, button_num = %d\n", txt, button_num);
 	// state of toggled button
 	event_value = lv_obj_get_state(obj, LV_BTN_PART_MAIN) & LV_STATE_CHECKED;
@@ -307,7 +311,12 @@ char buf[10];
 	      case 2 :
 		general_config.stepcounter_filter = event_value;
 		lv_label_set_text(b2label, 
-		  (general_config.stepcounter_filter) ? "Step 1" : "Step 0");
+		  (general_config.stepcounter_filter) ? "Step ON" : "Step OFF");
+		break;
+	      case 3 :
+		general_config.twelve_hr_clock = event_value;
+		lv_label_set_text(b3label, 
+		  (general_config.twelve_hr_clock) ? "12 HR" : "24 HR");
 		break;
 	    }
 	    break;
@@ -414,13 +423,13 @@ Exit:
 static void page1_create(lv_obj_t * parent) {
 static char buf[4];	// max 3 bytes for number plus 1 null
   lv_obj_t *label;
-  // lv_page_set_scrl_layout(parent, LV_LAYOUT_PRETTY_TOP);
+  lv_page_set_scrl_layout(parent, LV_LAYOUT_PRETTY_TOP);
   lv_disp_size_t disp_size = lv_disp_get_size_category(NULL);
   // LV_DISP_SIZE_SMALL = disp_size = 0 !
   // lv_coord_t grid_w = lv_page_get_width_grid(parent, disp_size <= LV_DISP_SIZE_SMALL ? 1 : 2, 1);
   lv_obj_t * h = lv_cont_create(parent, NULL);
-  // lv_obj_set_width(h, LV_DPI * 2);
-  lv_obj_set_width(h, 240);
+  lv_obj_set_width(h, LV_DPI * 2);
+  // lv_obj_set_width(h, 240);
   lv_obj_set_height(h, 200);
 
   lv_obj_t * slider1 = lv_slider_create(h, NULL);
@@ -465,7 +474,7 @@ static char buf[4];	// max 3 bytes for number plus 1 null
   lv_obj_set_size(btn1, 100, 50); //set the button size
   lv_label_set_text(label, "Done");
 
-  lv_obj_t *btn2 = lv_btn_create(h, NULL);
+  btn2 = lv_btn_create(h, NULL);
   lv_obj_set_event_cb(btn2, button_handler);
   lv_obj_align(btn2, NULL, LV_ALIGN_CENTER, 55, 32);
   lv_btn_set_checkable(btn2, true);
@@ -473,9 +482,9 @@ static char buf[4];	// max 3 bytes for number plus 1 null
   lv_btn_toggle(btn2);
   // lv_btn_set_fit2(btn2, LV_FIT_NONE, LV_FIT_TIGHT);
   b2label = lv_label_create(btn2, NULL);
+  lv_btn_set_state(btn2, (general_config.stepcounter_filter) ? LV_BTN_STATE_CHECKED_PRESSED : LV_BTN_STATE_CHECKED_RELEASED);
   lv_label_set_text(b2label, 
-	(general_config.stepcounter_filter) ? "Step 1" : "Step 0");
-
+	(general_config.stepcounter_filter) ? "Step ON" : "Step OFF");
 }
 
 static void mqtt1_create(lv_obj_t * parent) {
@@ -635,4 +644,16 @@ int selected;
   lv_dropdown_set_options(dd2, buff);
   lv_dropdown_set_selected(dd2, selected);
   lv_obj_set_event_cb(dd2, dd_event_cb2);
+
+  btn3 = lv_btn_create(h, NULL);
+  lv_obj_set_event_cb(btn3, button_handler);
+  lv_obj_align(btn3, NULL, LV_ALIGN_CENTER, 55, 32);
+  lv_btn_set_checkable(btn3, true);
+  lv_obj_set_size(btn3, 100, 50); //set the button size
+  lv_btn_toggle(btn3);
+  // lv_btn_set_fit2(btn3, LV_FIT_NONE, LV_FIT_TIGHT);
+  b3label = lv_label_create(btn3, NULL);
+  lv_btn_set_state(btn3, (general_config.twelve_hr_clock) ? LV_BTN_STATE_CHECKED_PRESSED : LV_BTN_STATE_CHECKED_RELEASED);
+  lv_label_set_text(b3label, 
+      (general_config.twelve_hr_clock) ? "12 HR" : "24 HR");
 }

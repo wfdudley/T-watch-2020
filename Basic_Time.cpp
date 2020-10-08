@@ -27,17 +27,16 @@ boolean if_not_home_tz(void) {
 }
 
 void Basic_Time(uint8_t fullUpdate) {
-
+int h12;
   byte xpos = 40; // Starting position for the display
   byte ypos = 90;
 
   // Get the current data
   get_time_in_tz(tzindex);
-
   local_hour = hh;
   local_minute = mm;
-  tft->setTextSize(1);
 
+  tft->setTextSize(1);
   if (fullUpdate) {
     // Font 7 is a 7-seg display but only contains
     // characters [space] 0 1 2 3 4 5 6 7 8 9 0 : .
@@ -46,18 +45,20 @@ void Basic_Time(uint8_t fullUpdate) {
     // tft->setTextSize(2); // WAY TOO BIG
     tft->drawString("88:88", xpos, ypos, 7);
     tft->setTextColor(0xFBE0, TFT_BLACK); // Orange
+    h12 = cvt_12_hour_clock(hh);
 #define NEEDED_FOR_FLASHING_COLON 1
 #if NEEDED_FOR_FLASHING_COLON
-    if (hh < 10) xpos += tft->drawChar('0', xpos, ypos, 7);
-    xpos += tft->drawNumber(hh, xpos, ypos, 7);
+    if (h12 < 10) xpos += tft->drawChar('0', xpos, ypos, 7);
+    xpos += tft->drawNumber(h12, xpos, ypos, 7);
     xcolon = xpos + 3;
     xpos += tft->drawChar(':', xcolon, ypos, 7);
     if (mm < 10) xpos += tft->drawChar('0', xpos, ypos, 7);
-    tft->drawNumber(mm, xpos, ypos, 7);
+    xpos += tft->drawNumber(mm, xpos, ypos, 7);
 #else
-    sprintf(buff, "%02d:%02d", hh, mm);
-    tft->drawString(buff, xpos, ypos, 7);
+    sprintf(buff, "%02d:%02d", h12, mm);
+    xpos += tft->drawString(buff, xpos, ypos, 7);
 #endif
+    tft->drawString((!general_config.twelve_hr_clock) ? "  " : (hh < 12) ? "AM" : "PM", xpos + 3, ypos + 10, 4);
     if(if_not_home_tz()) {
       sprintf(buff, "home: %02d:%02d", home_hh, home_mm);
       tft->drawCentreString(buff, half_width, 160, 4);

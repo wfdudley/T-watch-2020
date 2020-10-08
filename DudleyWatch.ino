@@ -219,6 +219,7 @@ void setup() {
     general_config.alarm_m = 15;
     general_config.alarm_sound = 5;
     general_config.alarm_volume = 255;
+    general_config.twelve_hr_clock = 0;
     EEPROM_writeAnything(0, general_config);
     EEPROM.commit();
   }

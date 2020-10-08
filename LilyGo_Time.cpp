@@ -10,9 +10,18 @@
 
 using namespace ace_time;
 
-extern char *shortMonths[];
-int per, h12;
+int per;
 float temp;
+
+int cvt_12_hour_clock(int h24) {
+int h12;
+  if(general_config.twelve_hr_clock) {
+    h12 = h24 % 12;
+    if(h12 == 0) { h12 = 12; }
+    return h12;
+  }
+  return h24;
+}
 
 LV_IMG_DECLARE(arrow_left_png);
 LV_IMG_DECLARE(arrow_right_png);
@@ -30,7 +39,7 @@ LV_FONT_DECLARE(gracetians_32);
 LV_FONT_DECLARE(exninja_22);
 
 static lv_obj_t *hours, *minute, *second, *day, *dow, *month, *year, *am_pm;
-static lv_obj_t *bat, *temp_text, *str2;
+static lv_obj_t *bat, *temp_text, *str2, *model;
 
 lv_obj_t *setupGUI(void) {
     static lv_style_t cont_style;
@@ -50,21 +59,21 @@ lv_obj_t *setupGUI(void) {
     lv_style_set_text_color(&onestyle, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_style_set_text_font(&onestyle, LV_STATE_DEFAULT, &fn1_32);
 
-    //Upper left corner logo
+    // Upper left corner logo
     lv_obj_t *casio = lv_label_create(view, nullptr);
     lv_obj_add_style(casio, LV_OBJ_PART_MAIN, &onestyle);
     lv_label_set_text(casio, "LilyGo");
     lv_obj_align(casio, view, LV_ALIGN_IN_TOP_LEFT, 10, 10);
 
-    //Upper right corner model
+    // Upper right corner model -> now "charging" indicator
     static lv_style_t model_style;
     lv_style_init(&model_style);
     lv_style_set_text_color(&model_style, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_style_set_text_font(&model_style, LV_STATE_DEFAULT, &robot_ightItalic_16);
 
-    lv_obj_t *model = lv_label_create(view, nullptr);
+    model = lv_label_create(view, nullptr);
     lv_obj_add_style(model, LV_OBJ_PART_MAIN, &model_style);
-    lv_label_set_text(model, "ESP32-S2");
+    lv_label_set_text(model, (charge_cable_connected) ? "CHARGING" : "esp32");
     lv_obj_align(model, view, LV_ALIGN_IN_TOP_RIGHT, -10, 15);
 
 
@@ -153,9 +162,7 @@ lv_obj_t *setupGUI(void) {
 
     hours = lv_label_create(view, nullptr);
     lv_obj_add_style(hours, LV_OBJ_PART_MAIN, &time_style);
-    h12 = hh % 12;
-    if(h12 == 0) { h12 = 12; }
-    sprintf(buff, "%02d", h12);
+    sprintf(buff, "%02d", cvt_12_hour_clock(hh));
     lv_label_set_text(hours, buff);
     lv_obj_align(hours, view, LV_ALIGN_CENTER, -55, 10);
 
@@ -212,14 +219,14 @@ lv_obj_t *setupGUI(void) {
 
     month = lv_label_create(view, nullptr);
     lv_obj_add_style(month, LV_OBJ_PART_MAIN, &year_style);
-    sprintf(buff, "%s", shortMonths[mmonth-1]);
+    sprintf(buff, "%s", DateStrings().monthShortString(mmonth));
     lv_label_set_text(month, buff);
     lv_obj_align(month, year, LV_ALIGN_OUT_LEFT_MID, -15, 0);
 
     // AM or PM
     am_pm = lv_label_create(view, nullptr);
     lv_obj_add_style(am_pm, LV_OBJ_PART_MAIN, &year_style);
-    lv_label_set_text(am_pm, (hh < 12) ? "AM" : "PM");
+    lv_label_set_text(am_pm, (!general_config.twelve_hr_clock) ? "  " : (hh < 12) ? "AM" : "PM");
     lv_obj_align(am_pm, year, LV_ALIGN_OUT_RIGHT_MID, 15, 0);
 
     dow = lv_label_create(view, nullptr);
@@ -331,16 +338,14 @@ void LilyGo_Time(uint8_t fullUpdate) {
   }
   sprintf(buff, "%2.1f*C", temp/6.0);
   lv_label_set_text(temp_text, buff);
-  lv_label_set_text(am_pm, (hh < 12) ? "AM" : "PM");
+  lv_label_set_text(am_pm, (!general_config.twelve_hr_clock) ? "  " : (hh < 12) ? "AM" : "PM");
   sprintf(buff, "%4d", yyear);
   lv_label_set_text(year, buff);
-  sprintf(buff, "%s", shortMonths[mmonth-1]);
+  sprintf(buff, "%s", DateStrings().monthShortString(mmonth));
   lv_label_set_text(month, buff);
   sprintf(buff, "%2d", dday);
   lv_label_set_text(day, buff);
-  h12 = hh % 12;
-  if(h12 == 0) { h12 = 12; }
-  sprintf(buff, "%02d", h12);
+  sprintf(buff, "%02d", cvt_12_hour_clock(hh));
   lv_label_set_text(hours, buff);
   sprintf(buff, "%02d", mm);
   lv_label_set_text(minute, buff);
@@ -350,5 +355,6 @@ void LilyGo_Time(uint8_t fullUpdate) {
   lv_label_set_text(bat, buff);
   sprintf(buff, "%s", DateStrings().dayOfWeekShortString(gdow));
   lv_label_set_text(dow, buff);
+  lv_label_set_text(model, (charge_cable_connected) ? "CHARGING" : "esp32");
   lv_task_handler();
 }

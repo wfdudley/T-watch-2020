@@ -90,19 +90,19 @@ int16_t iX1, iX2, iX3, iX4, liX1, liX2, liX3, liX4;
 	ttgo->tft->setTextSize(2);
 	ttgo->tft->setCursor( 0, 10);
 	ttgo->tft->setTextColor(TFT_ORANGE);
-	ttgo->tft->print(" IO: ");
+	ttgo->tft->print(" IO:       ");
 	ttgo->tft->print(X1, 1);
 	ttgo->tft->setCursor( 0, 30);
 	ttgo->tft->setTextColor(TFT_BLUE);
-	ttgo->tft->print(" EU: ");
+	ttgo->tft->print(" EUROPA:   ");
 	ttgo->tft->println(X2, 1);
 	ttgo->tft->setCursor( 0, 50);
 	ttgo->tft->setTextColor(TFT_GREEN);
-	ttgo->tft->print(" GA: ");
+	ttgo->tft->print(" GANYMEDE: ");
 	ttgo->tft->println(X3, 1);
 	ttgo->tft->setCursor( 0, 70);
 	ttgo->tft->setTextColor(TFT_YELLOW);
-	ttgo->tft->print(" CA: ");
+	ttgo->tft->print(" CALLISTO: ");
 	ttgo->tft->println(X4, 1);
 
 	//Now display them as they would appear

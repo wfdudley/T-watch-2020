@@ -106,6 +106,7 @@ void flash_menu_item (uint8_t, struct menu_item *, uint8_t, uint8_t, bool, int, 
 void enable_rtc_alarm(void);
 void disable_rtc_alarm(void);
 void Serial_timestamp(void);
+int cvt_12_hour_clock(int);
 
 EXTERN boolean date_is_up;
 EXTERN boolean steps_is_up;
@@ -186,14 +187,14 @@ EXTERN const char *app_labels2[]
 ;
 
 EXTERN TTGOClass *ttgo;
-EXTERN uint8_t hh, mm, ss, mmonth, dday; // H, M, S variables
+EXTERN uint8_t hh, mm, ss, mmonth, dday, gdow; // H, M, S variables
 EXTERN uint16_t yyear; // Year is 16 bit int
 EXTERN uint32_t last_activity;
 EXTERN uint8_t chosen_skin;
 EXTERN int step_counter;
 EXTERN int last_step_counter;
 
-#define CONFIG_REVISION 12346L
+#define CONFIG_REVISION 12347L
 typedef struct config_t {
     long magic_number;
     uint8_t clock_skin;
@@ -212,6 +213,7 @@ typedef struct config_t {
     int8_t alarm_days[7];
     int8_t alarm_sound;
     int8_t alarm_volume;
+    int8_t twelve_hr_clock;
 } CONFIGGEN;
 
 EXTERN CONFIGGEN general_config;

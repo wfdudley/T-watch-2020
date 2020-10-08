@@ -569,6 +569,7 @@ int selected;
   lv_btn_toggle(btn2);
   // lv_btn_set_fit2(btn2, LV_FIT_NONE, LV_FIT_TIGHT);
   b2label = lv_label_create(btn2, NULL);
+  lv_btn_set_state(btn2, (general_config.alarm_enable) ? LV_BTN_STATE_CHECKED_PRESSED : LV_BTN_STATE_CHECKED_RELEASED);
   lv_label_set_text(b2label, 
     (general_config.alarm_enable) ? "alarm ON" : "alarm OFF");
 

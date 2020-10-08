@@ -100,7 +100,10 @@ void draw_clock_face(void) {
 
 void draw_time_below_clock(void) {
 char cbuf[20];
-  sprintf(cbuf, "%02d:%02d", hh, mm);
+int h12;
+  h12 = cvt_12_hour_clock(hh);
+  sprintf(cbuf, "%02d:%02d %s", h12, mm,
+    (!general_config.twelve_hr_clock) ? "  " : (hh < 12) ? "AM" : "PM");
 #if 1
   // tft->fillRect(0, 220, 65, 23, BACKGROUND);
   tft->setTextSize(1);
@@ -141,6 +144,7 @@ void draw_step_counter_ljust (uint16_t ox, uint16_t oy, uint16_t fgcolor, uint16
 }
 
 void update_clock_face(void) {
+int h12;
   // Pre-compute hand degrees, x & y coords for a fast screen update
   // Serial.printf("ss = %d\n", ss);
   sdeg = ss * 6;                  // 0-59 -> 0-354
@@ -151,14 +155,15 @@ void update_clock_face(void) {
     // Serial.println(F("new minute"));
     if(mm == 0 || initialAnalog) {	// hour change
       // Serial.println(F("new hour"));
-      hdeg = hh*30+mdeg*0.0833333;  // 0-11 -> 0-360 - incl. min and sec
+      h12 = hh % 12;
+      hdeg = h12 * 30 + mdeg * 0.0833333;  // 0-11 -> 0-360 - incl. min and sec
 
-      hx  = cos((hdeg-90)*0.0174532925);    
-      hy  = sin((hdeg-90)*0.0174532925);
-      hx1 = cos((hdeg   )*0.0174532925);    
-      hy1 = sin((hdeg   )*0.0174532925);
-      hx2 = cos((hdeg-180)*0.0174532925);    
-      hy2 = sin((hdeg-180)*0.0174532925);
+      hx  = cos((hdeg -  90) * 0.0174532925);    
+      hy  = sin((hdeg -  90) * 0.0174532925);
+      hx1 = cos((hdeg      ) * 0.0174532925);    
+      hy1 = sin((hdeg      ) * 0.0174532925);
+      hx2 = cos((hdeg - 180) * 0.0174532925);    
+      hy2 = sin((hdeg - 180) * 0.0174532925);
       // erase hour hand
       tft->drawLine(ohx, ohy, CLOCK_CENTER_X, CLOCK_CENTER_Y, WATCH_FACE_COLOR);
       tft->drawLine(ohx1, ohy1, ohx, ohy, WATCH_FACE_COLOR);
@@ -235,15 +240,13 @@ void update_clock_face(void) {
   tft->fillCircle(CLOCK_CENTER_X, CLOCK_CENTER_Y, 3, SECOND_HAND_COLOR);
 }
 
-
 void Analog_Time(uint8_t fullUpdate) {
   // Get the current time and date
   get_time_in_tz(tzindex);
-
   local_hour = hh;
   local_minute = mm;
-  tft->setTextSize(1);
 
+  tft->setTextSize(1);
   if(fullUpdate == 2) {
     initialAnalog = true;
     draw_clock_face();
