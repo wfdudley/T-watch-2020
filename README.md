@@ -104,3 +104,4 @@ In the scientific calculator, the following gestures work:
 </UL>
 To compute 2 + 3, do: 2, swipe down, 3, +
 
+<IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/2020-10-04_15.53.49.jpg">"LCARS" watch face</A><br>
