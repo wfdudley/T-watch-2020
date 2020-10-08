@@ -62,6 +62,8 @@ and bits from SimpleWatch (the shipped demo), and added many new features.
   </LI>
   <LI> The WiFi access points database is now stored in a file acc_pts.txt in the SPIFFs filesystem.  If you try to use the NTP function to connect to a new access point, appNTP will open up a settings page where you can enter the password and timezone for this new access point, and then it will be appended to the file acc_pts.txt.
   </LI>
+  <LI> Most clocks (not LCARS) now can show either 12 or 24 hour clocks.  Setting is controlled in 4th page of Settings app.
+  </LI>
 </UL>
 
 <H4>Using this code on your watch</H4>
