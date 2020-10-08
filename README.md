@@ -105,5 +105,28 @@ In the scientific calculator, the following gestures work:
 To compute 2 + 3, do: 2, swipe down, 3, +
 <br>
 <H4>Screen Shots</H4>
-<br>
-<IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/2020-10-04_15.53.49.jpg" width="20%"><br>"LCARS" watch face<br>
+<TABLE>
+  <TR>
+    <TD>
+      <IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/2020-10-04_15.53.49.jpg" width="20%"><br>"LCARS" watch face
+    </TD>
+    <TD>
+      <IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/2020-10-05_13.53.46.jpg" width="20%"><br>"LilyGoGui" watch face
+    </TD>
+    <TD>
+      <IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/2020-10-04_16.02.36.jpg" width="20%"><br>scientific calculator p1.
+    </TD>
+  </TR>
+  <TR>
+    <TD>
+      <IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/2020-10-04_15.57.23.jpg" width="20%"><br>MQTT client
+    </TD>
+    <TD>
+      <IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/2020-10-04_15.58.25.jpg" width="20%"><br>settings page 4
+    </TD>
+    <TD>
+      <IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/2020-10-04_15.59.18.jpg" width="20%"><br>alarm settings page 1
+    </TD>
+  </TR>
+</TABLE>
+      
