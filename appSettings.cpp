@@ -11,24 +11,26 @@ static void mqtt1_create(lv_obj_t * parent);
 static void mqtt2_create(lv_obj_t * parent);
 static void tzone_create(lv_obj_t * parent);
 static uint8_t event_result;
+// 1 = button, 2 = slider, 3 = keyboard, 4 = slider, 5 = switch
 static int16_t event_value;
 static uint8_t slider_num;
 static uint8_t button_num;
+static uint8_t switch_num;
 static uint8_t dropdown_num;
 
 static lv_obj_t *btn1, *btn2, *btn3, *slider1, *slider2;
+static lv_obj_t *sw1, *sw2;
 static lv_obj_t *slider1_label, *slider2_label;
 static lv_obj_t *slider1_name, *slider2_name, *b2label, *b3label;
 
 static void button_handler(lv_obj_t *obj, lv_event_t event) {
     // Serial.printf("button_handler() event = %d\n", (int)event);
     if (event == LV_EVENT_CLICKED && !event_result) {
-        Serial.println(F("Clicked"));
 	event_result = 1;
 	event_value = 1;
 	lv_obj_t * label = lv_obj_get_child(obj, NULL);
 	char * txt = lv_label_get_text(label);
-	// Serial.printf("button label is %s\n", txt);
+        Serial.printf("%s Clicked\n", txt);
 	if(!strcmp(txt, "Done")) { button_num = 1; }
 	else if(!strncmp(txt, "Step", 4)) { button_num = 2; }
 	else { button_num = 3; }
@@ -37,20 +39,34 @@ static void button_handler(lv_obj_t *obj, lv_event_t event) {
 	return;
     }
     else if (event == LV_EVENT_VALUE_CHANGED && !event_result) {
-        Serial.println(F("Toggled"));
 	event_result = 1;
 	lv_obj_t * label = lv_obj_get_child(obj, NULL);
 	char * txt = lv_label_get_text(label);
-	// Serial.printf("button label is %s\n", txt);
-	if(!strcmp(txt, "Done")) { button_num = 1; }
-	else if(!strncmp(txt, "Step", 4)) { button_num = 2; }
+	if(!strncmp(txt, "Step", 4)) { button_num = 2; }
 	else { button_num = 3; }
+        Serial.printf("%s Toggled\n", txt);
 	Serial.printf("handler label = %s, button_num = %d\n", txt, button_num);
 	// state of toggled button
 	event_value = lv_obj_get_state(obj, LV_BTN_PART_MAIN) & LV_STATE_CHECKED;
 	Serial.printf("state = %d -> %s\n", event_value, event_value ? "true" : "false");
 	return;
     }
+}
+
+static void stepc_chg_event_cb(lv_obj_t *obj, lv_event_t event) {
+  if (event == LV_EVENT_VALUE_CHANGED) {
+    event_result = 5;
+    event_value = lv_switch_get_state(sw1);
+    switch_num = 1;
+  }
+}
+
+static void twelve_hr_event_cb(lv_obj_t *obj, lv_event_t event) {
+  if (event == LV_EVENT_VALUE_CHANGED) {
+    event_result = 5;
+    event_value = lv_switch_get_state(sw2);
+    switch_num = 2;
+  }
 }
 
 static void slider_handler(lv_obj_t *obj, lv_event_t event) {
@@ -397,6 +413,18 @@ char buf[10];
 	      general_config.home_tzindex = tz_opts[event_value].tzone;
 	    }
 	    break;
+	  case 5 :	// switch
+	    switch(switch_num) {
+	      case 1 :
+		general_config.stepcounter_filter = event_value;
+		Serial.printf("STEP switch change to %s\n", (general_config.stepcounter_filter) ? "ON" : "OFF");
+		break;
+	      case 2 :
+		general_config.twelve_hr_clock = event_value;
+		Serial.printf("12 HR switch change to %s\n", (general_config.twelve_hr_clock) ? "ON" : "OFF");
+		break;
+	    }
+	    break;
 	}
 	event_result = 0;
       }
@@ -474,17 +502,14 @@ static char buf[4];	// max 3 bytes for number plus 1 null
   lv_obj_set_size(btn1, 100, 50); //set the button size
   lv_label_set_text(label, "Done");
 
-  btn2 = lv_btn_create(h, NULL);
-  lv_obj_set_event_cb(btn2, button_handler);
-  lv_obj_align(btn2, NULL, LV_ALIGN_CENTER, 55, 32);
-  lv_btn_set_checkable(btn2, true);
-  lv_obj_set_size(btn2, 100, 50); //set the button size
-  lv_btn_toggle(btn2);
-  // lv_btn_set_fit2(btn2, LV_FIT_NONE, LV_FIT_TIGHT);
-  b2label = lv_label_create(btn2, NULL);
-  lv_btn_set_state(btn2, (general_config.stepcounter_filter) ? LV_BTN_STATE_CHECKED_PRESSED : LV_BTN_STATE_CHECKED_RELEASED);
-  lv_label_set_text(b2label, 
-	(general_config.stepcounter_filter) ? "Step ON" : "Step OFF");
+  sw1 = lv_switch_create(h, NULL);
+  if(general_config.stepcounter_filter) { lv_switch_on(sw1, LV_ANIM_OFF); }
+  Serial.printf("STEP switch should be %s\n", (general_config.stepcounter_filter) ? "ON" : "OFF");
+  lv_obj_set_event_cb(sw1, stepc_chg_event_cb);
+  lv_obj_align(sw1, NULL, LV_ALIGN_CENTER, -2, 32);
+  lv_obj_set_style_local_value_str(sw1, LV_SWITCH_PART_BG, LV_STATE_DEFAULT, "StepCtr");
+  lv_obj_set_style_local_value_align(sw1, LV_SWITCH_PART_BG, LV_STATE_DEFAULT, LV_ALIGN_OUT_RIGHT_MID);
+  lv_obj_set_style_local_value_ofs_x(sw1, LV_SWITCH_PART_BG, LV_STATE_DEFAULT, LV_DPI/35);
 }
 
 static void mqtt1_create(lv_obj_t * parent) {
@@ -645,15 +670,12 @@ int selected;
   lv_dropdown_set_selected(dd2, selected);
   lv_obj_set_event_cb(dd2, dd_event_cb2);
 
-  btn3 = lv_btn_create(h, NULL);
-  lv_obj_set_event_cb(btn3, button_handler);
-  lv_obj_align(btn3, NULL, LV_ALIGN_CENTER, 55, 32);
-  lv_btn_set_checkable(btn3, true);
-  lv_obj_set_size(btn3, 100, 50); //set the button size
-  lv_btn_toggle(btn3);
-  // lv_btn_set_fit2(btn3, LV_FIT_NONE, LV_FIT_TIGHT);
-  b3label = lv_label_create(btn3, NULL);
-  lv_btn_set_state(btn3, (general_config.twelve_hr_clock) ? LV_BTN_STATE_CHECKED_PRESSED : LV_BTN_STATE_CHECKED_RELEASED);
-  lv_label_set_text(b3label, 
-      (general_config.twelve_hr_clock) ? "12 HR" : "24 HR");
+  sw2 = lv_switch_create(h, NULL);
+  if(general_config.twelve_hr_clock) { lv_switch_on(sw2, LV_ANIM_OFF); }
+  Serial.printf("12 HR switch should be %s\n", (general_config.twelve_hr_clock) ? "ON" : "OFF");
+  lv_obj_set_event_cb(sw2, twelve_hr_event_cb);
+  lv_obj_align(sw2, NULL, LV_ALIGN_CENTER, -2, 32);
+  lv_obj_set_style_local_value_str(sw2, LV_SWITCH_PART_BG, LV_STATE_DEFAULT, "12 Hour");
+  lv_obj_set_style_local_value_align(sw2, LV_SWITCH_PART_BG, LV_STATE_DEFAULT, LV_ALIGN_OUT_RIGHT_MID);
+  lv_obj_set_style_local_value_ofs_x(sw2, LV_SWITCH_PART_BG, LV_STATE_DEFAULT, LV_DPI/35);
 }
