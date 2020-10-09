@@ -114,12 +114,12 @@ To compute 2 + 3, do: 2, swipe down, 3, +
       <IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/2020-10-05_13.53.46.jpg"><br>"LilyGoGui" watch face
     </TD>
     <TD>
-      <IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/2020-10-04_16.02.36.jpg"><br>scientific calculator p1.
+      <IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/2020-10-08_22.01.39.jpg"><br>Analog watch face
     </TD>
   </TR>
   <TR>
     <TD>
-      <IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/2020-10-04_15.57.23.jpg"><br>MQTT client
+      <IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/2020-10-08_21.55.22.jpg"><br>Conway's Life
     </TD>
     <TD>
       <IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/2020-10-04_15.58.25.jpg"><br>settings page 4
@@ -128,5 +128,26 @@ To compute 2 + 3, do: 2, swipe down, 3, +
       <IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/2020-10-04_15.59.18.jpg"><br>alarm settings page 1
     </TD>
   </TR>
+  <TR>
+    <TD>
+      <IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/2020-10-08_22.31.32.jpg"><br>MQTT client sensor page
+    </TD>
+    <TD>
+      <IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/2020-10-08_22.31.56.jpg"><br>MQTT client control page
+    </TD>
+    <TD>
+      <IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/2020-10-08_22.08.51.jpg"><br>Stop Watch
+    </TD>
+  </TR>
+  <TR>
+    <TD>
+      <IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/2020-10-08_22.04.42.jpg"><br>Scientific Calculator page 1
+    </TD>
+    <TD>
+      <IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/2020-10-08_22.06.03.jpg"><br>Scientific Calculator page 2
+    </TD>
+    <TD>
+      <IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/2020-10-08_21.57.48.jpg"><br>Maze game
+    </TD>
+  </TR>
 </TABLE>
-      
