@@ -218,6 +218,8 @@ typedef struct config_t {
 
 EXTERN CONFIGGEN general_config;
 
+enum LV_THING { NILEVENT=0, BUTTON, SLIDER, KEYBOARD, DROPDOWN, SWITCH };
+
 enum SWIPE_DIR { NODIR=31, UP, DOWN, LEFT, RIGHT, CWCIRCLE, CCWCIRCLE };
 
 EXTERN const char *swipe_names[]

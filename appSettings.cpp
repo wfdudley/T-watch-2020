@@ -6,12 +6,13 @@
 #include <math.h>
 #include "my_tz.h"
 
+static enum LV_THING event_result;
+
 static void page1_create(lv_obj_t * parent);
 static void mqtt1_create(lv_obj_t * parent);
 static void mqtt2_create(lv_obj_t * parent);
 static void tzone_create(lv_obj_t * parent);
-static uint8_t event_result;
-// 1 = button, 2 = slider, 3 = keyboard, 4 = slider, 5 = switch
+
 static int16_t event_value;
 static uint8_t slider_num;
 static uint8_t button_num;
@@ -26,7 +27,7 @@ static lv_obj_t *slider1_name, *slider2_name, *b2label, *b3label;
 static void button_handler(lv_obj_t *obj, lv_event_t event) {
     // Serial.printf("button_handler() event = %d\n", (int)event);
     if (event == LV_EVENT_CLICKED && !event_result) {
-	event_result = 1;
+	event_result = BUTTON;
 	event_value = 1;
 	lv_obj_t * label = lv_obj_get_child(obj, NULL);
 	char * txt = lv_label_get_text(label);
@@ -39,7 +40,7 @@ static void button_handler(lv_obj_t *obj, lv_event_t event) {
 	return;
     }
     else if (event == LV_EVENT_VALUE_CHANGED && !event_result) {
-	event_result = 1;
+	event_result = BUTTON;
 	lv_obj_t * label = lv_obj_get_child(obj, NULL);
 	char * txt = lv_label_get_text(label);
 	if(!strncmp(txt, "Step", 4)) { button_num = 2; }
@@ -55,7 +56,7 @@ static void button_handler(lv_obj_t *obj, lv_event_t event) {
 
 static void stepc_chg_event_cb(lv_obj_t *obj, lv_event_t event) {
   if (event == LV_EVENT_VALUE_CHANGED) {
-    event_result = 5;
+    event_result = SWITCH;
     event_value = lv_switch_get_state(sw1);
     switch_num = 1;
   }
@@ -63,7 +64,7 @@ static void stepc_chg_event_cb(lv_obj_t *obj, lv_event_t event) {
 
 static void twelve_hr_event_cb(lv_obj_t *obj, lv_event_t event) {
   if (event == LV_EVENT_VALUE_CHANGED) {
-    event_result = 5;
+    event_result = SWITCH;
     event_value = lv_switch_get_state(sw2);
     switch_num = 2;
   }
@@ -73,7 +74,7 @@ static void slider_handler(lv_obj_t *obj, lv_event_t event) {
 static char buf[4];	// max 3 bytes for number plus 1 null
     // Serial.printf("slider_handler() event = %d\n", (int)event);
     if(event == LV_EVENT_VALUE_CHANGED && !event_result) {
-	event_result = 2;
+	event_result = SLIDER;
 	event_value = lv_slider_get_value(obj);
     }
 }
@@ -207,7 +208,7 @@ static void kb_event_cb1(lv_obj_t * _kb, lv_event_t e)
     }
     if(e == LV_EVENT_APPLY) {
       // announce that the user is finished with the box.
-      event_result = 3;
+      event_result = KEYBOARD;
       event_value = 1;
     }
 }
@@ -225,7 +226,7 @@ static void kb_event_cb2(lv_obj_t * _kb, lv_event_t e)
     }
     if(e == LV_EVENT_APPLY) {
       // announce that the user is finished with the box.
-      event_result = 3;
+      event_result = KEYBOARD;
       event_value = 2;
     }
 }
@@ -243,7 +244,7 @@ static void kb_event_cb3(lv_obj_t * _kb, lv_event_t e)
     }
     if(e == LV_EVENT_APPLY) {
       // announce that the user is finished with the box.
-      event_result = 3;
+      event_result = KEYBOARD;
       event_value = 3;
     }
 }
@@ -261,7 +262,7 @@ static void kb_event_cb4(lv_obj_t * _kb, lv_event_t e)
     }
     if(e == LV_EVENT_APPLY) {
       // announce that the user is finished with the box.
-      event_result = 3;
+      event_result = KEYBOARD;
       event_value = 4;
     }
 }
@@ -273,7 +274,7 @@ static void dd_event_cb1(lv_obj_t * obj, lv_event_t event)
     char buf[32];
     lv_dropdown_get_selected_str(obj, buf, sizeof(buf));
     printf("Option: %s\n", buf);
-    event_result = 4;
+    event_result = DROPDOWN;
     event_value = lv_dropdown_get_selected(obj);
     dropdown_num = 1;
   }
@@ -285,7 +286,7 @@ static void dd_event_cb2(lv_obj_t * obj, lv_event_t event)
     char buf[32];
     lv_dropdown_get_selected_str(obj, buf, sizeof(buf));
     printf("Option: %s\n", buf);
-    event_result = 4;
+    event_result = DROPDOWN;
     event_value = lv_dropdown_get_selected(obj);
     dropdown_num = 2;
   }
@@ -297,7 +298,7 @@ int16_t i, max_bounds, nx, ny, x, y, x0, y0, xmax, ymax, points;
 char buf[10];
   while(1) {
     max_bounds = 0;
-    event_result = 0;
+    event_result = NILEVENT;
     tv = lv_tabview_create(lv_scr_act(), NULL);
     t1 = lv_tabview_add_tab(tv, "Batt");
     t2 = lv_tabview_add_tab(tv, "MQTT\n    1");
@@ -319,7 +320,7 @@ char buf[10];
       delay(5);
       if(event_result) {
 	switch(event_result) {
-	  case 1 :	// button
+	  case BUTTON :
 	    Serial.printf("eloop: button %d, value = %d\n", button_num, event_value);
 	    switch (button_num) {
 	      case 1 :
@@ -336,7 +337,7 @@ char buf[10];
 		break;
 	    }
 	    break;
-	  case 2 :	// slider
+	  case SLIDER :
 	    Serial.printf("eloop: slider %d, value = %d\n", slider_num, event_value);
 	    switch (slider_num) {
 	      case 1 :
@@ -347,7 +348,7 @@ char buf[10];
 		break;
 	    }
 	    break;
-	  case 3 :	// text box
+	  case KEYBOARD :	// text box
 	    if(event_value == 1) {	// user is done, save result if legal
 	      uint16_t ip[4];	// allows us to check for invalid values
 	      boolean valid;
@@ -402,7 +403,7 @@ char buf[10];
 	      strncpy(general_config.mqtt_pass, txt, sizeof(general_config.mqtt_pass));
 	    }
 	    break;
-	  case 4 :	// dropdown
+	  case DROPDOWN :	// dropdown
 	    if(dropdown_num == 1) {
 	      Serial.printf("set LOCAL timezone to index %d -> %d\n", event_value, tz_opts[event_value].tzone);
 	      general_config.local_tzindex = tz_opts[event_value].tzone;
@@ -413,7 +414,7 @@ char buf[10];
 	      general_config.home_tzindex = tz_opts[event_value].tzone;
 	    }
 	    break;
-	  case 5 :	// switch
+	  case SWITCH :	// switch
 	    switch(switch_num) {
 	      case 1 :
 		general_config.stepcounter_filter = event_value;
@@ -426,7 +427,7 @@ char buf[10];
 	    }
 	    break;
 	}
-	event_result = 0;
+	event_result = NILEVENT;
       }
     }
   }

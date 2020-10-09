@@ -12,7 +12,7 @@ static void page3_create(lv_obj_t * parent);
 #if NEEDED
 static void page4_create(lv_obj_t * parent);
 #endif
-static uint8_t event_result;
+static enum LV_THING event_result;
 static int16_t event_value;
 static uint8_t slider_num;
 static uint8_t button_num;
@@ -105,7 +105,7 @@ static void button_handler(lv_obj_t *obj, lv_event_t event) {
     // Serial.printf("button_handler() event = %d\n", (int)event);
     if (event == LV_EVENT_CLICKED && !event_result) {
         Serial.println(F("Clicked"));
-	event_result = 1;
+	event_result = BUTTON;
 	event_value = 1;
 	lv_obj_t * label = lv_obj_get_child(obj, NULL);
 	char * txt = lv_label_get_text(label);
@@ -117,7 +117,7 @@ static void button_handler(lv_obj_t *obj, lv_event_t event) {
     }
     else if (event == LV_EVENT_VALUE_CHANGED && !event_result) {
         Serial.println(F("Toggled"));
-	event_result = 1;
+	event_result = BUTTON;
 	lv_obj_t * label = lv_obj_get_child(obj, NULL);
 	char * txt = lv_label_get_text(label);
 	// Serial.printf("button label is %s\n", txt);
@@ -134,7 +134,7 @@ static void slider_handler(lv_obj_t *obj, lv_event_t event) {
 static char buf[4];	// max 3 bytes for number plus 1 null
     // Serial.printf("slider_handler() event = %d\n", (int)event);
     if(event == LV_EVENT_VALUE_CHANGED && !event_result) {
-	event_result = 2;
+	event_result = SLIDER;
 	event_value = lv_slider_get_value(obj);
     }
 }
@@ -142,7 +142,7 @@ static char buf[4];	// max 3 bytes for number plus 1 null
 static void slider1_handler(lv_obj_t *obj, lv_event_t event) {
 static char buf[4];	// max 3 bytes for number plus 1 null
   slider_handler(obj, event);
-  if(event_result == 2) {
+  if(event_result == SLIDER) {
     slider_num = 1;
     event_value = lv_slider_get_value(obj);
     snprintf(buf, 4, "%u", event_value);
@@ -273,7 +273,7 @@ static void kb_event_cb1(lv_obj_t * _kb, lv_event_t e)
     }
     if(e == LV_EVENT_APPLY) {
       // announce that the user is finished with the box.
-      event_result = 3;
+      event_result = KEYBOARD;
       event_value = 1;
     }
 }
@@ -291,7 +291,7 @@ static void kb_event_cb2(lv_obj_t * _kb, lv_event_t e)
     }
     if(e == LV_EVENT_APPLY) {
       // announce that the user is finished with the box.
-      event_result = 3;
+      event_result = KEYBOARD;
       event_value = 2;
     }
 }
@@ -309,7 +309,7 @@ static void kb_event_cb3(lv_obj_t * _kb, lv_event_t e)
     }
     if(e == LV_EVENT_APPLY) {
       // announce that the user is finished with the box.
-      event_result = 3;
+      event_result = KEYBOARD;
       event_value = 3;
     }
 }
@@ -327,7 +327,7 @@ static void kb_event_cb4(lv_obj_t * _kb, lv_event_t e)
     }
     if(e == LV_EVENT_APPLY) {
       // announce that the user is finished with the box.
-      event_result = 3;
+      event_result = KEYBOARD;
       event_value = 4;
     }
 }
@@ -339,7 +339,7 @@ static void dd_event_cb1(lv_obj_t * obj, lv_event_t event)
     char buf[32];
     lv_dropdown_get_selected_str(obj, buf, sizeof(buf));
     Serial.printf("Option: %s\n", buf);
-    event_result = 4;
+    event_result = DROPDOWN;
     event_value = lv_dropdown_get_selected(obj);
     dropdown_num = 1;
   }
@@ -351,7 +351,7 @@ static void dd_event_cb2(lv_obj_t * obj, lv_event_t event)
     char buf[32];
     lv_dropdown_get_selected_str(obj, buf, sizeof(buf));
     Serial.printf("Option: %s\n", buf);
-    event_result = 4;
+    event_result = DROPDOWN;
     event_value = lv_dropdown_get_selected(obj);
     dropdown_num = 2;
   }
@@ -363,7 +363,7 @@ static void dd_event_cb3(lv_obj_t * obj, lv_event_t event)
     char buf[32];
     lv_dropdown_get_selected_str(obj, buf, sizeof(buf));
     Serial.printf("Option: %s\n", buf);
-    event_result = 4;
+    event_result = DROPDOWN;
     event_value = lv_dropdown_get_selected(obj);
     dropdown_num = 3;
   }
@@ -387,7 +387,7 @@ uint32_t lasttouch, interval;
 int16_t i, max_bounds, nx, ny, x, y, x0, y0, xmax, ymax, points;
   while(1) {
     max_bounds = 0;
-    event_result = 0;
+    event_result = NILEVENT;
   char buf[10];
     tv = lv_tabview_create(lv_scr_act(), NULL);
     t1 = lv_tabview_add_tab(tv, "Alarm\ntime");
@@ -414,7 +414,7 @@ int16_t i, max_bounds, nx, ny, x, y, x0, y0, xmax, ymax, points;
       delay(5);
       if(event_result) {
 	switch(event_result) {
-	  case 1 :	// button
+	  case BUTTON :	// button
 	    Serial.printf("eloop: button %d, value = %d\n", button_num, event_value);
 	    switch (button_num) {
 	      case 1 :
@@ -432,7 +432,7 @@ int16_t i, max_bounds, nx, ny, x, y, x0, y0, xmax, ymax, points;
 		break;
 	    }
 	    break;
-	  case 2 :	// slider
+	  case SLIDER :	// slider
 	    Serial.printf("eloop: slider %d, value = %d\n", slider_num, event_value);
 	    switch (slider_num) {
 	      case 1 :
@@ -447,7 +447,7 @@ int16_t i, max_bounds, nx, ny, x, y, x0, y0, xmax, ymax, points;
 	    }
 	    break;
 #if NEEDED
-	  case 3 :	// text box
+	  case KEYBOARD :	// text box
 	    if(event_value == 1) {	// user is done, save result if legal
 	      uint16_t ip[4];	// allows us to check for invalid values
 	      boolean valid;
@@ -503,7 +503,7 @@ int16_t i, max_bounds, nx, ny, x, y, x0, y0, xmax, ymax, points;
 	    }
 	    break;
 #endif
-	  case 4 :	// dropdown
+	  case DROPDOWN :	// dropdown
 	    if(dropdown_num == 1) {
 	      Serial.printf("set alarm_h to %d\n", event_value);
 	      general_config.alarm_h = event_value;
@@ -519,7 +519,7 @@ int16_t i, max_bounds, nx, ny, x, y, x0, y0, xmax, ymax, points;
 	    }
 	    break;
 	}
-	event_result = 0;
+	event_result = NILEVENT;
       }
     }
   }
