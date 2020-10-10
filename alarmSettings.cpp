@@ -16,9 +16,11 @@ static enum LV_THING event_result;
 static int16_t event_value;
 static uint8_t slider_num;
 static uint8_t button_num;
+static uint8_t switch_num;
 static uint8_t dropdown_num;
 
-static lv_obj_t *btn1, *btn2, *slider1, *slider2;
+static lv_obj_t *btn1, *slider1, *slider2;
+static lv_obj_t *sw1;
 static lv_obj_t *slider1_label, *slider2_label;
 static lv_obj_t *slider1_name, *slider2_name, *b2label;
 
@@ -128,6 +130,14 @@ static void button_handler(lv_obj_t *obj, lv_event_t event) {
 	Serial.printf("state = %d -> %s\n", event_value, event_value ? "true" : "false");
 	return;
     }
+}
+
+static void stepc_chg_event_cb(lv_obj_t *obj, lv_event_t event) {
+  if (event == LV_EVENT_VALUE_CHANGED) {
+    event_result = SWITCH;
+    event_value = lv_switch_get_state(sw1);
+    switch_num = 1;
+  }
 }
 
 static void slider_handler(lv_obj_t *obj, lv_event_t event) {
@@ -419,17 +429,6 @@ int16_t i, max_bounds, nx, ny, x, y, x0, y0, xmax, ymax, points;
 	    switch (button_num) {
 	      case 1 :
 		goto Exit;
-	      case 2 :
-		general_config.alarm_enable = event_value;
-		if(general_config.alarm_enable) {
-		  enable_rtc_alarm();
-		}
-		else {
-		  disable_rtc_alarm();
-		}
-		lv_label_set_text(b2label, 
-		  (general_config.alarm_enable) ? "alarm ON" : "alarm OFF");
-		break;
 	    }
 	    break;
 	  case SLIDER :	// slider
@@ -518,6 +517,20 @@ int16_t i, max_bounds, nx, ny, x, y, x0, y0, xmax, ymax, points;
 	      beep(general_config.alarm_sound);
 	    }
 	    break;
+	  case SWITCH :	// switch
+	    switch(switch_num) {
+	      case 1 :
+		general_config.alarm_enable = event_value;
+		if(general_config.alarm_enable) {
+		  enable_rtc_alarm();
+		}
+		else {
+		  disable_rtc_alarm();
+		}
+		Serial.printf("STEP switch change to %s\n", (general_config.stepcounter_filter) ? "ON" : "OFF");
+		break;
+	    }
+	    break;
 	}
 	event_result = NILEVENT;
       }
@@ -561,18 +574,6 @@ int selected;
   lv_obj_set_size(btn1, 100, 50); //set the button size
   lv_label_set_text(label, "Done");
 
-  lv_obj_t *btn2 = lv_btn_create(h, NULL);
-  lv_obj_set_event_cb(btn2, button_handler);
-  lv_obj_align(btn2, NULL, LV_ALIGN_CENTER, 55, 32);
-  lv_btn_set_checkable(btn2, true);
-  lv_obj_set_size(btn2, 100, 50); //set the button size
-  lv_btn_toggle(btn2);
-  // lv_btn_set_fit2(btn2, LV_FIT_NONE, LV_FIT_TIGHT);
-  b2label = lv_label_create(btn2, NULL);
-  lv_btn_set_state(btn2, (general_config.alarm_enable) ? LV_BTN_STATE_CHECKED_PRESSED : LV_BTN_STATE_CHECKED_RELEASED);
-  lv_label_set_text(b2label, 
-    (general_config.alarm_enable) ? "alarm ON" : "alarm OFF");
-
   /* Create the dropdown for alarm hour */
   lv_obj_t * dd1 = lv_dropdown_create(h, NULL);
   lv_obj_add_style(dd1, LV_CONT_PART_MAIN, &style_box);
@@ -613,6 +614,15 @@ int selected;
   lv_dropdown_set_options(dd2, buff);
   lv_dropdown_set_selected(dd2, selected);
   lv_obj_set_event_cb(dd2, dd_event_cb2);
+
+  sw1 = lv_switch_create(h, NULL);
+  if(general_config.alarm_enable) { lv_switch_on(sw1, LV_ANIM_OFF); }
+  Serial.printf("ALARM switch should be %s\n", (general_config.alarm_enable) ? "ON" : "OFF");
+  lv_obj_set_event_cb(sw1, stepc_chg_event_cb);
+  lv_obj_align(sw1, NULL, LV_ALIGN_CENTER, -2, 32);
+  lv_obj_set_style_local_value_str(sw1, LV_SWITCH_PART_BG, LV_STATE_DEFAULT, "Alarm");
+  lv_obj_set_style_local_value_align(sw1, LV_SWITCH_PART_BG, LV_STATE_DEFAULT, LV_ALIGN_OUT_RIGHT_MID);
+  lv_obj_set_style_local_value_ofs_x(sw1, LV_SWITCH_PART_BG, LV_STATE_DEFAULT, LV_DPI/35);
 }
 
 static void page2_create(lv_obj_t * parent) {
