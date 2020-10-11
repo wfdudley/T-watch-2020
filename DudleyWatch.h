@@ -83,6 +83,7 @@ void alarmSettings(void);	// alarm clock settings
 void appCalculator(void);	// calculator
 void switch_menu(void);		// switch apps menu page
 void appBitcoin(void);		// Bitcoin value checker
+void resetStepCounter(void);
 
 void LCARS_Time(uint8_t);
 void Basic_Time(uint8_t);
@@ -131,7 +132,7 @@ EXTERN struct menu_item watch_apps[]
     { "StopWatch",   "", (void *)&appStopWatch },
     { "MQTT Ctrl",   "", (void *)&appMQTT },
     { "Battery",     "", (void *)&appBattery },
-    { "",            "", NULL },
+    { "Reset Steps", "", (void *)resetStepCounter },
     { "Calc",        "", (void *)&appCalculator },
     { "NTP Time",    "", (void *)&appNTPTime },
     { "Skin Select", "", (void *)&skinMenu },
@@ -148,7 +149,7 @@ EXTERN const char *app_labels[]
 #ifdef __MAIN__
 		      = {
 			  "Stopwatch", "MQTT", "Battery",
-			  "", "Calc", "NTP",
+			  "ResetStep", "Calc", "NTP",
 			  "Skin", "Level", "Alarm",
 			  "Apps 2", "Settings", "Clock"
 			}

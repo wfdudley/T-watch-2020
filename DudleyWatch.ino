@@ -37,6 +37,11 @@ uint32_t targetTime = 0;       // for next 1 second display update
 
 using namespace ace_time;
 
+void resetStepCounter(void) {
+  ttgo->bma->resetStepCounter();
+  step_counter = 0;
+}
+
 void bright_check (void) {
 static uint8_t old_brightness;
   if (power->isVBUSPlug()) {
