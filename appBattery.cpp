@@ -48,13 +48,13 @@ float vbus_v, vbus_c, batt_v;
 
     // Print the values
       tft->setCursor(0, 100);
-      tft->print("Vbus: "); tft->print(vbus_v); tft->print(" mV    ");
+      tft->print("bus voltage: "); tft->print(vbus_v); tft->print(" mV    ");
       tft->setCursor(0, 130);
-      tft->print("Ibus: "); tft->print(vbus_c); tft->print(" mA    ");
+      tft->print("bus current: "); tft->print(vbus_c); tft->print(" mA    ");
       tft->setCursor(0, 160);
-      tft->print("Vbat: "); tft->print(batt_v); tft->print(" mV    ");
+      tft->print("V battery: "); tft->print(batt_v); tft->print(" mV    ");
       tft->setCursor(0, 190);
-      tft->print("Perc: "); tft->print(per); tft->print(" %  ");
+      tft->print("Percent: "); tft->print(per); tft->print(" %  ");
     }
     my_idle();
     if(ttgo->getTouch(x, y)) {	// if a touch
