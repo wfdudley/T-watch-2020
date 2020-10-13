@@ -93,6 +93,7 @@ void battery_icon(uint16_t, uint16_t, uint16_t, uint16_t);
 void steps_icon (uint16_t, uint16_t, uint16_t, uint16_t, uint8_t);
 void draw_step_counter_ljust (uint16_t, uint16_t, uint16_t, uint16_t, uint8_t);
 void draw_step_counter_rjust (uint16_t, uint16_t, uint16_t, uint16_t, uint8_t);
+void update_step_counter(void);
 
 void quickBuzz(void);
 void beep(int8_t);
@@ -192,8 +193,7 @@ EXTERN uint8_t hh, mm, ss, mmonth, dday, gdow; // H, M, S variables
 EXTERN uint16_t yyear; // Year is 16 bit int
 EXTERN uint32_t last_activity;
 EXTERN uint8_t chosen_skin;
-EXTERN int step_counter;
-EXTERN int last_step_counter;
+EXTERN int step_counter, last_step_counter;
 
 #define CONFIG_REVISION 12347L
 typedef struct config_t {

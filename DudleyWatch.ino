@@ -31,11 +31,15 @@ QueueHandle_t g_event_queue_handle = NULL;
 EventGroupHandle_t g_event_group = NULL;
 EventGroupHandle_t isr_group = NULL;
 bool lenergy = false;
-// void appTouch(void);
 
 uint32_t targetTime = 0;       // for next 1 second display update
 
 using namespace ace_time;
+
+void update_step_counter (void) {
+  // updateStepCounter(ttgo->bma->getCounter());
+  step_counter = ttgo->bma->getCounter();
+}
 
 void resetStepCounter(void) {
   ttgo->bma->resetStepCounter();
@@ -106,8 +110,7 @@ void low_energy(void) {
         ttgo->displayWakeup();
         ttgo->rtc->syncToSystem();	// set OS clock to RTC clock
 	if(general_config.stepcounter_filter) {
-	  // updateStepCounter(ttgo->bma->getCounter());
-	  step_counter = ttgo->bma->getCounter();
+	  update_step_counter();
 	}
 	if(rtcIrq) {
 	  Serial.println(F("wake from sleep, we see rtc alarm"));
@@ -411,8 +414,7 @@ uint8_t data;
 	} while (!rlst);
 	if(general_config.stepcounter_filter) {
 	  if (ttgo->bma->isStepCounter()) {
-	    // updateStepCounter(ttgo->bma->getCounter());
-	    step_counter = ttgo->bma->getCounter();
+	    update_step_counter();
 	  }
 	}
 	break;
