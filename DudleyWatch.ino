@@ -3,6 +3,12 @@
 // T-watch that were written and copyrighted by Lewis He.
 //(Copyright (c) 2019 lewis he)
 
+/* ARDUINO IDE SETTINGS FOR THE ESP32:
+Board: TTGO-T-Watch
+upload speed 2000000
+partition scheme: 2x6.5M app, 3.6M SPIFFs
+*/
+
 // heavily modified by W.F.Dudley Jr.
 
 #include "freertos/FreeRTOS.h"
