@@ -7,7 +7,7 @@
 void appLevel() {
   ttgo->bma->begin();
   ttgo->bma->enableAccel();
-  ttgo->tft->fillScreen(TFT_BLACK);
+  tft->fillScreen(TFT_BLACK);
   int16_t x, y;
   int16_t xpos, ypos;
 
@@ -22,9 +22,9 @@ void appLevel() {
     ttgo->bma->getAccel(acc);
     xpos = acc.x;
     ypos = acc.y;
-    ttgo->tft->fillCircle(xpos / 10 + 119, ypos / 10 + 119, 10, TFT_RED); // draw dot
+    tft->fillCircle(xpos / 10 + 119, ypos / 10 + 119, 10, TFT_RED); // draw dot
     delay(100);
-    ttgo->tft->fillCircle(xpos / 10 + 119, ypos / 10 + 119, 10, TFT_BLACK); // erase previous dot
+    tft->fillCircle(xpos / 10 + 119, ypos / 10 + 119, 10, TFT_BLACK); // erase previous dot
     my_idle();
   }
 
@@ -32,5 +32,5 @@ void appLevel() {
     my_idle();
   }
   
-  ttgo->tft->fillScreen(TFT_BLACK); // Clear screen
+  tft->fillScreen(TFT_BLACK); // Clear screen
 }
