@@ -83,7 +83,8 @@ void alarmSettings(void);	// alarm clock settings
 void appCalculator(void);	// calculator
 void switch_menu(void);		// switch apps menu page
 void appBitcoin(void);		// Bitcoin value checker
-void resetStepCounter(void);
+void appMandelbrot(void);	// Mandelbrot generator
+void resetStepCounter(void);	// like it says on the tin
 
 void LCARS_Time(uint8_t);
 void Basic_Time(uint8_t);
@@ -126,15 +127,14 @@ EXTERN uint32_t next_beep;	// the next time the alarm beep should sound
 EXTERN struct menu_item *app_menu_ptr; // which watch_apps menu is in current use?
 EXTERN const char **app_label_ptr; // which app_labels array is in current use?
 
-// this maps NUMBER to app.  The name field is just decorative (used for debug).
 EXTERN struct menu_item watch_apps[]
 #ifdef __MAIN__
 = {
-    { "StopWatch",   "", (void *)&appStopWatch },
-    { "MQTT Ctrl",   "", (void *)&appMQTT },
+    { "Stop Watch",  "", (void *)&appStopWatch },
+    { "MQTT Client", "", (void *)&appMQTT },
     { "Battery",     "", (void *)&appBattery },
-    { "Reset Steps", "", (void *)resetStepCounter },
-    { "Calc",        "", (void *)&appCalculator },
+    { "Reset Step",  "", (void *)resetStepCounter },
+    { "Calculator",  "", (void *)&appCalculator },
     { "NTP Time",    "", (void *)&appNTPTime },
     { "Skin Select", "", (void *)&skinMenu },
     { "Level",       "", (void *)&appLevel },
@@ -149,10 +149,10 @@ EXTERN struct menu_item watch_apps[]
 EXTERN const char *app_labels[]
 #ifdef __MAIN__
 		      = {
-			  "Stopwatch", "MQTT", "Battery",
-			  "ResetStep", "Calc", "NTP",
-			  "Skin", "Level", "Alarm",
-			  "Apps 2", "Settings", "Clock"
+			  watch_apps[0].name, watch_apps[1].name, watch_apps[2].name,
+			  watch_apps[3].name, watch_apps[4].name, watch_apps[5].name,
+			  watch_apps[6].name, watch_apps[7].name, watch_apps[8].name,
+			  watch_apps[9].name, watch_apps[10].name, watch_apps[11].name
 			}
 #endif
 ;
@@ -162,7 +162,7 @@ EXTERN struct menu_item watch_apps2[]
 #ifdef __MAIN__
 = {
     { "Jupiter",     "", (void *)&jSats },
-    { "",            "", NULL },
+    { "Mandelbrot",  "", (void *)&appMandelbrot },
     { "Maze",        "", (void *)&appMaze },
     { "",            "", NULL },
     { "Paint",       "", (void *)&appPaint },
@@ -180,10 +180,10 @@ EXTERN struct menu_item watch_apps2[]
 EXTERN const char *app_labels2[]
 #ifdef __MAIN__
 		      = {
-			  "Jupiter", "", "Maze",
-			  "", "Paint", "",
-			  "Life", "", "BTC",
-			  "Apps 1", "", "Clock"
+			  watch_apps2[0].name, watch_apps2[1].name, watch_apps2[2].name,
+			  watch_apps2[3].name, watch_apps2[4].name, watch_apps2[5].name,
+			  watch_apps2[6].name, watch_apps2[7].name, watch_apps2[8].name,
+			  watch_apps2[9].name, watch_apps2[10].name, watch_apps2[11].name
 			}
 #endif
 ;
