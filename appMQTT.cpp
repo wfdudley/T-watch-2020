@@ -217,7 +217,7 @@ enum SWIPE_DIR resdir;
     Serial.printf("x0 = %d, x = %d, xdir = %d\n", x0, x, xdir);
     Serial.printf("y0 = %d, y = %d, ydir = %d, amax = %d\n", y0, y, ydir, amax);
 #endif
-    if(points > 100) {	// is gesture a circle ?
+    if(points > 100 && xmax > 60 && ymax > 60) {	// is gesture a circle ?
 #if DBG_GESTURES
       int8_t max_order[4] = {-1, -1, -1, -1};
 #endif
