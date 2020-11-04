@@ -164,13 +164,15 @@ uint16_t icolor;
 #define DBG_GESTURES 0
 int poll_swipe_or_menu_press(int num_choices) {
 uint32_t lasttouch, interval;
-int16_t nx, ny, x, y, x0, y0, xmax, ymax, amax, points;
+int16_t nx, ny, x, y, x0, y0, amax, points;
 enum SWIPE_DIR resdir;
   resdir = NODIR;
   if(num_choices < 14) { num_choices = 12; }
   else { num_choices = 16; }
   int xdir = 0;
   int ydir = 0;
+  int xdif = 0;
+  int ydif = 0;
   x0 = -1;
   y0 = -1;
   char dir;
@@ -208,16 +210,16 @@ enum SWIPE_DIR resdir;
 #endif
   if(x0 >= 0 && y0 >= 0) {
     // Serial.printf("(2) interval = %lu\n", interval);
-    xdir = x - x0;
-    ydir = y - y0;
-    xmax = abs(xdir);
-    ymax = abs(ydir);
-    amax = (xmax > ymax) ? xmax : ymax ;
+    xdir = x - x0;	// x extent of swipe.  near zero if a circle gesture
+    ydir = y - y0;	// y extent of swipe.  near zero if a circle gesture
+    xdif = max_lrud[1] - max_lrud[0];	// always a positive difference
+    ydif = max_lrud[3] - max_lrud[2];	// always a positive difference
+    amax = (xdif > ydif) ? xdif : ydif ;
 #if DBG_GESTURES
-    Serial.printf("x0 = %d, x = %d, xdir = %d\n", x0, x, xdir);
-    Serial.printf("y0 = %d, y = %d, ydir = %d, amax = %d\n", y0, y, ydir, amax);
+    Serial.printf("x0 = %d, x = %d, xdif = %d\n", x0, x, xdif);
+    Serial.printf("y0 = %d, y = %d, ydif = %d, amax = %d\n", y0, y, ydif, amax);
 #endif
-    if(points > 100 && xmax > 60 && ymax > 60) {	// is gesture a circle ?
+    if(points > 100 && xdif > 60 && ydif > 60) {	// is gesture a circle ?
 #if DBG_GESTURES
       int8_t max_order[4] = {-1, -1, -1, -1};
 #endif
@@ -266,10 +268,11 @@ enum SWIPE_DIR resdir;
       }
     }
     else if(amax > 60) { // moved across 1/4 of the screen, so probably a swipe
-      dir = (ymax > xmax) ? 'y' : 'x' ;
+      dir = (ydif > xdif) ? 'y' : 'x' ;
 #if DBG_GESTURES
-      Serial.printf("points = %d\n", points);
-      Serial.printf("xmax = %d, ymax = %d, dir = %c\n", xmax, ymax, dir);
+      Serial.printf("amax = %d, points = %d, probably a swipe\n", amax, points);
+      Serial.printf("xdir = %d, ydir = %d\n", xdir, ydir);
+      Serial.printf("xdif = %d, ydif = %d, dir = %c\n", xdif, ydif, dir);
 #endif
       resdir = 
 	(dir == 'x') ? ((xdir > 0) ? RIGHT : LEFT ) :
