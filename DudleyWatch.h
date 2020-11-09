@@ -81,6 +81,7 @@ void skinMenu(void);		// set clock style ("skin")
 void appStopWatch(void);	// stop watch
 void alarmSettings(void);	// alarm clock settings
 void appCalculator(void);	// calculator
+void appCalendar(void);		// calendar
 void switch_menu(void);		// switch apps menu page
 void appBitcoin(void);		// Bitcoin value checker
 void appMandelbrot(void);	// Mandelbrot generator
@@ -164,7 +165,7 @@ EXTERN struct menu_item watch_apps2[]
     { "Jupiter",     "", (void *)&jSats },
     { "Mandelbrot",  "", (void *)&appMandelbrot },
     { "Maze",        "", (void *)&appMaze },
-    { "",            "", NULL },
+    { "Calendar",    "", (void *)&appCalendar },
     { "Paint",       "", (void *)&appPaint },
     { "",            "", NULL },
     { "Life",        "", (void *)&appLife },
