@@ -11,7 +11,7 @@ This builds with Arduino IDE version 1.8.13.  It also requires:
   </LI>
 </UL>      
 
-I took bits from Dan Geiger's watch code (https://www.instructables.com/.../Lilygo-T-Watch-2020.../),
+I took bits from Dan Geiger's watch code (https://www.instructables.com/Lilygo-T-Watch-2020-Arduino-Framework/),
 and bits from SimpleWatch (the shipped demo), and added many new features.
 <H4>Existing Features</H4>
 <UL>
