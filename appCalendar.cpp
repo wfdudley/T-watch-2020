@@ -12,6 +12,8 @@
 #include "DudleyWatch.h"
 #include "my_tz.h"
 
+char * is_holiday(int month, int day, int dow);
+
 #define NUMBUTTONS 5
 
 #define DBG 0
@@ -45,7 +47,7 @@ int fday, nmon, bwidth, dwidth, dheight, row;
 static int nowyear, nowmonth, nowday, changedate;
 time_t tsec;
 static struct tm tms, tm1;
-char *mname;
+char *mname, *hname;
 int16_t x, y, x1, y1;
 
 NewDate:
@@ -138,8 +140,13 @@ NewDate:
       nmon = rmon;
     }
     if(rmon == nmon) {
+      hname = is_holiday(rmon, i, j);
       if(i == nowday && rmon == nowmonth && ryr == nowyear) {
 	tft->setTextColor(TFT_RED);
+      }
+      else if(hname) {
+	tft->setTextColor(TFT_YELLOW);
+	Serial.printf("holiday %s on month %d, day %d, dow %d\n", hname, rmon, i, j);
       }
       else {
 	tft->setTextColor(TFT_GREEN);
