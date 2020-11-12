@@ -13,6 +13,7 @@
 #include "my_tz.h"
 
 char * is_holiday(int month, int day, int dow);
+char * is_birthday(int month, int day, int dow);
 
 #define NUMBUTTONS 5
 
@@ -47,7 +48,7 @@ int fday, nmon, bwidth, dwidth, dheight, row;
 static int nowyear, nowmonth, nowday, changedate;
 time_t tsec;
 static struct tm tms, tm1;
-char *mname, *hname;
+char *mname, *hname, *bname;
 int16_t x, y, x1, y1;
 
 NewDate:
@@ -141,12 +142,17 @@ NewDate:
     }
     if(rmon == nmon) {
       hname = is_holiday(rmon, i, j);
+      bname = is_birthday(rmon, i, j);
       if(i == nowday && rmon == nowmonth && ryr == nowyear) {
 	tft->setTextColor(TFT_RED);
       }
       else if(hname) {
 	tft->setTextColor(TFT_YELLOW);
 	Serial.printf("holiday %s on month %d, day %d, dow %d\n", hname, rmon, i, j);
+      }
+      else if(bname) {
+	tft->setTextColor(TFT_CYAN);
+	Serial.printf("birthday %s on month %d, day %d, dow %d\n", bname, rmon, i, j);
       }
       else {
 	tft->setTextColor(TFT_GREEN);
