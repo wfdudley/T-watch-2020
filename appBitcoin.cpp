@@ -17,12 +17,12 @@ int ecnt;
 	return;
     }
     ecnt = 0;
-    while(!connected && ecnt < 40) {
+    while(!connected && ecnt < 400) {
 #if DBGMQTT
-      Serial.println(F("waiting 2 seconds for wifi connection"));
+      Serial.println(F("waiting 0.2 seconds for wifi connection"));
 #endif
       ecnt++;
-      delay(2000);
+      delay(200);
     }
     if(ecnt == 40) {
 #if DBGMQTT
@@ -40,9 +40,13 @@ int ecnt;
       tft->setTextColor(TFT_YELLOW, TFT_BLACK);
       tft->setCursor(0, 50 + (15 * 8));
       tft->printf("Connected to %s channel %d", BestAP.ssid, BestAP.channel);
+      tft->setCursor(0, 50 + (15 * 9));
+      tft->print(F("Trying to connect to api.coindesk.com"));
+      tft->setCursor(0, 50 + (15 * 10));
+      tft->print(F("my ip is: "));
+      tft->print(WiFi.localIP());
     }
   }
-
   // API server
   const char* host = "api.coindesk.com";
 
@@ -78,7 +82,7 @@ int ecnt;
   int jsonIndex;
 
   for (int i = 0; i < answer.length(); i++) {
-    if (answer[i] == '{') {
+    if (answer[i] == '{') {	// }
       jsonIndex = i;
       break;
     }
@@ -111,4 +115,6 @@ int ecnt;
   while (!ttgo->getTouch(x, y)) {} // wait until you touching
   while (ttgo->getTouch(x, y)) {}
   ttgo->tft->fillScreen(TFT_BLACK);
+  connected = false;
+  WiFi.mode(WIFI_OFF);
 }

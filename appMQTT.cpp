@@ -411,12 +411,12 @@ enum SWIPE_DIR swipe;
 	  return;
       }
       ecnt = 0;
-      while(!connected && ecnt < 40) {
+      while(!connected && ecnt < 400) {
 #if DBGMQTT
-	Serial.println(F("waiting 2 seconds for wifi connection"));
+	Serial.println(F("waiting 0.2 seconds for wifi connection"));
 #endif
 	ecnt++;
-	delay(2000);
+	delay(200);
       }
       if(ecnt == 40) {
 #if DBGMQTT
