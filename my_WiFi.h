@@ -40,7 +40,7 @@ typedef struct WiFiAp {
     char pass[65];
     uint8_t macAddr[6];
     uint8_t channel;
-    int tzone;
+    uint32_t tzone;
 } WiFiap;
 
 EXTERN WiFiap BestAP;
