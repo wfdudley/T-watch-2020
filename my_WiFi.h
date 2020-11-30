@@ -33,6 +33,8 @@ EXTERN WIFIAP AccessPoints[]
 #endif
 ;
 
+EXTERN int sizeof_Access_Points INIT(sizeof(AccessPoints)/sizeof(WIFIAP));
+
 typedef struct WiFiAp {
     char ssid[33];
     char pass[65];
@@ -43,7 +45,12 @@ typedef struct WiFiAp {
 
 EXTERN WiFiap BestAP;
 EXTERN boolean connected INIT(false);
+EXTERN int number_of_networks;
+EXTERN int num_saved_ap, best_ap;
 
+int read_acc_pts_file_and_compare_with_SSIDs (struct WiFiAp *);
 int connect_to_wifi(boolean, struct WiFiAp *, boolean);
+int connect_to_wifi_and_get_time (boolean);
+void append_new_access_point (char *, char *, uint32_t );
 
 #endif
