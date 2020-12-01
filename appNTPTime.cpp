@@ -5,6 +5,8 @@
 #include "DudleyWatch.h"
 #include <time.h>
 #include <WiFi.h>
+#include <NTPClient.h>
+#include <WiFiUdp.h>
 #include "my_tz.h"
 
 #define __WIFIMAIN__
@@ -26,6 +28,7 @@ File ifile;
 
 boolean initial = true;
 char ssid[50];
+WiFiUDP ntpUDP;
 
 //Are we currently connected?
 char get[1024];
@@ -50,6 +53,7 @@ void appNTPTime(void) {
     mmonth = tnow.month;
     yyear = tnow.year;
 
+    tft->setTextFont(1);
     tft->setTextSize(2);
     tft->setCursor(5, 210);
     tft->printf("%02d:%02d:%02d %02d/%02d/%4d", hh, mm, ss, mmonth, dday, yyear);
@@ -64,6 +68,7 @@ void appNTPTime(void) {
     }
     //Clear screen 
     ttgo->tft->fillScreen(TFT_BLACK);
+    tft->setTextSize(1);
   }
   else {
     appSetTime();
@@ -97,6 +102,7 @@ char ssid[50];
       ttgo->tft->setTextColor(TFT_YELLOW, TFT_BLACK);
       tft->setTextDatum(MC_DATUM);
       tft->setTextSize(1);
+      tft->setTextFont(1);
       tft->drawString("Scan Network", half_width, 5, 2);
       tft->setTextDatum(TL_DATUM);
     }
@@ -116,9 +122,11 @@ char ssid[50];
     }
     else {
       if(verbose) {
+	tft->setTextSize(1);
 	tft->setTextDatum(TL_DATUM);
 	tft->setTextColor(TFT_YELLOW, TFT_BLACK);
 	tft->drawString("WiFi Access Points",  0, 18, 2);
+	tft->setTextFont(2);
 	tft->setTextColor(TFT_GREEN, TFT_BLACK);
 	tft->setCursor(0, 35);
 	tft->print("SSID");
@@ -230,6 +238,17 @@ const int daylightOffset_sec = 0;
 
 int printLocalTime(void) {
 struct tm timeinfo;
+NTPClient timeClient(ntpUDP);
+  timeClient.begin();
+#if DBGCLK
+  Serial.printf("timeClient.update()\n");
+#endif
+  while(!timeClient.update()) {
+    timeClient.forceUpdate();
+#if DBGCLK
+    Serial.printf("timeClient.forceUpdate()\n");
+#endif
+  }
   if(!getLocalTime(&timeinfo)) {
 #if DBGCLK
     Serial.println(F("printLocalTime(): Failed to obtain NTP time."));
@@ -250,8 +269,6 @@ struct tm timeinfo;
   // hack in correct from EDT to GMT
   // Day++;
   // Hh += 4; Hh %= 24;
-  // this SHOULD be GMT at this point, however . . . it isn't.  WTF?
-  // now that I've saved GMT to the rtc, it remembers no time offset.
   ttgo->rtc->setDateTime(Year, Month, Day, Hh, Mm, Ss);
   Serial.printf("printLocalTime(): UTC = %02d:%02d:%02d %4d/%02d/%02d\n", Hh, Mm, Ss, Year, Month, Day);
   return 0;
@@ -584,6 +601,7 @@ int err, ecnt, this_wifi;
       return 1;
     }
     if(verbose) {
+      tft->setTextSize(1);
       tft->setTextColor(TFT_YELLOW, TFT_BLACK);
       tft->setCursor(0, 50 + (15 * 8));
       tft->printf("Connected to %s channel %d", BestAP.ssid, BestAP.channel);
