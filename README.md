@@ -66,7 +66,7 @@ and bits from SimpleWatch (the shipped demo), and added many new features.
   </LI>
   <LI> Most clocks (not LCARS) now can show either 12 or 24 hour clocks.  Setting is controlled in 4th page of Settings app.
   </LI>
-  <LI> A simple calendar app.  Shows one month at a time, and you can navigate to any month using +month, -month, +year, -year buttons.  Touch anywhere not on a button to exit the app.
+  <LI> A simple calendar app.  Shows one month at a time, and you can navigate to any month using +month, -month, +year, -year buttons.  At compile time, you can define your own holidays and events like birthdays, which are highlighted different colors on the calendar display.  Touch anywhere not on a button to exit the app.
   </LI>
 </UL>
 
