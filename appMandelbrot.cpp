@@ -403,4 +403,6 @@ void appMandelbrot(void) {
 	break;
     }
   }
+  tft->fillScreen(TFT_BLACK);
+  tft->setTextSize(1);
 }

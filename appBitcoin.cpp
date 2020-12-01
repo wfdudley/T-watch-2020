@@ -107,6 +107,7 @@ int ecnt;
   tft->setCursor(70, 130);
   tft->print("$");
   tft->println(priceString);
+  tft->setTextSize(1);
 
   client.stop();
   WiFi.disconnect(true);

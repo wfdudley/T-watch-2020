@@ -243,4 +243,6 @@ NewDate:
   if(changedate) goto NewDate;
   
   tft->fillScreen(TFT_BLACK); // Clear screen
+  tft->setTextSize(1);
+  tft->setTextFont(1);
 }
