@@ -24,12 +24,12 @@ EXTERN struct menu_item sensor_menu2[]
 #ifdef __MQTT_MAIN__
   = {
       { "LivRm Temp", "tele/sensors/down/temperature", NULL},
-      { "Kit. Temp", "tele/thermostat/kitchen/temperature", NULL},
+      { "Kit. Temp",  "tele/thermostat/kitchen/temperature", NULL},
       { "Music Temp", "tele/thermostat/musicrm/temperature", NULL},
-      { "Bath Hum", "tele/pump/mbath/SENSOR$.AM2301.Humidity", NULL},
-      { "Bath Temp", "tele/pump/mbath/SENSOR$.AM2301.Temperature", NULL},
-      { "Dew Point", "computed/outside/dewpoint", NULL},
-      { "Power", "filtered/emon/w", NULL},
+      { "Bath Hum",   "tele/pump/mbath/SENSOR$.AM2301.Humidity", NULL},
+      { "Bath Temp",  "tele/pump/mbath/SENSOR$.AM2301.Temperature", NULL},
+      { "Dew Point",  "computed/outside/dewpoint", NULL},
+      { "Power W",    "filtered/emon/w", NULL},
       { "L1 Amps", "filtered/emon/ct1", NULL},
       { "L2 Amps", "filtered/emon/ct2", NULL},
       { "Sensors 1", "", sensor_menu1 },
