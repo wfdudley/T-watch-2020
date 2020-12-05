@@ -34,6 +34,8 @@ and bits from SimpleWatch (the shipped demo), and added many new features.
   </LI>
   <LI> The ability to show time in your local time zone plus your home time zone if you're travelling
   </LI>
+  <LI> If you attempt to use WiFi with an unfamiliar access point, the watch will open a page where you can choose from the available SSIDs and then enter the password associated with that SSID.  This information is stored in a "file" in the SPIFFs part of the flash.  This is not overwritten when you re-upload the program from the Arduino IDE, so your WiFi SSID's and passwords are stored "forever".
+  </LI>
   <LI> step counter (can be disabled in Settings)
   </LI>
   <LI> MQTT monitor and control (for your home automation system, for example)
