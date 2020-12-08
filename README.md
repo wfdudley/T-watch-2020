@@ -74,9 +74,11 @@ and bits from SimpleWatch (the shipped demo), and added many new features.
 
 <H4>Using this code on your watch</H4>
 
-To use this code, edit personal_info.h to have the IP, port, username, password of your MQTT server
-(assuming you have one).  Edit my_WiFi.h to have the SSID's, passwords, and timezones of all the
-WiFi access points you want your watch to connect with.  Finally, compile and upload to your watch.
+To use this code, edit personal_info.h to have the IP, port, username, password of your MQTT server (assuming you have one).  Edit my_WiFi.h to have the SSID's, passwords, and timezones of all the WiFi access points you want your watch to connect with.  Finally, compile and upload to your watch.
+
+<H4>warning about the LVGL User Interface</H4>
+
+The LVGL UI is used to build the setup, WiFi, and alarm screens with all the dropdowns, buttons, etc.  The text entry boxes put up a keyboard when touched.  When you have finished entering your text into the box (WiFi password, for example), <b>make sure</b> that you hit the checkmark on the keyboard.  This ensures that the characters you have entered are seen by the UI.
 
 <H4>Gestures Mapping</H4>
 
