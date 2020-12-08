@@ -22,7 +22,7 @@ uint16_t Year;
 #define USE_SPIFFS_CPP 1
 #define WE_HAVE_SPIFFS 0
 #if WE_HAVE_SPIFFS
-File ofile;
+error: initializer-string for array of chars is too longerror: initializer-string for array of chars is too longerror: initializer-string for array of chars is too longFile ofile;
 File ifile;
 #endif
 
@@ -308,6 +308,8 @@ static lv_obj_t * tv;
 static lv_obj_t * ta4;	// WiFi password text area
 static lv_obj_t * kb;
 static void kb_event_cb4(lv_obj_t * ta, lv_event_t e);
+uint32_t utzidx;
+char ussid[66];
 
 static void button_handler(lv_obj_t *obj, lv_event_t event) {
     // Serial.printf("button_handler() event = %d\n", (int)event);
@@ -323,6 +325,7 @@ static void button_handler(lv_obj_t *obj, lv_event_t event) {
 	// lv_label_set_text_fmt(label, "Button: %d", cnt);
 	return;
     }
+#if NEEDED
     else if (event == LV_EVENT_VALUE_CHANGED && !event_result) {
         Serial.println(F("Toggled"));
 	event_result = 1;
@@ -336,6 +339,7 @@ static void button_handler(lv_obj_t *obj, lv_event_t event) {
 	Serial.printf("state = %d -> %s\n", event_value, event_value ? "true" : "false");
 	return;
     }
+#endif
 }
 
 static void kb_event_cb4(lv_obj_t * _kb, lv_event_t e) {
@@ -344,14 +348,18 @@ static void kb_event_cb4(lv_obj_t * _kb, lv_event_t e) {
     if(e == LV_EVENT_CANCEL) {
         if(kb) {
             // lv_obj_set_height(tv, LV_VER_RES);
-            lv_obj_del(kb);	// delete the keyboard if done.
-            kb = NULL;
+	    lv_obj_del(kb);	// delete the keyboard if done.
+	    kb = NULL;
         }
     }
     if(e == LV_EVENT_APPLY) {
       // announce that the user is finished with the box.
       event_result = 3;
       event_value = 4;
+      if(kb) {
+	lv_obj_del(kb);	// delete the keyboard if done.
+	kb = NULL;
+      }
     }
 }
 
@@ -443,6 +451,7 @@ int selected;
       selected = i;
     }
   }
+  utzidx = general_config.local_tzindex;
   lv_dropdown_set_options(dd1, buff);
   lv_dropdown_set_selected(dd1, selected);
   lv_obj_set_event_cb(dd1, dd_event_cb1);
@@ -461,6 +470,7 @@ int selected;
     strcat(buff, buf);
   }
   buff[strlen(buff)-1] = '\0';	// erase final newline
+  strncpy(ussid, WiFi.SSID(0).c_str(), sizeof(ussid));
 
   lv_dropdown_set_options(dd3, buff);
   // lv_dropdown_set_selected(dd3, selected);
@@ -495,15 +505,16 @@ int get_wifi_credentials_from_user (void) {
 
   APserver.begin();
 #else
-uint32_t utzidx = 0;
-char ussid[66];
 char upass[66];
-memset(ussid, '\0', sizeof(ussid));
-memset(upass, '\0', sizeof(upass));
+int pass_has_been_set = 0;
+  utzidx = 0;
+  memset(ussid, '\0', sizeof(ussid));
+  memset(upass, '\0', sizeof(upass));
   // use LVGL to make a settings screen for new wifi access point.
 #if 0
   tv = lv_tabview_create(lv_scr_act(), NULL);
 #endif
+ReStart:
   lv_style_init(&style_box);
   lv_style_set_value_align(&style_box, LV_STATE_DEFAULT, LV_ALIGN_OUT_TOP_LEFT);
   lv_style_set_value_ofs_y(&style_box, LV_STATE_DEFAULT, - LV_DPX(10));
@@ -519,6 +530,13 @@ memset(upass, '\0', sizeof(upass));
 	  Serial.printf("eloop: button %d, value = %d\n", button_num, event_value);
 	  switch (button_num) {
 	    case 1 :
+	      Serial.print(F("User hit Done\n"));
+	      button_num = 0;
+	      event_result = 0;
+              if(kb) {
+		lv_obj_del(kb);	// delete the keyboard if done.
+		kb = NULL;
+	      }
 	      goto Exit;
 	  }
 	  break;
@@ -529,6 +547,7 @@ memset(upass, '\0', sizeof(upass));
 	    const char * txt = lv_textarea_get_text(ta4);
 	    Serial.printf("set WiFi password = %s\n", txt);
 	    strncpy(upass, txt, sizeof(upass));
+	    pass_has_been_set++;
 	  }
 	  break;
 	case 4 :	// dropdown
@@ -548,13 +567,20 @@ memset(upass, '\0', sizeof(upass));
     }
   }
 Exit:
+  ttgo->tft->fillScreen(TFT_BLACK);
+  if(!pass_has_been_set) {
+    tft->setCursor(0, 50);
+    tft->printf("You must hit the checkmark on the\nkeyboard after you have entered\nthe password");
+    delay(2000);
+    goto ReStart;
+  }
+  Serial.printf("after Exit: get_wifi_credentials_from_user: ssid %s, pass %s, tzone %u\n", ussid, upass, utzidx);
   if(utzidx && ussid[0] && upass[0]) {
     BestAP.tzone = utzidx;
     strncpy(BestAP.ssid, ussid, sizeof(BestAP.ssid));
     strncpy(BestAP.pass, upass, sizeof(BestAP.pass));
     Serial.printf("get_wifi_credentials_from_user: ssid %s, pass %s, tzone %u\n", ussid, upass, utzidx);
     append_new_access_point(ussid, upass, utzidx);
-    ttgo->tft->fillScreen(TFT_BLACK);
     return(1);
   }
 #endif

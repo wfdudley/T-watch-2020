@@ -44,7 +44,23 @@ void listDir(fs::FS &fs, const char * dirname, uint8_t levels){
     }
 }
 
-void readFile(fs::FS &fs, const char * path){
+void appendFile(fs::FS &fs, const char * path, const char * message){
+    Serial.printf("Appending to file: %s\r\n", path);
+
+    File file = fs.open(path, FILE_APPEND);
+    if(!file){
+        Serial.println("- failed to open file for appending");
+        return;
+    }
+    if(file.print(message)){
+        Serial.println("- message appended");
+    } else {
+        Serial.println("- append failed");
+    }
+    file.close();
+}
+
+void readFile(fs::FS &fs, const char * path) {
     Serial.printf("Reading file: %s\r\n", path);
 
     File file = fs.open(path);
@@ -60,6 +76,7 @@ void readFile(fs::FS &fs, const char * path){
     Serial.println("end of readFile ----------------");
 }
 
+#if SPIFF_TESTING
 void writeFile(fs::FS &fs, const char * path, const char * message){
     Serial.printf("Writing file: %s\r\n", path);
 
@@ -75,21 +92,6 @@ void writeFile(fs::FS &fs, const char * path, const char * message){
     }
 }
 
-void appendFile(fs::FS &fs, const char * path, const char * message){
-    Serial.printf("Appending to file: %s\r\n", path);
-
-    File file = fs.open(path, FILE_APPEND);
-    if(!file){
-        Serial.println("- failed to open file for appending");
-        return;
-    }
-    if(file.print(message)){
-        Serial.println("- message appended");
-    } else {
-        Serial.println("- append failed");
-    }
-}
-
 void renameFile(fs::FS &fs, const char * path1, const char * path2){
     Serial.printf("Renaming file %s to %s\r\n", path1, path2);
     if (fs.rename(path1, path2)) {
@@ -99,7 +101,7 @@ void renameFile(fs::FS &fs, const char * path1, const char * path2){
     }
 }
 
-void deleteFile(fs::FS &fs, const char * path){
+void deleteFile(fs::FS &fs, const char * path) {
     Serial.printf("Deleting file: %s\r\n", path);
     if(fs.remove(path)){
         Serial.println("- file deleted");
@@ -108,7 +110,7 @@ void deleteFile(fs::FS &fs, const char * path){
     }
 }
 
-void testFileIO(fs::FS &fs, const char * path){
+void testFileIO(fs::FS &fs, const char * path) {
     Serial.printf("Testing file I/O with %s\r\n", path);
 
     static uint8_t buf[512];
@@ -180,6 +182,7 @@ void test_spiffs(void) {
     deleteFile(SPIFFS, "/test.txt");
     Serial.println( "Test complete" );
 }
+#endif
 
 void build_acc_pts_file (void) {
   // deleteFile(SPIFFS, "/acc_pts.txt");
@@ -299,5 +302,10 @@ int best_strength;
 void append_new_access_point (char *newssid, char *newpassword, uint32_t newtzidx) {
 char buff[256];
     sprintf(buff, "%s\t%s\t%lu\n", newssid, newpassword, newtzidx);
+    Serial.printf("appending '%s' to acc_pts.txt\n", buff);
+#if NORMAL_WIFI_OPERATION       // disable to test the access point setup code
     appendFile(SPIFFS, "/acc_pts.txt", buff);
+#else
+    Serial.print(F("but not really\n"));
+#endif
 }
