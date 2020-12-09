@@ -70,6 +70,8 @@ and bits from SimpleWatch (the shipped demo), and added many new features.
   </LI>
   <LI> A simple calendar app.  Shows one month at a time, and you can navigate to any month using +month, -month, +year, -year buttons.  At compile time, you can define your own holidays and events like birthdays, which are highlighted different colors on the calendar display.  Touch anywhere not on a button to exit the app.
   </LI>
+  <LI> An app to allow deletion of WiFi access point from the internal flash storage (SPIFF file acc_pts.txt).
+  </LI>
 </UL>
 
 <H4>Using this code on your watch</H4>
