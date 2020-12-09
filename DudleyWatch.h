@@ -86,6 +86,7 @@ void switch_menu(void);		// switch apps menu page
 void appBitcoin(void);		// Bitcoin value checker
 void appMandelbrot(void);	// Mandelbrot generator
 void resetStepCounter(void);	// like it says on the tin
+void appDelWiFi(void);		// delete one SSID from acc_pts.txt
 
 void LCARS_Time(uint8_t);
 void Basic_Time(uint8_t);
@@ -167,12 +168,12 @@ EXTERN struct menu_item watch_apps2[]
     { "Maze",        "", (void *)&appMaze },
     { "Calendar",    "", (void *)&appCalendar },
     { "Paint",       "", (void *)&appPaint },
-    { "",            "", NULL },
+    { "Delete WiFi", "", (void *)&appDelWiFi },
     { "Life",        "", (void *)&appLife },
     { "",            "", NULL },
     { "Bitcoin",     "", (void *)&appBitcoin },
     { "Apps 1",      "", (void *)&switch_menu },
-    { "",            "", NULL },
+    { "Man SetTime", "", (void *)&appSetTime },
     { "Clock",       "", NULL }
 }
 #endif
