@@ -7,6 +7,7 @@
 
 #define WE_HAVE_SPIFFS 1
 #define NORMAL_WIFI_OPERATION 1  // disable to test the access point setup code
+#define NORMAL_DELETE_OPERATION 1 // disable to test appDelWiFi()
 
 /* You only need to format SPIFFS the first time you run a
    test or else use the SPIFFS plugin to create a partition
@@ -76,6 +77,15 @@ void readFile(fs::FS &fs, const char * path) {
     Serial.println("end of readFile ----------------");
 }
 
+void renameFile(fs::FS &fs, const char * path1, const char * path2){
+    Serial.printf("Renaming file %s to %s\r\n", path1, path2);
+    if (fs.rename(path1, path2)) {
+        Serial.println("- file renamed");
+    } else {
+        Serial.println("- rename failed");
+    }
+}
+
 #if SPIFF_TESTING
 void writeFile(fs::FS &fs, const char * path, const char * message){
     Serial.printf("Writing file: %s\r\n", path);
@@ -88,16 +98,7 @@ void writeFile(fs::FS &fs, const char * path, const char * message){
     if(file.print(message)){
         Serial.println("- file written");
     } else {
-        Serial.println("- frite failed");
-    }
-}
-
-void renameFile(fs::FS &fs, const char * path1, const char * path2){
-    Serial.printf("Renaming file %s to %s\r\n", path1, path2);
-    if (fs.rename(path1, path2)) {
-        Serial.println("- file renamed");
-    } else {
-        Serial.println("- rename failed");
+        Serial.println("- file.print failed");
     }
 }
 
@@ -308,4 +309,143 @@ char buff[256];
 #else
     Serial.print(F("but not really\n"));
 #endif
+}
+
+// returns number of SSID's (lines) found
+int get_list_ssid(char * buffer, int sizeofbuffer) {
+char filessid[33], pass[65], tzonestr[20];
+int cp, phase;
+int ssidcnt = 0;
+  Serial.printf("get_list_ssid() len is %d, string arg is\n'%s'\n", sizeofbuffer, buffer);
+  File ifile = SPIFFS.open("/acc_pts.txt", "r");
+  if(!ifile){
+    return -1;
+  }
+  cp = 0;
+  phase = 0;
+  memset(filessid, '\0', sizeof(filessid));
+  memset(pass, '\0', sizeof(pass));
+  memset(tzonestr, '\0', sizeof(tzonestr));
+  Serial.println(F("found /acc_pts.txt"));
+  while(ifile.available()) {
+    char c;
+    c = ifile.read();
+    if(c == '\t') {
+      cp = 0;
+      phase++;
+    }
+    else if(c == '\n' || c == '\r') {
+      // Serial.printf("buffer contains '%s'", buffer);
+      // Now we have filessid, pass, tzone from acc_pts.txt file
+      if(strlen(filessid)) {
+	if(strlen(buffer)+strlen(filessid)+2 < sizeofbuffer) {
+	  strcat(buffer, filessid);
+	  strcat(buffer, "\n");
+	}
+      }
+      cp = 0;
+      phase = 0;
+      memset(filessid, '\0', sizeof(filessid));
+      memset(pass, '\0', sizeof(pass));
+      memset(tzonestr, '\0', sizeof(tzonestr));
+    }
+    else {
+      switch(phase) {
+        case 0 :
+          filessid[cp++] = c;
+          break;
+        case 1 :
+          pass[cp++] = c;
+          break;
+        case 2 :
+          tzonestr[cp++] = c;
+          break;
+      }
+    }
+  }
+  buffer[strlen(buffer)-1] = '\0';	// erase final newline
+  ifile.close();
+  return ssidcnt;
+}
+
+int delete_access_point(char * dssid) {
+char filessid[33], pass[65], tzonestr[20];
+char buff[256];
+int cp, phase;
+int errcnt = 0;
+  File ifile = SPIFFS.open("/acc_pts.txt", "r");
+  if(!ifile){
+    return -1;
+  }
+  File ofile = SPIFFS.open("/acc_pts.new", "w");
+  if(!ofile){
+    return -2;
+  }
+  cp = 0;
+  phase = 0;
+  memset(filessid, '\0', sizeof(filessid));
+  memset(pass, '\0', sizeof(pass));
+  memset(tzonestr, '\0', sizeof(tzonestr));
+  Serial.println(F("found /acc_pts.txt"));
+  while(ifile.available()) {
+    char c;
+    c = ifile.read();
+    Serial.write(c);
+    if(c == '\t') {
+      cp = 0;
+      phase++;
+    }
+    else if(c == '\n' || c == '\r') {
+      // Now we have filessid, pass, tzone from acc_pts.txt file
+      // is filessid same as dssid ?
+      Serial.printf("about to test filessid, which is '%s'\n", filessid);
+      if(!strcmp(filessid, dssid)) {
+	Serial.printf("don't copy %s line to new file.\n", filessid);
+      }
+      else {
+	sprintf(buff, "%s\t%s\t%lu\n", filessid, pass, tzonestr);
+	Serial.printf("COPY: '%s'\n", buff);
+	if(ofile.print(buff)){
+	  Serial.println(F("- copy succeeded"));
+	} else {
+	  Serial.println(F("- copy failed"));
+	  errcnt++;
+	}
+      }
+      cp = 0;
+      phase = 0;
+      memset(filessid, '\0', sizeof(filessid));
+      memset(pass, '\0', sizeof(pass));
+      memset(tzonestr, '\0', sizeof(tzonestr));
+    }
+    else {
+      switch(phase) {
+        case 0 :
+          filessid[cp++] = c;
+          break;
+        case 1 :
+          pass[cp++] = c;
+          break;
+        case 2 :
+          tzonestr[cp++] = c;
+          break;
+      }
+    }
+  }
+  ifile.close();
+  ofile.close();
+#if NORMAL_DELETE_OPERATION
+  renameFile(SPIFFS, "/acc_pts.txt", "/acc_pts.bak");
+  renameFile(SPIFFS, "/acc_pts.new", "/acc_pts.txt");
+#else
+  readFile(SPIFFS, "/acc_pts.new");
+#endif
+  return errcnt;
+}
+
+int file_exists(char *exfilename) {
+  if(!SPIFFS.exists(exfilename)) {
+    return 0;
+  }
+  return 1;
 }
