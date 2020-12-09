@@ -72,7 +72,7 @@ and bits from SimpleWatch (the shipped demo), and added many new features.
   </LI>
   <LI> A simple calendar app.  Shows one month at a time, and you can navigate to any month using +month, -month, +year, -year buttons.  At compile time, you can define your own holidays and events like birthdays, which are highlighted different colors on the calendar display.  Touch anywhere not on a button to exit the app.
   </LI>
-  <LI> An app to allow deletion of WiFi access point from the internal flash storage (SPIFF file acc_pts.txt).
+  <LI> An app to allow deletion of WiFi access point from the internal flash storage (SPIFF file acc_pts.txt).  This is useful if you enter the password incorrectly, or the password changes.  Simply delete the SSID and then re-enter it by using the NTP Time app.
   </LI>
 </UL>
 
