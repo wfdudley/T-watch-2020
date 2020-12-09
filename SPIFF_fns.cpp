@@ -86,6 +86,15 @@ void renameFile(fs::FS &fs, const char * path1, const char * path2){
     }
 }
 
+void deleteFile(fs::FS &fs, const char * path) {
+    Serial.printf("Deleting file: %s\r\n", path);
+    if(fs.remove(path)){
+        Serial.println("- file deleted");
+    } else {
+        Serial.println("- delete failed");
+    }
+}
+
 #if SPIFF_TESTING
 void writeFile(fs::FS &fs, const char * path, const char * message){
     Serial.printf("Writing file: %s\r\n", path);
@@ -99,15 +108,6 @@ void writeFile(fs::FS &fs, const char * path, const char * message){
         Serial.println("- file written");
     } else {
         Serial.println("- file.print failed");
-    }
-}
-
-void deleteFile(fs::FS &fs, const char * path) {
-    Serial.printf("Deleting file: %s\r\n", path);
-    if(fs.remove(path)){
-        Serial.println("- file deleted");
-    } else {
-        Serial.println("- delete failed");
     }
 }
 
@@ -435,6 +435,7 @@ int errcnt = 0;
   ifile.close();
   ofile.close();
 #if NORMAL_DELETE_OPERATION
+  deleteFile(SPIFFS, "/acc_pts.bak");
   renameFile(SPIFFS, "/acc_pts.txt", "/acc_pts.bak");
   renameFile(SPIFFS, "/acc_pts.new", "/acc_pts.txt");
 #else
