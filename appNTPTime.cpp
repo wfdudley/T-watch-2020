@@ -163,7 +163,7 @@ char ssid[50];
       }
       else if(ap_result == 0) {
 	Serial.println(F("I don't recognize any SSIDs"));
-	return -1;
+	return -2;
       }
       else {
 #if DBGCLK
@@ -275,7 +275,7 @@ NTPClient timeClient(ntpUDP);
 }
 
 // returns 1 if no known AP found
-int connect_to_wifi(boolean verbose, struct WiFiAp * bestAP, boolean do_scan) {
+int connect_to_wifi(boolean verbose, struct WiFiAp * bestAP, boolean do_scan, boolean set_tzindex) {
 int err, ecnt, this_wifi;
     if(do_scan) {
       best_ap = this_wifi = wifi_scan(verbose);
@@ -287,11 +287,13 @@ int err, ecnt, this_wifi;
       return 1;
     }
 
-    tzindex = BestAP.tzone;
-    if(general_config.local_tzindex != tzindex) {
-      general_config.local_tzindex = tzindex;
-      EEPROM_writeAnything(0, general_config);
-      EEPROM.commit();
+    if(set_tzindex) {
+      tzindex = BestAP.tzone;
+      if(general_config.local_tzindex != tzindex) {
+	general_config.local_tzindex = tzindex;
+	EEPROM_writeAnything(0, general_config);
+	EEPROM.commit();
+      }
     }
 
     //Connect to the WiFi network
@@ -589,7 +591,7 @@ Exit:
 
 int connect_to_wifi_and_get_time (boolean verbose) {
 int err, ecnt, this_wifi;
-    if(connect_to_wifi(verbose, &BestAP, true) && verbose) {
+    if(connect_to_wifi(verbose, &BestAP, true, true) && verbose) {
       Serial.println(F("trying get wifi credentials from user"));
       // prompt_user_config1();
 #if WEB_WIFI_SETUP
