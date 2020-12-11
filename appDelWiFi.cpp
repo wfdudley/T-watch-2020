@@ -27,7 +27,6 @@ int get_which_ap_to_delete_from_user(void);
 
 void appDelWiFi(void) {
 int res;
-  build_acc_pts_file();	// create acc_pts.txt file if it doesn't exist
   if(!file_exists("/acc_pts.txt")) {
     tft->setTextColor(TFT_YELLOW, TFT_BLACK);
     tft->setTextSize(1);
