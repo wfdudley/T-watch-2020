@@ -168,6 +168,7 @@ char ssid[50];
       else {
 #if DBGCLK
 	Serial.printf("found SSID we know: %s\n", BestAP.ssid);
+	Serial.printf("and the time zone is: %lu %lx\n", BestAP.tzone, BestAP.tzone);
 #endif
 	return ap_result;
       }
@@ -288,6 +289,9 @@ int err, ecnt, this_wifi;
     }
 
     if(set_tzindex) {
+      Serial.printf("tzindex was %lu %lx, BestAP.tzone = %lu, %lx\n",
+	tzindex, tzindex,
+	BestAP.tzone, BestAP.tzone);
       tzindex = BestAP.tzone;
       if(general_config.local_tzindex != tzindex) {
 	general_config.local_tzindex = tzindex;
