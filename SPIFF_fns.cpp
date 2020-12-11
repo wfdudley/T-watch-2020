@@ -203,6 +203,7 @@ int read_acc_pts_file_and_compare_with_SSIDs (struct WiFiAp * bestAP) {
 char filessid[33], pass[65], tzonestr[20];
 int tzone, cp, phase, result;
 int best_strength;
+  build_acc_pts_file();
   Serial.println(F("reading acc_pts.txt file:"));
   memset(filessid, '\0', sizeof(filessid));
   memset(pass, '\0', sizeof(pass));
@@ -247,7 +248,7 @@ int best_strength;
 	    Serial.printf("tzonestr = %s\n", tzonestr);
 	    uint32_t tzid = atol(tzonestr);
             bestAP->tzone = tzid;
-            Serial.printf("best strength = %d, best ssid = %s, tz = %u\n", best_strength, filessid, tzid);
+            Serial.printf("best strength = %d, best ssid = %s, tz = %lu = %lx\n", best_strength, filessid, tzid, tzid);
             Serial.printf("best channel %d, best mac %02x:%02x:%02x:%02x:%02x:%02x\n", bestAP->channel,
               bestAP->macAddr[0], bestAP->macAddr[1], bestAP->macAddr[2],
               bestAP->macAddr[3], bestAP->macAddr[4], bestAP->macAddr[5]);
