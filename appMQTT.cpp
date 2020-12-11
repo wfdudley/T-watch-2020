@@ -403,7 +403,7 @@ char *menu_label;
 int mSelect;
 enum SWIPE_DIR swipe;
     if(1) {	// this connects to wifi, MQTT server, and runs MQTTcallback
-      if(connect_to_wifi(verbose, &BestAP, true, false) && verbose) {
+      if(connect_to_wifi(verbose, &BestAP, true, true) && verbose) {
 	  Serial.printf("connect to wifi failed\n");
 	  tft->setTextColor(TFT_YELLOW, TFT_BLACK);
 	  tft->drawString("Connect to WiFi Failed!",  0, 5, 2);
