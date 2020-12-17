@@ -8,6 +8,22 @@
 void dummyTime(void) {}
 
 void switch_menu(void) {
+  if(!strcmp(last_app_name, "Apps 1")) {
+    app_menu_ptr = &watch_apps[0];
+    app_label_ptr = &app_labels[0];
+    Serial.println(F("switch to page 1"));
+  }
+  else if(!strcmp(last_app_name, "Apps 2")) {
+    app_menu_ptr = &watch_apps2[0];
+    app_label_ptr = &app_labels2[0];
+    Serial.println(F("switch to page 2"));
+  }
+  else if(!strcmp(last_app_name, "Apps 3")) {
+    app_menu_ptr = &watch_apps3[0];
+    app_label_ptr = &app_labels3[0];
+    Serial.println(F("switch to page 3"));
+  }
+#if 0
   if(app_menu_ptr == &watch_apps[0]) {
     app_menu_ptr = &watch_apps2[0];
     app_label_ptr = &app_labels2[0];
@@ -18,6 +34,7 @@ void switch_menu(void) {
     app_label_ptr = &app_labels[0];
     Serial.println(F("switch to page 1"));
   }
+#endif
 }
 
 uint8_t modeMenu(void) {
@@ -30,6 +47,7 @@ int mSelect;
       row = mSelect / 3;
       col = mSelect % 3;
       flash_keyboard_item(app_label_ptr, 1, true, row, col);
+      last_app_name = app_menu_ptr[mSelect].name;
       Serial.printf("poll_swipe_or_menu_press -> %d, app should be %s\n",
 	mSelect, app_menu_ptr[mSelect].name);
       if(app_menu_ptr[mSelect].next_menu) {

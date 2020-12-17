@@ -86,6 +86,8 @@ void switch_menu(void);		// switch apps menu page
 void appBitcoin(void);		// Bitcoin value checker
 void appMandelbrot(void);	// Mandelbrot generator
 void resetStepCounter(void);	// like it says on the tin
+void appWeather(void);		// get the weather
+void appTouch(void);		// touch screen test
 void appDelWiFi(void);		// delete one SSID from acc_pts.txt
 
 void LCARS_Time(uint8_t);
@@ -128,21 +130,22 @@ EXTERN boolean alarm_active;
 EXTERN uint32_t next_beep;	// the next time the alarm beep should sound
 EXTERN struct menu_item *app_menu_ptr; // which watch_apps menu is in current use?
 EXTERN const char **app_label_ptr; // which app_labels array is in current use?
+EXTERN const char *last_app_name;	// name of last app that was selected
 
 EXTERN struct menu_item watch_apps[]
 #ifdef __MAIN__
 = {
     { "Stop Watch",  "", (void *)&appStopWatch },
-    { "MQTT Client", "", (void *)&appMQTT },
+    { "Weather",     "", (void *)&appWeather },
     { "Battery",     "", (void *)&appBattery },
-    { "Reset Step",  "", (void *)resetStepCounter },
     { "Calculator",  "", (void *)&appCalculator },
     { "NTP Time",    "", (void *)&appNTPTime },
     { "Skin Select", "", (void *)&skinMenu },
-    { "Level",       "", (void *)&appLevel },
+    { "MQTT Client", "", (void *)&appMQTT },
     { "Alarm Set.",  "", (void *)&alarmSettings },
-    { "Apps 2",      "", (void *)&switch_menu },
     { "Settings",    "", (void *)&appSettings },
+    { "Apps 2",      "", (void *)&switch_menu },
+    { "Apps 3",      "", (void *)&switch_menu },
     { "Clock",       "", NULL }
 }
 #endif
@@ -159,7 +162,6 @@ EXTERN const char *app_labels[]
 #endif
 ;
 
-
 EXTERN struct menu_item watch_apps2[]
 #ifdef __MAIN__
 = {
@@ -167,13 +169,13 @@ EXTERN struct menu_item watch_apps2[]
     { "Mandelbrot",  "", (void *)&appMandelbrot },
     { "Maze",        "", (void *)&appMaze },
     { "Calendar",    "", (void *)&appCalendar },
-    { "Paint",       "", (void *)&appPaint },
     { "Delete WiFi", "", (void *)&appDelWiFi },
     { "Life",        "", (void *)&appLife },
-    { "",            "", NULL },
+    { "Level",       "", (void *)&appLevel },
     { "Bitcoin",     "", (void *)&appBitcoin },
-    { "Apps 1",      "", (void *)&switch_menu },
     { "Man SetTime", "", (void *)&appSetTime },
+    { "Apps 1",      "", (void *)&switch_menu },
+    { "Apps 3",      "", (void *)&switch_menu },
     { "Clock",       "", NULL }
 }
 #endif
@@ -186,6 +188,36 @@ EXTERN const char *app_labels2[]
 			  watch_apps2[3].name, watch_apps2[4].name, watch_apps2[5].name,
 			  watch_apps2[6].name, watch_apps2[7].name, watch_apps2[8].name,
 			  watch_apps2[9].name, watch_apps2[10].name, watch_apps2[11].name
+			}
+#endif
+;
+
+EXTERN struct menu_item watch_apps3[]
+#ifdef __MAIN__
+= {
+    { "Touch Test",  "", (void *)&appTouch },
+    { ""          ,  "", NULL },
+    { "Reset Step",  "", (void *)resetStepCounter },
+    { ""          ,  "", NULL },
+    { "Paint",       "", (void *)&appPaint },
+    { ""          ,  "", NULL },
+    { "Man SetTime", "", (void *)&appSetTime },
+    { ""          ,  "", NULL },
+    { ""          ,  "", NULL },
+    { "Apps 1",      "", (void *)&switch_menu },
+    { "Apps 2",      "", (void *)&switch_menu },
+    { "Clock",       "", NULL }
+}
+#endif
+;
+
+EXTERN const char *app_labels3[]
+#ifdef __MAIN__
+		      = {
+			  watch_apps3[0].name, watch_apps3[1].name, watch_apps3[2].name,
+			  watch_apps3[3].name, watch_apps3[4].name, watch_apps3[5].name,
+			  watch_apps3[6].name, watch_apps3[7].name, watch_apps3[8].name,
+			  watch_apps3[9].name, watch_apps3[10].name, watch_apps3[11].name
 			}
 #endif
 ;
@@ -217,6 +249,7 @@ typedef struct config_t {
     int8_t alarm_sound;
     int8_t alarm_volume;
     int8_t twelve_hr_clock;
+    boolean metric_units;
 } CONFIGGEN;
 
 EXTERN CONFIGGEN general_config;
