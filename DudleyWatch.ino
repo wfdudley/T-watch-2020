@@ -233,10 +233,15 @@ void setup() {
     general_config.alarm_m = 15;
     general_config.alarm_sound = 5;
     general_config.alarm_volume = 255;
+    general_config.alarm_enable = false;
     general_config.twelve_hr_clock = 0;
+    general_config.metric_units = false;
     EEPROM_writeAnything(0, general_config);
     EEPROM.commit();
   }
+  general_config.metric_units = false;
+  EEPROM_writeAnything(0, general_config);
+  EEPROM.commit();
   chosen_skin = general_config.clock_skin;
   tzindex = general_config.local_tzindex;
   //Create a program that allows the required message objects and group flags
