@@ -11,6 +11,8 @@ This builds with Arduino IDE version 1.8.13.  It also requires:
   </LI>
   <LI><A HREF="https://github.com/earlephilhower/ESP8266Audio" TARGET=_blank>ESP8266Audio library</A>
   </LI>
+  <LI><A HREF="https://github.com/JHershey69/OpenWeatherOneCall" TARGET=_blank>OpenWeatherOneCall library</A>
+  </LI>
 </UL>      
 
 I took bits from Dan Geiger's watch code (https://www.instructables.com/Lilygo-T-Watch-2020-Arduino-Framework/),
@@ -66,7 +68,7 @@ and bits from SimpleWatch (the shipped demo), and added many new features.
   </LI>
   <LI> A Mandelbrot/Julia set app, written by "FabriceA6" (sorry, I couldn't find better attribution).
   </LI>
-  <LI> The WiFi access points database is now stored in a file acc_pts.txt in the SPIFFs filesystem.  If you try to use the NTP function to connect to a new access point, appNTP will open up a settings page where you can enter the password and timezone for this new access point, and then it will be appended to the file acc_pts.txt.
+  <LI> The WiFi access points database is now stored in a file acc_pts.txt in the SPIFFs filesystem.  If you try to use any WiFi app to connect to a new access point, the app will open up a settings page where you can enter the password and timezone for this new access point, and then it will be appended to the file acc_pts.txt.
   </LI>
   <LI> Most clocks (not LCARS) now can show either 12 or 24 hour clocks.  Setting is controlled in 4th page of Settings app.
   </LI>
@@ -74,11 +76,13 @@ and bits from SimpleWatch (the shipped demo), and added many new features.
   </LI>
   <LI> An app to allow deletion of WiFi access point from the internal flash storage (SPIFF file acc_pts.txt).  This is useful if you enter the password incorrectly, or the password changes.  Simply delete the SSID and then re-enter it by using the NTP Time app.
   </LI>
+  <LI> A weather app.  The app attempts to figure your location using your IP address, which works pretty well with WiFi that is not a cell phone hotspot.  The reason cell phone hotspots give a bad location is that your cell data may be routed to a city 100 miles away before it gets a routable IP address and gets to the internet.  So the weather location may be off by quite a bit when using a cell phone hotspot for connectivity.  You'll need an OpenWeatherMap.org API key, which was free at time of writing.  Also note the <b>LIBRARY REQUIREMENT</b> listed at the beginning of the file.  The weather app shows today's conditions, the conditions for the next week, and any National Weather Service alerts if there are any for "your" location.
+  </LI>
 </UL>
 
 <H4>Using this code on your watch</H4>
 
-To use this code, edit personal_info.h to have the IP, port, username, password of your MQTT server (assuming you have one).  Edit my_WiFi.h to have the SSID's, passwords, and timezones of all the WiFi access points you want your watch to connect with.  Finally, compile and upload to your watch.
+To use this code, edit personal_info.h to have the IP, port, username, password of your MQTT server (assuming you have one), plus your home latitiude, longitude, and city, and also your openweathermap.org API key.  Edit my_WiFi.h to have the SSID's, passwords, and timezones of all the WiFi access points you want your watch to connect with.  Finally, compile and upload to your watch.
 
 <H4>warning about the LVGL User Interface</H4>
 
