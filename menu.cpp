@@ -23,18 +23,6 @@ void switch_menu(void) {
     app_label_ptr = &app_labels3[0];
     Serial.println(F("switch to page 3"));
   }
-#if 0
-  if(app_menu_ptr == &watch_apps[0]) {
-    app_menu_ptr = &watch_apps2[0];
-    app_label_ptr = &app_labels2[0];
-    Serial.println(F("switch to page 2"));
-  }
-  else {
-    app_menu_ptr = &watch_apps[0];
-    app_label_ptr = &app_labels[0];
-    Serial.println(F("switch to page 1"));
-  }
-#endif
 }
 
 uint8_t modeMenu(void) {
