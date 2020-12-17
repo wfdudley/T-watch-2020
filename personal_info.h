@@ -12,7 +12,7 @@
 #define MY_TIMEZONE TZ_EST
 
 // your personal keys
-// get this one from openweathermap.com
+// get this one from openweathermap.org
 #define ONECALLKEY "00000000001111111122222222333333"
 
 // if you have a home IP address, put it here (in quotes).  It will
