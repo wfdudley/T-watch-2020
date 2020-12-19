@@ -166,6 +166,7 @@ void connectToWiFi(struct WiFiAp *);
 void appWeather(void) {
 uint32_t this_sec;
 int err, ecnt, lastmode, mode, mSelect, this_wifi, alert_pages;
+int last_char_index, alert_summary_length, page2sumidx[10];
 int16_t x, y;
 char temp_unit = (general_config.metric_units) ? 'C' : 'F';
 const char *velocity_unit = (general_config.metric_units) ? "km/hr" : "mi/hr";
@@ -249,6 +250,11 @@ const char *velocity_unit = (general_config.metric_units) ? "km/hr" : "mi/hr";
   if(str_longitude[0]) {
     my_longitude = atof(str_longitude);
   }
+#define ALERT_TEST_LOCATION 0
+#if ALERT_TEST_LOCATION
+    my_latitude = 47.1848;
+    my_longitude = -123.615;
+#endif
 #if DBGWEATHER
   Serial.printf("IP address -> my_latitude %f my_longitude %f\n", my_latitude, my_longitude);
 
@@ -275,6 +281,7 @@ const char *velocity_unit = (general_config.metric_units) ? "km/hr" : "mi/hr";
     Serial.printf("OWOC error: %s\n", OWOC.getErrorMsgs(owcres));
   }
   else {
+    memset(page2sumidx, 0, sizeof(page2sumidx)/sizeof(char));
 #if ERRORTEST
 #if DBGWEATHER
     for(owcres = 1 ; owcres < 30 ; owcres++) {
@@ -360,12 +367,13 @@ const char *velocity_unit = (general_config.metric_units) ? "km/hr" : "mi/hr";
 	for (int fo = 1; fo < 5 ; fo++)
 	{
 	  //Date from epoch forecast[fo].dayTime
-	  long DoW = OWOC.forecast[fo].dayTime / 86400L;
-	  int day_of_week = (DoW + 4) % 7;
+	  // long DoW = OWOC.forecast[fo].dayTime / 86400L;
+	  // int day_of_week = (DoW + 4) % 7;
 
 #if DBGWEATHER
 	  Serial.printf("%s: high = %.0f %c, low %.0f %c\n",
-	      OWOC.short_names[day_of_week],
+	      OWOC.forecast[fo].weekDayName,
+	      // OWOC.short_names[day_of_week],
 	      OWOC.forecast[fo].temperatureHigh, temp_unit,
 	      OWOC.forecast[fo].temperatureLow, temp_unit);
 	  Serial.printf("%.0f %% precip probability\n", 100.0 * OWOC.forecast[fo].pop);
@@ -381,7 +389,8 @@ const char *velocity_unit = (general_config.metric_units) ? "km/hr" : "mi/hr";
 #endif
 	  int offset = 95;
 	  tft->setCursor(60 * (fo-1) + 20, offset);
-	  tft->print(OWOC.short_names[day_of_week]);
+	  // tft->print(OWOC.short_names[day_of_week]);
+	  tft->print(OWOC.forecast[fo].weekDayName);
 	  offset += 15;
 	  tft->setCursor(60 * (fo-1), offset);
 	  tft->printf("%.0f F hi", OWOC.forecast[fo].temperatureHigh);
@@ -412,9 +421,11 @@ const char *velocity_unit = (general_config.metric_units) ? "km/hr" : "mi/hr";
 	tft->setTextColor(TFT_YELLOW, TFT_BLACK);
 	tft->drawCentreString("Weather Pg 2",  half_width, 0, 2);
 	if(OWOC.alert) {
+	    last_char_index = 0;
 	    if(OWOC.alert->summary && OWOC.alert->summary[0]) {
 		tft->setTextColor(TFT_RED, TFT_BLACK);
 		tft->drawString("More ->", 190, 75, 2);
+		alert_summary_length = strlen(OWOC.alert->summary);
 	    }
 	    if(OWOC.alert->event && OWOC.alert->event[0]) {
 #if DBGWEATHER
@@ -429,6 +440,10 @@ const char *velocity_unit = (general_config.metric_units) ? "km/hr" : "mi/hr";
 #endif
 		tft->setCursor(0, 30);
 		tft->printf("%s", OWOC.alert->senderName);
+		tft->setCursor(0, 60);
+		tft->printf("from: %s", OWOC.alert->startInfo);
+		tft->setCursor(0, 75);
+		tft->printf("until: %s", OWOC.alert->endInfo);
 	    }
 	}
 	tft->setTextColor(TFT_GREEN, TFT_BLACK);
@@ -440,13 +455,9 @@ const char *velocity_unit = (general_config.metric_units) ? "km/hr" : "mi/hr";
 #endif
 
 	for (int fo = 5; fo < 8 ; fo++) {
-	  //Date from epoch forecast[fo].dayTime
-	  long DoW = OWOC.forecast[fo].dayTime / 86400L;
-	  int day_of_week = (DoW + 4) % 7;
-
 #if DBGWEATHER
 	  Serial.printf("%s: high = %.0f %c, low %.0f %c\n",
-	      OWOC.short_names[day_of_week],
+	      OWOC.forecast[fo].weekDayName,
 	      OWOC.forecast[fo].temperatureHigh, temp_unit,
 	      OWOC.forecast[fo].temperatureLow, temp_unit);
 
@@ -463,7 +474,7 @@ const char *velocity_unit = (general_config.metric_units) ? "km/hr" : "mi/hr";
 #endif
 	  int offset = 95;
 	  tft->setCursor(60 * (fo-5) + 20, offset);
-	  tft->print(OWOC.short_names[day_of_week]);
+	  tft->print(OWOC.forecast[fo].weekDayName);
 	  offset += 15;
 	  tft->setCursor(60 * (fo-5), offset);
 	  tft->printf("%.0f F hi", OWOC.forecast[fo].temperatureHigh);
@@ -488,77 +499,78 @@ const char *velocity_unit = (general_config.metric_units) ? "km/hr" : "mi/hr";
 	  }
 	}
       }
-      else if(mode == PAGE3 && mode != lastmode) {
+      else if(alert_pages
+      && mode >= PAGE3
+      && mode < ICONTEST
+      && mode != lastmode) {
+	char pagebuf[32 * 15];
+	int sx, sy, pagelen, eop;
+	char oc;
 	lastmode = mode;
 	tft->fillScreen(TFT_BLACK);
 	tft->setTextColor(TFT_YELLOW, TFT_BLACK);
-	tft->drawCentreString("Weather Alert Page 2",  half_width, 0, 2);
+	sprintf(buff, "Weather Alert Page %d", mode - 1);
+	tft->drawCentreString(buff, half_width, 0, 2);
 	tft->setTextColor(TFT_GREEN, TFT_BLACK);
 	tft->setTextFont(2);
-	if(alert_pages) {
-	  char pagebuf[32 * 15];
-	  int pagelen = 30 * 15 - 1;
-	  strncpy(pagebuf, OWOC.alert->summary, sizeof(pagebuf));
-	  pagebuf[pagelen] = '\0';
-#if DBGWEATHER
-	  Serial.printf("alert.summary part 1 = %s\n", pagebuf);
-#endif
-	  for(char *cp = pagebuf ; *cp ; cp++) {
-	      if((*cp == '\n' || *cp == '\r') && *(cp + 1) != '*') {
-		  *cp = ' ';
-	      }
-	  }
-	  tft->setCursor(0, 15);
-	  tft->printf("%s", pagebuf);
+	pagelen = 30 * 15 - 1;
+	if(!page2sumidx[mode - PAGE3] && mode > PAGE3) {
+	  page2sumidx[mode - PAGE3] = last_char_index;
 	}
-      }
-      else if(mode == PAGE4 && mode != lastmode) {
-	lastmode = mode;
-	tft->fillScreen(TFT_BLACK);
-	tft->setTextColor(TFT_YELLOW, TFT_BLACK);
-	tft->drawCentreString("Weather Alert Page 3",  half_width, 0, 2);
-	tft->setTextColor(TFT_GREEN, TFT_BLACK);
-	tft->setTextFont(2);
-	if(alert_pages) {
-	  char pagebuf[32 * 15];
-	  int pagelen = 30 * 15 - 1;
-	  strncpy(pagebuf, &OWOC.alert->summary[420], sizeof(pagebuf));
-	  pagebuf[pagelen] = '\0';
+	last_char_index = page2sumidx[mode - PAGE3];
+	int clen = ((alert_summary_length + 1) > sizeof(pagebuf)) ? sizeof(pagebuf) : alert_summary_length + 1 ;
+	strncpy(pagebuf, &OWOC.alert->summary[page2sumidx[mode - PAGE3]], clen);
+	oc = pagebuf[pagelen];
+	pagebuf[pagelen] = '\0';
 #if DBGWEATHER
-	  Serial.printf("alert.summary part 2 = %s\n", pagebuf);
+	Serial.printf("alert.summary part %d = %s\n", mode - PAGE3, pagebuf);
 #endif
-	  for(char *cp = pagebuf ; *cp ; cp++) {
-	      if((*cp == '\n' || *cp == '\r') && *(cp + 1) != '*') {
-		  *cp = ' ';
-	      }
-	  }
-	  tft->setCursor(0, 15);
-	  tft->printf("%s", pagebuf);
+	for(char *cp = pagebuf ; *cp ; cp++) {
+	    if((*cp == '\n' || *cp == '\r') && *(cp + 1) != '*') {
+		*cp = ' ';
+	    }
 	}
-      }
-      else if(mode == PAGE5 && mode != lastmode) {
-	lastmode = mode;
-	tft->fillScreen(TFT_BLACK);
-	tft->setTextColor(TFT_YELLOW, TFT_BLACK);
-	tft->drawCentreString("Weather Alert Page 4",  half_width, 0, 2);
-	tft->setTextColor(TFT_GREEN, TFT_BLACK);
-	tft->setTextFont(2);
-	if(alert_pages) {
-	  char pagebuf[32 * 15];
-	  int pagelen = 30 * 15 - 1;
-	  strncpy(pagebuf, &OWOC.alert->summary[840], sizeof(pagebuf));
-	  pagebuf[pagelen] = '\0';
+	tft->setCursor(0, 15);
+	tft->printf("%s", pagebuf);
+	sx = tft->getCursorX();
+	sy = tft->getCursorY();
 #if DBGWEATHER
-	  Serial.printf("alert.summary part 3 = %s\n", pagebuf);
+	Serial.printf("after big chunk, x = %d, y = %d\n", sx, sy);
+	Serial.printf("alert_summary_length = %d, last_char_index = %d\n", alert_summary_length, last_char_index);
 #endif
-	  for(char *cp = pagebuf ; *cp ; cp++) {
-	      if((*cp == '\n' || *cp == '\r') && *(cp + 1) != '*') {
-		  *cp = ' ';
-	      }
-	  }
-	  tft->setCursor(0, 15);
-	  tft->printf("%s", pagebuf);
+	last_char_index += strlen(pagebuf);
+	pagebuf[pagelen] = oc;
+	eop = 0;
+	if(alert_summary_length <= last_char_index) {
+	  eop = 1;
+	  alert_pages = mode - 2;
+#if DBGWEATHER
+	  Serial.printf("line %d, alert_summary_length = %d, last_char_index = %d, eop = %d, alert_pages = %d\n", __LINE__, alert_summary_length, last_char_index, eop, alert_pages);
+#endif
 	}
+	while(sx < 180 && !eop) {
+	  tft->printf("%c", pagebuf[last_char_index++]);
+	  sx = tft->getCursorX();
+	  if(sx > 120 && pagebuf[last_char_index] == ' ') {
+	    eop = 1;
+	  }
+	  if(alert_summary_length <= last_char_index) {
+	    eop = 1;
+	    alert_pages = mode - 2;
+#if DBGWEATHER
+	    Serial.printf("line %d, alert_summary_length = %d, last_char_index = %d, eop = %d, alert_pages = %d\n", __LINE__, alert_summary_length, last_char_index, eop, alert_pages);
+#endif
+	  }
+	}
+	if(alert_summary_length > last_char_index) {
+	  tft->setTextColor(TFT_RED, TFT_BLACK);
+	  tft->drawString("More ->", 190, 223, 2);
+	  tft->setTextColor(TFT_GREEN, TFT_BLACK);
+	}
+#if DBGWEATHER
+	Serial.printf("after creeping to end, x = %d\n", sx);
+	Serial.printf("last_char_index = %d\n", last_char_index);
+#endif
       }
       else if(mode == ICONTEST && mode != lastmode) {
 	lastmode = mode;
