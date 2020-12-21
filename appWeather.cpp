@@ -166,7 +166,7 @@ void connectToWiFi(struct WiFiAp *);
 void appWeather(void) {
 uint32_t this_sec;
 int err, ecnt, lastmode, mode, mSelect, this_wifi, alert_pages;
-int last_char_index, alert_summary_length, page2sumidx[10];
+int last_char_index, alert_summary_length, page2sumidx[10], owcres;
 int16_t x, y;
 char temp_unit = (general_config.metric_units) ? 'C' : 'F';
 const char *velocity_unit = (general_config.metric_units) ? "km/hr" : "mi/hr";
@@ -252,8 +252,14 @@ const char *velocity_unit = (general_config.metric_units) ? "km/hr" : "mi/hr";
   }
 #define ALERT_TEST_LOCATION 0
 #if ALERT_TEST_LOCATION
-    my_latitude = 47.1848;
-    my_longitude = -123.615;
+    // my_latitude = 47.1848;
+    // my_longitude = -123.615;
+    // my_latitude = 31.8354411
+    // my_longitude = -93.2885038;
+    // my_latitude = 13.421129;	// Guam
+    // my_longitude = 144.73972;
+    my_latitude = 29.9038;	// India
+    my_longitude = -73.877190;
 #endif
 #if DBGWEATHER
   Serial.printf("IP address -> my_latitude %f my_longitude %f\n", my_latitude, my_longitude);
@@ -270,13 +276,25 @@ const char *velocity_unit = (general_config.metric_units) ? "km/hr" : "mi/hr";
      NULL == EXCLUDE NONE (Send ALL Info)
   */
 
-  OWOC.setOpenWeatherKey(ONECALLKEY);
-  OWOC.setLatLon(my_latitude, my_longitude);
+  owcres = OWOC.setOpenWeatherKey(general_config.owm_api_key);
+  if(owcres) {
+    Serial.printf("OWOC error: %s\n", OWOC.getErrorMsgs(owcres));
+    goto ExitWeather;
+  }
+  owcres = OWOC.setLatLon(my_latitude, my_longitude);
+  if(owcres) {
+    Serial.printf("OWOC error: %s\n", OWOC.getErrorMsgs(owcres));
+    goto ExitWeather;
+  }
   OWOC.setExcl(EXCL_H + EXCL_M);
   OWOC.setUnits(general_config.metric_units ? METRIC : IMPERIAL);
 
+#if OWM_LANGUAGE_FEATURE
+  OWOC.setLanguage(general_config.language);
+#endif
+
   my_idle();
-  int owcres = OWOC.parseWeather();
+  owcres = OWOC.parseWeather();
   if(owcres) {
     Serial.printf("OWOC error: %s\n", OWOC.getErrorMsgs(owcres));
   }
@@ -503,7 +521,6 @@ const char *velocity_unit = (general_config.metric_units) ? "km/hr" : "mi/hr";
       && mode >= PAGE3
       && mode < ICONTEST
       && mode != lastmode) {
-	char pagebuf[32 * 15];
 	int sx, sy, pagelen, eop;
 	char oc;
 	lastmode = mode;
@@ -513,33 +530,49 @@ const char *velocity_unit = (general_config.metric_units) ? "km/hr" : "mi/hr";
 	tft->drawCentreString(buff, half_width, 0, 2);
 	tft->setTextColor(TFT_GREEN, TFT_BLACK);
 	tft->setTextFont(2);
-	pagelen = 30 * 15 - 1;
+	pagelen = 30 * 12;
 	if(!page2sumidx[mode - PAGE3] && mode > PAGE3) {
 	  page2sumidx[mode - PAGE3] = last_char_index;
 	}
 	last_char_index = page2sumidx[mode - PAGE3];
-	int clen = ((alert_summary_length + 1) > sizeof(pagebuf)) ? sizeof(pagebuf) : alert_summary_length + 1 ;
-	strncpy(pagebuf, &OWOC.alert->summary[page2sumidx[mode - PAGE3]], clen);
-	oc = pagebuf[pagelen];
-	pagebuf[pagelen] = '\0';
-#if DBGWEATHER
-	Serial.printf("alert.summary part %d = %s\n", mode - PAGE3, pagebuf);
-#endif
-	for(char *cp = pagebuf ; *cp ; cp++) {
-	    if((*cp == '\n' || *cp == '\r') && *(cp + 1) != '*') {
-		*cp = ' ';
-	    }
+	char * pp = &OWOC.alert->summary[last_char_index];
+	char * pe;
+	if(last_char_index + pagelen > strlen(OWOC.alert->summary)) {
+	  pe = &OWOC.alert->summary[alert_summary_length - 1];
 	}
+	else {
+	  pe = &OWOC.alert->summary[last_char_index + pagelen];
+	}
+	oc = *pe;
+#if DBGWEATHER
+	Serial.printf("alert.summary part %d = %s\n", mode - PAGE3, pp);
+#endif
+	if(last_char_index == 0) {
+	  for(char *cp = pp ; *cp ; cp++) {
+	      if((*cp == '\n' || *cp == '\r')
+	      && !(*(cp + 1) == '*' || *(cp + 1) == '.')
+	      && !(*(cp + 2) >= 'A' && *(cp + 2) <= 'Z')) {
+		  *cp = ' ';
+	      }
+	  }
+	}
+	*pe = '\0';
 	tft->setCursor(0, 15);
-	tft->printf("%s", pagebuf);
+	tft->printf("%s", pp);
 	sx = tft->getCursorX();
 	sy = tft->getCursorY();
 #if DBGWEATHER
 	Serial.printf("after big chunk, x = %d, y = %d\n", sx, sy);
-	Serial.printf("alert_summary_length = %d, last_char_index = %d\n", alert_summary_length, last_char_index);
+	Serial.printf("line %d, alert_summary_length = %d, last_char_index = %d\n", __LINE__, alert_summary_length, last_char_index);
 #endif
-	last_char_index += strlen(pagebuf);
-	pagebuf[pagelen] = oc;
+	last_char_index += pe - pp;
+#if DBGWEATHER
+	Serial.printf("line %d, last_char_index = %d\n", __LINE__, last_char_index);
+#endif
+	*pe = oc;
+#if DBGWEATHER
+	Serial.printf("REMAINDER = %s\n", pe);
+#endif
 	eop = 0;
 	if(alert_summary_length <= last_char_index) {
 	  eop = 1;
@@ -548,17 +581,24 @@ const char *velocity_unit = (general_config.metric_units) ? "km/hr" : "mi/hr";
 	  Serial.printf("line %d, alert_summary_length = %d, last_char_index = %d, eop = %d, alert_pages = %d\n", __LINE__, alert_summary_length, last_char_index, eop, alert_pages);
 #endif
 	}
-	while(sx < 180 && !eop) {
-	  tft->printf("%c", pagebuf[last_char_index++]);
+	while((sx < 180 || sy < 220) && !eop && OWOC.alert->summary[last_char_index]) {
+	  tft->printf("%c", OWOC.alert->summary[last_char_index++]);
 	  sx = tft->getCursorX();
-	  if(sx > 120 && pagebuf[last_char_index] == ' ') {
+	  sy = tft->getCursorY();
+	  if(sy > 220 && sx > 120 && OWOC.alert->summary[last_char_index] == ' ') {
+	    eop = 1;
+#if DBGWEATHER
+	    Serial.printf("last line break on a space, last_char_index = %d\n", last_char_index);
+#endif
+	  }
+	  if(!OWOC.alert->summary[last_char_index]) {
 	    eop = 1;
 	  }
 	  if(alert_summary_length <= last_char_index) {
 	    eop = 1;
 	    alert_pages = mode - 2;
 #if DBGWEATHER
-	    Serial.printf("line %d, alert_summary_length = %d, last_char_index = %d, eop = %d, alert_pages = %d\n", __LINE__, alert_summary_length, last_char_index, eop, alert_pages);
+	    Serial.printf("line %d, END OF SUMMARY, alert_summary_length = %d, last_char_index = %d, eop = %d, alert_pages = %d\n", __LINE__, alert_summary_length, last_char_index, eop, alert_pages);
 #endif
 	  }
 	}
@@ -568,8 +608,8 @@ const char *velocity_unit = (general_config.metric_units) ? "km/hr" : "mi/hr";
 	  tft->setTextColor(TFT_GREEN, TFT_BLACK);
 	}
 #if DBGWEATHER
-	Serial.printf("after creeping to end, x = %d\n", sx);
-	Serial.printf("last_char_index = %d\n", last_char_index);
+	Serial.printf("line %d, after creeping to end, x = %d, y = %d\n", __LINE__, sx, sy);
+	Serial.printf("line %d, last_char_index = %d\n", __LINE__, last_char_index);
 #endif
       }
       else if(mode == ICONTEST && mode != lastmode) {
