@@ -321,7 +321,7 @@ static void button_handler(lv_obj_t *obj, lv_event_t event) {
     // Serial.printf("button_handler() event = %d\n", (int)event);
     if (event == LV_EVENT_CLICKED && !event_result) {
         Serial.println(F("Clicked"));
-	event_result = 1;
+	event_result = BUTTON;
 	event_value = 1;
 	lv_obj_t * label = lv_obj_get_child(obj, NULL);
 	char * txt = lv_label_get_text(label);
@@ -334,7 +334,7 @@ static void button_handler(lv_obj_t *obj, lv_event_t event) {
 #if NEEDED
     else if (event == LV_EVENT_VALUE_CHANGED && !event_result) {
         Serial.println(F("Toggled"));
-	event_result = 1;
+	event_result = BUTTON;
 	lv_obj_t * label = lv_obj_get_child(obj, NULL);
 	char * txt = lv_label_get_text(label);
 	// Serial.printf("button label is %s\n", txt);
@@ -360,7 +360,7 @@ static void kb_event_cb4(lv_obj_t * _kb, lv_event_t e) {
     }
     if(e == LV_EVENT_APPLY) {
       // announce that the user is finished with the box.
-      event_result = 3;
+      event_result = KEYBOARD;
       event_value = 4;
       if(kb) {
 	lv_obj_del(kb);	// delete the keyboard if done.
@@ -394,7 +394,7 @@ static void dd_event_cb1(lv_obj_t * obj, lv_event_t event)
     char buf[32];
     lv_dropdown_get_selected_str(obj, buf, sizeof(buf));
     printf("Option: %s\n", buf);
-    event_result = 4;
+    event_result = DROPDOWN;
     event_value = lv_dropdown_get_selected(obj);
     dropdown_num = 1;
   }
@@ -406,7 +406,7 @@ static void dd_event_cb3(lv_obj_t * obj, lv_event_t event)
     char buf[32];
     lv_dropdown_get_selected_str(obj, buf, sizeof(buf));
     Serial.printf("Option: %s\n", buf);
-    event_result = 4;
+    event_result = DROPDOWN;
     event_value = lv_dropdown_get_selected(obj);
     dropdown_num = 3;
   }
@@ -417,6 +417,12 @@ static void dd_event_cb3(lv_obj_t * obj, lv_event_t event)
 #else
 #define PARENT lv_scr_act()
 #endif
+
+// GUI creates:
+// Done button
+// Timezone dropdown
+// SSID dropdown
+// Password textarea
 
 static void page_create(lv_obj_t * parent) {
 char buff[512];
@@ -532,13 +538,13 @@ ReStart:
     delay(5);
     if(event_result) {
       switch(event_result) {
-	case 1 :	// button
+	case BUTTON :	// button
 	  Serial.printf("eloop: button %d, value = %d\n", button_num, event_value);
 	  switch (button_num) {
 	    case 1 :
 	      Serial.print(F("User hit Done\n"));
 	      button_num = 0;
-	      event_result = 0;
+	      event_result = NILEVENT;
               if(kb) {
 		lv_obj_del(kb);	// delete the keyboard if done.
 		kb = NULL;
@@ -546,9 +552,9 @@ ReStart:
 	      goto Exit;
 	  }
 	  break;
-	case 2 :	// slider
+	case SLIDER :	// slider
 	  break;
-	case 3 :	// text box
+	case KEYBOARD :	// text box
 	  if(event_value == 4) {	// user is done, save wifi password
 	    const char * txt = lv_textarea_get_text(ta4);
 	    Serial.printf("set WiFi password = %s\n", txt);
@@ -556,7 +562,7 @@ ReStart:
 	    pass_has_been_set++;
 	  }
 	  break;
-	case 4 :	// dropdown
+	case DROPDOWN :	// dropdown
 	  if(dropdown_num == 1) {
 	    Serial.printf("set timezone to index %d -> %d\n", event_value, tz_opts[event_value].tzone);
 	    utzidx = tz_opts[event_value].tzone;
@@ -569,7 +575,7 @@ ReStart:
 	  }
 	  break;
       }
-      event_result = 0;
+      event_result = NILEVENT;
     }
   }
 Exit:
