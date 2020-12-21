@@ -236,12 +236,13 @@ void setup() {
     general_config.alarm_enable = false;
     general_config.twelve_hr_clock = 0;
     general_config.metric_units = false;
+    strcpy_P(general_config.owm_api_key, PSTR(ONECALLKEY));
+    strcpy_P(general_config.language, PSTR(MY_LANGUAGE));
+    strncpy_P(general_config.my_latitude, PSTR(HOME_LATITUDE), sizeof(general_config.my_latitude));
+    strncpy_P(general_config.my_longitude, PSTR(HOME_LONGITUDE), sizeof(general_config.my_longitude));
     EEPROM_writeAnything(0, general_config);
     EEPROM.commit();
   }
-  general_config.metric_units = false;
-  EEPROM_writeAnything(0, general_config);
-  EEPROM.commit();
   chosen_skin = general_config.clock_skin;
   tzindex = general_config.local_tzindex;
   //Create a program that allows the required message objects and group flags

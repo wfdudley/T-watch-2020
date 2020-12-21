@@ -137,12 +137,12 @@ int result;
       strcpy(city, HOME_CITY);
     }
     if(!str_latitude[0]) {
-      strcpy(str_latitude, HOME_LATITUDE);
+      strncpy(str_latitude, general_config.my_latitude, sizeof(str_latitude));
       Serial.printf("at home or latitude get failed, using default %s\n", str_latitude);
       result = -1;
     }
     if(!str_longitude[0]) {
-      strcpy(str_longitude, HOME_LONGITUDE);
+      strncpy(str_longitude, general_config.my_longitude, sizeof(str_longitude));
       Serial.printf("at home or longitude get failed, using default %s\n", str_longitude);
       result = -1;
     }

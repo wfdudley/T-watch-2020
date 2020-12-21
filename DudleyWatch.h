@@ -6,6 +6,9 @@
   config changes to EEPROM in appSettings.
 
   2020 09 23 -- added sound and alarm values to general_config
+  2020 12 10 -- added appWeather()
+  2020 12 18 -- added alerts to appWeather()
+  2020 12 19 -- added weatherSetup()
 
   W.F.Dudley Jr.
 */
@@ -89,6 +92,7 @@ void resetStepCounter(void);	// like it says on the tin
 void appWeather(void);		// get the weather
 void appTouch(void);		// touch screen test
 void appDelWiFi(void);		// delete one SSID from acc_pts.txt
+void weatherSettings(void);	// settings page for appWeather
 
 void LCARS_Time(uint8_t);
 void Basic_Time(uint8_t);
@@ -203,7 +207,7 @@ EXTERN struct menu_item watch_apps3[]
     { ""          ,  "", NULL },
     { "Man SetTime", "", (void *)&appSetTime },
     { ""          ,  "", NULL },
-    { ""          ,  "", NULL },
+    { "Weather Set", "", (void *)weatherSettings },
     { "Apps 1",      "", (void *)&switch_menu },
     { "Apps 2",      "", (void *)&switch_menu },
     { "Clock",       "", NULL }
@@ -229,7 +233,7 @@ EXTERN uint32_t last_activity;
 EXTERN uint8_t chosen_skin;
 EXTERN int step_counter, last_step_counter;
 
-#define CONFIG_REVISION 12347L
+#define CONFIG_REVISION 12349L
 typedef struct config_t {
     long magic_number;
     uint8_t clock_skin;
@@ -250,6 +254,10 @@ typedef struct config_t {
     int8_t alarm_volume;
     int8_t twelve_hr_clock;
     boolean metric_units;
+    char owm_api_key[40];
+    char language[6];
+    char my_latitude[20];
+    char my_longitude[20];
 } CONFIGGEN;
 
 EXTERN CONFIGGEN general_config;
