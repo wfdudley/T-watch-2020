@@ -166,4 +166,15 @@ To compute 2 + 3, do: 2, swipe down, 3, +
       <IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/2020-10-08_21.57.48.jpg"><br>Maze game
     </TD>
   </TR>
+  <TR>
+    <TD>
+      <IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/2020-12-21_17.00.16.jpg"><br>Weather App
+    </TD>
+    <TD>
+      &nbsp;
+    </TD>
+    <TD>
+      &nbsp;
+    </TD>
+  </TR>
 </TABLE>
