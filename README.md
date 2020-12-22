@@ -15,6 +15,8 @@ This builds with Arduino IDE version 1.8.13.  It also requires:
   </LI>
   <LI><A HREF="https://github.com/JHershey69/OpenWeatherOneCall" TARGET=_blank>OpenWeatherOneCall library</A>
   </LI>
+  <LI><A HREF="https://github.com/knolleary/pubsubclient" TARGET=_blank>PubSubClient (MQTT) library</A>
+  </LI>
 </UL>      
 
 I took bits from Dan Geiger's watch code (https://www.instructables.com/Lilygo-T-Watch-2020-Arduino-Framework/),
