@@ -7,6 +7,8 @@ This builds with Arduino IDE version 1.8.13.  It also requires:
   </LI>
   <LI><A HREF="https://github.com/bxparks/AceTime" TARGET=_blank>The AceTime library</A>
   </LI>
+  <LI><A HREF="https://github.com/bblanchon/ArduinoJson" TARGET=_blank>The ArduinoJson library</A>
+  </LI>
   <LI><A HREF="https://github.com/Bodmer/TFT_eSPI" TARGET=_blank>Bodmer's TFT_eSPI library</A>
   </LI>
   <LI><A HREF="https://github.com/earlephilhower/ESP8266Audio" TARGET=_blank>ESP8266Audio library</A>
