@@ -179,7 +179,7 @@ To compute 2 + 3, do: 2, swipe down, 3, +
       <IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/2020-12-21_17.00.16.jpg"><br>Weather App
     </TD>
     <TD>
-      &nbsp;
+      <IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/2020-12-22_wifi_scan.jpg"><br>WiFi scanner App
     </TD>
     <TD>
       &nbsp;
