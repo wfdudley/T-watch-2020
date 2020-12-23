@@ -93,6 +93,7 @@ void appWeather(void);		// get the weather
 void appTouch(void);		// touch screen test
 void appDelWiFi(void);		// delete one SSID from acc_pts.txt
 void weatherSettings(void);	// settings page for appWeather
+void appWiFiScan(void);		// wifi scanner tool
 
 void LCARS_Time(uint8_t);
 void Basic_Time(uint8_t);
@@ -200,7 +201,7 @@ EXTERN struct menu_item watch_apps3[]
 #ifdef __MAIN__
 = {
     { "Touch Test",  "", (void *)&appTouch },
-    { ""          ,  "", NULL },
+    { "WiFi Scan",   "", (void *)appWiFiScan },
     { "Reset Step",  "", (void *)resetStepCounter },
     { ""          ,  "", NULL },
     { "Paint",       "", (void *)&appPaint },

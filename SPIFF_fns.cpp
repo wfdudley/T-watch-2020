@@ -14,7 +14,10 @@
    https://github.com/me-no-dev/arduino-esp32fs-plugin */
 #define FORMAT_SPIFFS_IF_FAILED true
 
+boolean SPIFF_quiet = 1;
+
 void listDir(fs::FS &fs, const char * dirname, uint8_t levels){
+    if(SPIFF_quiet) return;
     Serial.printf("Listing directory: %s\r\n", dirname);
 
     File root = fs.open(dirname);
@@ -62,6 +65,7 @@ void appendFile(fs::FS &fs, const char * path, const char * message){
 }
 
 void readFile(fs::FS &fs, const char * path) {
+    if(SPIFF_quiet) return;
     Serial.printf("Reading file: %s\r\n", path);
 
     File file = fs.open(path);
@@ -224,7 +228,9 @@ int best_strength;
   while(ifile.available()) {
     char c;
     c = ifile.read();
-    Serial.write(c);
+    if(!SPIFF_quiet) {
+      Serial.write(c);
+    }
     if(c == '\t') {
       cp = 0;
       phase++;
@@ -391,7 +397,9 @@ int errcnt = 0;
   while(ifile.available()) {
     char c;
     c = ifile.read();
-    Serial.write(c);
+    if(!SPIFF_quiet) {
+      Serial.write(c);
+    }
     if(c == '\t') {
       cp = 0;
       phase++;
