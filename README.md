@@ -80,7 +80,11 @@ and bits from SimpleWatch (the shipped demo), and added many new features.
   </LI>
   <LI> An app to allow deletion of WiFi access point from the internal flash storage (SPIFF file acc_pts.txt).  This is useful if you enter the password incorrectly, or the password changes.  Simply delete the SSID and then re-enter it by using the NTP Time app.
   </LI>
-  <LI> A weather app.  The app attempts to figure your location using your IP address, which works pretty well with WiFi that is not a cell phone hotspot.  The reason cell phone hotspots give a bad location is that your cell data may be routed to a city 100 miles away before it gets a routable IP address and gets to the internet.  So the weather location may be off by quite a bit when using a cell phone hotspot for connectivity.  You'll need an OpenWeatherMap.org API key, which was free at time of writing.  Also note the <b>LIBRARY REQUIREMENT</b> listed at the beginning of the file.  The weather app shows today's conditions, the conditions for the next week, and any National Weather Service alerts if there are any for "your" location.
+  <LI> A weather app.  The app attempts to figure your location using your IP address, which works pretty well with WiFi that is not a cell phone hotspot.  The reason cell phone hotspots give a bad location is that your cell data may be routed to a city 100 miles away before it gets a routable IP address and gets to the internet.  So the weather location may be off by quite a bit when using a cell phone hotspot for connectivity.  You'll need an OpenWeatherMap.org API key, which was free at time of writing.  Also note the <b>LIBRARY REQUIREMENT</b> listed at the beginning of the file.  The weather app shows today's conditions, the conditions for the next week, and any National Weather Service alerts if there are any for "your" location.  Swipe left and right to see different pages, swipe down to exit.
+  </LI>
+  <LI> A weather settings app.  Allows you to set your home latitude, home longitude, the openweathermap.org API key, and metric/imperial units.  When changing a text box content, make sure to hit the check icon on the keyboard to tell the GUI that you've made a change.
+  </LI>
+  <LI> A WiFi scanner app.  It supplies two views: (1) list of access points, channel, RSSI; (2) graphical representation, channel vs strength.  Swipe left or right to switch views.  Swipe down to exit.
   </LI>
 </UL>
 
