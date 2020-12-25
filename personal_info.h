@@ -11,6 +11,9 @@
 
 #define MY_TIMEZONE TZ_EST
 
+// language for weather information.  Feature not supported yet.
+#define MY_LANGUAGE "en"
+
 // your personal keys
 // get this one from openweathermap.org
 #define ONECALLKEY "00000000001111111122222222333333"
