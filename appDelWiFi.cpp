@@ -25,8 +25,24 @@ File ifile;
 
 int get_which_ap_to_delete_from_user(void);
 
+static uint8_t event_result;
+static int16_t event_value;
+static uint8_t button_num;
+static uint8_t dropdown_num;
+static lv_style_t style_box;	// what good is this?
+static lv_obj_t * tv;
+static lv_obj_t * ta4;	// WiFi password text area
+static lv_obj_t * kb;
+static lv_obj_t * dd1;
+static void kb_event_cb4(lv_obj_t * ta, lv_event_t e);
+static uint32_t utzidx;
+static char ussid[66];
+
 void appDelWiFi(void) {
 int res;
+  button_num = 0;
+  dropdown_num = 0;
+  event_result = NILEVENT;
   if(!file_exists("/acc_pts.txt")) {
     tft->setTextColor(TFT_YELLOW, TFT_BLACK);
     tft->setTextSize(1);
@@ -48,24 +64,11 @@ int res;
   return;
 }
 
-static uint8_t event_result;
-static int16_t event_value;
-static uint8_t button_num;
-static uint8_t dropdown_num;
-static lv_style_t style_box;	// what good is this?
-static lv_obj_t * tv;
-static lv_obj_t * ta4;	// WiFi password text area
-static lv_obj_t * kb;
-static lv_obj_t * dd1;
-static void kb_event_cb4(lv_obj_t * ta, lv_event_t e);
-static uint32_t utzidx;
-static char ussid[66];
-
 static void button_handler(lv_obj_t *obj, lv_event_t event) {
     // Serial.printf("button_handler() event = %d\n", (int)event);
     if (event == LV_EVENT_CLICKED && !event_result) {
         Serial.println(F("Clicked"));
-	event_result = 1;
+	event_result = BUTTON;
 	event_value = 1;
 	lv_obj_t * label = lv_obj_get_child(obj, NULL);
 	char * txt = lv_label_get_text(label);
@@ -78,7 +81,7 @@ static void button_handler(lv_obj_t *obj, lv_event_t event) {
 #if NEEDED
     else if (event == LV_EVENT_VALUE_CHANGED && !event_result) {
         Serial.println(F("Toggled"));
-	event_result = 1;
+	event_result = BUTTON;
 	lv_obj_t * label = lv_obj_get_child(obj, NULL);
 	char * txt = lv_label_get_text(label);
 	// Serial.printf("button label is %s\n", txt);
@@ -98,7 +101,7 @@ static void dd_event_cb1(lv_obj_t * obj, lv_event_t event)
     char buf[32];
     lv_dropdown_get_selected_str(obj, buf, sizeof(buf));
     printf("Option: %s\n", buf);
-    event_result = 4;
+    event_result = DROPDOWN;
     event_value = lv_dropdown_get_selected(obj);
     dropdown_num = 1;
   }
@@ -124,11 +127,19 @@ int selected;
 
   lv_obj_t *btn1 = lv_btn_create(h, NULL);
   lv_obj_set_event_cb(btn1, button_handler);
-  lv_obj_align(btn1, NULL, LV_ALIGN_CENTER, -20, 90);
+  lv_obj_align(btn1, NULL, LV_ALIGN_CENTER, -40, 90);
 
   label = lv_label_create(btn1, NULL);
   lv_obj_set_size(btn1, 100, 50); //set the button size
   lv_label_set_text(label, "Delete");
+
+  lv_obj_t *btn2 = lv_btn_create(h, NULL);
+  lv_obj_set_event_cb(btn2, button_handler);
+  lv_obj_align(btn2, NULL, LV_ALIGN_CENTER,  70, 90);
+
+  label = lv_label_create(btn2, NULL);
+  lv_obj_set_size(btn2, 100, 50); //set the button size
+  lv_label_set_text(label, "Cancel");
 
   /* Create the dropdown for SSID */
   dd1 = lv_dropdown_create(h, NULL);
@@ -166,21 +177,23 @@ ReStart:
     delay(5);
     if(event_result) {
       switch(event_result) {
-	case 1 :	// button
+	case BUTTON :	// button
 	  Serial.printf("eloop: button %d, value = %d\n", button_num, event_value);
 	  switch (button_num) {
 	    case 1 :
-	      Serial.print(F("User hit Done\n"));
-	      button_num = 0;
-	      event_result = 0;
+	      Serial.print(F("User hit Delete\n"));
+	      goto Exit;
+	    case 2 :
+	      Serial.print(F("User hit Cancel\n"));
+	      strcpy(ussid, "none chosen");
 	      goto Exit;
 	  }
 	  break;
-	case 2 :	// slider
+	case SLIDER :	// slider
 	  break;
-	case 3 :	// text box
+	case KEYBOARD :	// text box
 	  break;
-	case 4 :	// dropdown
+	case DROPDOWN :	// dropdown
 	  if(dropdown_num == 1) {
 	    char *cp1, *cp2;
 	    buff[4096];
@@ -201,7 +214,7 @@ ReStart:
 	  }
 	  break;
       }
-      event_result = 0;
+      event_result = NILEVENT;
     }
   }
 Exit:
