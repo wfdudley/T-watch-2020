@@ -190,6 +190,7 @@ void test_spiffs(void) {
 #endif
 
 void build_acc_pts_file (void) {
+  // uncomment to re-create the acc_pts.txt file from my_WiFi.h contents
   // deleteFile(SPIFFS, "/acc_pts.txt");
   if(!SPIFFS.exists("/acc_pts.txt")) {
     Serial.println(F("can't find acc_pts.txt, creating it"));
