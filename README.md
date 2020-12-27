@@ -48,7 +48,7 @@ and bits from SimpleWatch (the shipped demo), and added many new features.
   </LI>
   <LI> MQTT monitor and control (for your home automation system, for example)
   </LI>
-  <LI> 7 pages of Settings in two groups (alarm and "other") using the LVGL framework.  Settings are stored in EEPROM.
+  <LI> 9 pages of Settings in three groups (alarm, weather and "other") using the LVGL framework.  Settings are stored in EEPROM.
   </LI>
   <LI> A "maze" game.  Swipe or tilt watch left, right, up, down to move your cursor.  Try to move it to the red endpoint.  CW circle gesture to exit.
   </LI>
@@ -78,7 +78,7 @@ and bits from SimpleWatch (the shipped demo), and added many new features.
   </LI>
   <LI> A simple calendar app.  Shows one month at a time, and you can navigate to any month using +month, -month, +year, -year buttons.  At compile time, you can define your own holidays and events like birthdays, which are highlighted different colors on the calendar display.  Touch anywhere not on a button to exit the app.
   </LI>
-  <LI> An app to allow deletion of WiFi access point from the internal flash storage (SPIFF file acc_pts.txt).  This is useful if you enter the password incorrectly, or the password changes.  Simply delete the SSID and then re-enter it by using the NTP Time app.
+  <LI> An app to allow deletion of WiFi access point from the internal flash storage (SPIFF file acc_pts.txt).  This is useful if you enter the password incorrectly, or the password changes.  Simply delete the SSID and then re-enter it by using the NTP Time app or the Weather app, which will ask you for the credentials when it fails to connect to wifi.
   </LI>
   <LI> A weather app.  The app attempts to figure your location using your IP address, which works pretty well with WiFi that is not a cell phone hotspot.  The reason cell phone hotspots give a bad location is that your cell data may be routed to a city 100 miles away before it gets a routable IP address and gets to the internet.  So the weather location may be off by quite a bit when using a cell phone hotspot for connectivity.  You'll need an OpenWeatherMap.org API key, which was free at time of writing.  Also note the <b>LIBRARY REQUIREMENT</b> listed at the beginning of the file.  The weather app shows today's conditions, the conditions for the next week, and any National Weather Service alerts if there are any for "your" location.  Swipe left and right to see different pages, swipe down to exit.
   </LI>
