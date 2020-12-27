@@ -5,7 +5,7 @@ This builds with Arduino IDE version 1.8.13.  It also requires:
 <UL>
   <LI><A HREF="https://github.com/Xinyuan-LilyGO/TTGO_TWatch_Library" TARGET=_blank>The "official" watch library</A>
   </LI>
-  <LI><A HREF="https://github.com/bxparks/AceTime" TARGET=_blank>The AceTime library</A>
+  <LI><A HREF="https://github.com/bxparks/AceTime" TARGET=_blank>The AceTime library</A>, which, as of 1.3.0, also requires the <A HREF="https://github.com/bxparks/AceCommon" TARGET=_blank>AceCommon library</A>
   </LI>
   <LI><A HREF="https://github.com/bblanchon/ArduinoJson" TARGET=_blank>The ArduinoJson library</A>
   </LI>
