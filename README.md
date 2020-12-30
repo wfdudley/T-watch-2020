@@ -17,7 +17,11 @@ This builds with Arduino IDE version 1.8.13.  It also requires:
   </LI>
   <LI><A HREF="https://github.com/knolleary/pubsubclient" TARGET=_blank>PubSubClient (MQTT) library</A>
   </LI>
-</UL>      
+</UL>
+
+This is a "sketch" in Arduino parlance, not a library.  That means you should do the "git clone" or unpack the zip file in the place where your Arduino sketches live.  It also means that you should rename the directory in which the code lives to "DudleyWatch", so it matches the name of the .ino file.  Or change the name of the .ino file to be the same as the directory (but with the .ino extension); I think either one should work.
+
+For more on building this sketch, see <b>Using this code on your watch</b>, below.
 
 I took bits from Dan Geiger's watch code (https://www.instructables.com/Lilygo-T-Watch-2020-Arduino-Framework/),
 and bits from SimpleWatch (the shipped demo), and added many new features.
