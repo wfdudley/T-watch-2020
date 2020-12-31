@@ -17,9 +17,13 @@ This builds with Arduino IDE version 1.8.13.  It also requires:
   </LI>
   <LI><A HREF="https://github.com/knolleary/pubsubclient" TARGET=_blank>PubSubClient (MQTT) library</A>
   </LI>
+  <LI><A HREF="https://travis-ci.org/arduino-libraries/NTPClient" TARGET=_blank>NTPClient library</A>
+  </LI>
 </UL>
 
 This is a "sketch" in Arduino parlance, not a library.  That means you should do the "git clone" or unpack the zip file in the place where your Arduino sketches live.  It also means that you should rename the directory in which the code lives to "DudleyWatch", so it matches the name of the .ino file.  Or change the name of the .ino file to be the same as the directory (but with the .ino extension); I think either one should work.
+
+Also note that when building with the Arduino IDE, you must set the partitioning to the special T-watch partitioning scheme: 2x6.5 MB APP, 3.6MB SPIFFS.
 
 For more on building this sketch, see <b>Using this code on your watch</b>, below.
 
