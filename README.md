@@ -25,7 +25,8 @@ This is a "sketch" in Arduino parlance, not a library.  That means you should do
 
 Also note that when building with the Arduino IDE, you must set the partitioning to the special T-watch partitioning scheme: 2x6.5 MB APP, 3.6MB SPIFFS.
 
-For more on building this sketch, see <b>Using this code on your watch</b>, below.
+For more on building this sketch, see <b>Using this code on your watch</b>, below.  For beginner/newbie instructions, starting from "I have a
+computer, but have not installed Arduino", then read <A HREF="https://github.com/wfdudley/T-watch-2020/blob/master/docs/how-to-build-watch.md">these beginner instructions</A>.
 
 I took bits from Dan Geiger's watch code (https://www.instructables.com/Lilygo-T-Watch-2020-Arduino-Framework/),
 and bits from SimpleWatch (the shipped demo), and added many new features.
