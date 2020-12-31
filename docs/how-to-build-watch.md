@@ -24,7 +24,7 @@ https://diyprojects.io/lilygowatch-esp32-ttgo-t-watch-get-started-ide-arduino-pl
 <LI> For AceTime (and AceCommon), ArduinoJson, OpenweatherOneCall, TFT_eSPI, PubSubClient, NTPClient, ESP8266Audio libraries, use the Arduino Library Manager to install them.
 </LI>
 <LI> Download the zip from here: https://github.com/wfdudley/T-watch-2020 and
-unzip (or do "git clone https://github.com/wfdudley/T-watch-2020") IN YOUR "Arduino" directory, or whereever you have decided to put your "sketches").
+unzip (or do "git clone https://github.com/wfdudley/T-watch-2020") IN YOUR "Arduino" directory, or wherever you have decided to put your "sketches").
 </LI>
 <LI> RENAME the sketch directory to "DudleyWatch".
 </LI>
