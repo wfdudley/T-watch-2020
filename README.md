@@ -99,7 +99,7 @@ and bits from SimpleWatch (the shipped demo), and added many new features.
 
 <H4>Using this code on your watch</H4>
 
-To use this code, edit personal_info.h to have the IP, port, username, password of your MQTT server (assuming you have one), plus your home latitiude, longitude, and city, and also your openweathermap.org API key.  Edit my_WiFi.h to have the SSID's, passwords, and timezones of all the WiFi access points you want your watch to connect with.  Finally, compile and upload to your watch.
+To use this code, edit personal_info.h to have the IP, port, username, password of your MQTT server (assuming you have one), plus your home latitiude, longitude, and city, and also your openweathermap.org API key.  Edit my_WiFi.h to have the SSID's, passwords, and timezones of all the WiFi access points you want your watch to connect with.  If you have an MQTT installation, edit appMQTT.h to change my topics to your topics. Finally, compile and upload to your watch.
 
 <H4>warning about the LVGL User Interface</H4>
 
