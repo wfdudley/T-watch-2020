@@ -413,7 +413,7 @@ int errcnt = 0;
 	Serial.printf("don't copy %s line to new file.\n", filessid);
       }
       else {
-	sprintf(buff, "%s\t%s\t%lu\n", filessid, pass, tzonestr);
+	sprintf(buff, "%s\t%s\t%s\n", filessid, pass, tzonestr);
 	Serial.printf("COPY: '%s'\n", buff);
 	if(ofile.print(buff)){
 	  Serial.println(F("- copy succeeded"));
