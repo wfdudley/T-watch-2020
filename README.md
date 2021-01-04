@@ -95,6 +95,8 @@ and bits from SimpleWatch (the shipped demo), and added many new features.
   </LI>
   <LI> A WiFi scanner app.  It supplies two views: (1) list of access points, channel, RSSI; (2) graphical representation, channel vs strength.  Swipe left or right to switch views.  Swipe down to exit.
   </LI>
+  <LI> A Color Picker app.  It displays a palette of many colors, and when you touch the screen, it displays the R,G,B values.  To exit the app, touch the lower left corner (outlined with light grey lines).
+  </LI>
 </UL>
 
 <H4>Using this code on your watch</H4>

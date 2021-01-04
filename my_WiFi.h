@@ -15,7 +15,7 @@
 typedef struct WiFiAP {
     char *ssid;
     char *pass;
-    int tzone;
+    uint32_t tzone;
 } WIFIAP;
 
 EXTERN WIFIAP AccessPoints[]

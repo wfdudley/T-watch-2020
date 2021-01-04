@@ -94,6 +94,7 @@ void appTouch(void);		// touch screen test
 void appDelWiFi(void);		// delete one SSID from acc_pts.txt
 void weatherSettings(void);	// settings page for appWeather
 void appWiFiScan(void);		// wifi scanner tool
+void appColorPicker(void);
 
 void LCARS_Time(uint8_t);
 void Basic_Time(uint8_t);
@@ -207,7 +208,7 @@ EXTERN struct menu_item watch_apps3[]
     { "Paint",       "", (void *)&appPaint },
     { ""          ,  "", NULL },
     { "Man SetTime", "", (void *)&appSetTime },
-    { ""          ,  "", NULL },
+    { "ColorPicker", "", (void *)&appColorPicker },
     { "Weather Set", "", (void *)weatherSettings },
     { "Apps 1",      "", (void *)&switch_menu },
     { "Apps 2",      "", (void *)&switch_menu },

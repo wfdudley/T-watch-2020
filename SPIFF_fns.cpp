@@ -253,7 +253,7 @@ int best_strength;
             memcpy(bestAP->macAddr, WiFi.BSSID(i), 6);
             bestAP->channel = WiFi.channel(i);
 	    Serial.printf("tzonestr = %s\n", tzonestr);
-	    uint32_t tzid = atol(tzonestr);
+	    uint32_t tzid = strtoul(tzonestr,NULL,0);
             bestAP->tzone = tzid;
             Serial.printf("best strength = %d, best ssid = %s, tz = %lu = %lx\n", best_strength, filessid, tzid, tzid);
             Serial.printf("best channel %d, best mac %02x:%02x:%02x:%02x:%02x:%02x\n", bestAP->channel,
