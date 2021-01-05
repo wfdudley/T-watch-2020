@@ -26,13 +26,6 @@ uint8_t number_of_sounds = sizeof(beep_sizes)/sizeof(uint16_t);
 
 #define MP3_DEBUG 0
 void beep(int8_t which_sound) {
-#if 0
-    WiFi.mode(WIFI_OFF);
-    tft->setTextFont(2);
-    tft->setCursor(0, 0);
-    tft->fillScreen(TFT_BLACK);
-    tft->println("Sample MP3 playback begins");
-#endif
 #if MP3_DEBUG
     Serial.println(F("Sample MP3 playback begins"));
 #endif

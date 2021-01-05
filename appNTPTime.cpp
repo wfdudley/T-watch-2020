@@ -17,9 +17,12 @@
 
 #define DBGCLK 1
 
+WiFiEventId_t eventID;
+
 uint8_t Hh, Mm, Ss, wday, Day, Month;
 uint16_t Year;
 #define USE_SPIFFS_CPP 1
+extern boolean SPIFF_quiet;
 #define WE_HAVE_SPIFFS 0
 #if WE_HAVE_SPIFFS
 error: initializer-string for array of chars is too longerror: initializer-string for array of chars is too longerror: initializer-string for array of chars is too longFile ofile;
@@ -71,6 +74,7 @@ void appNTPTime(void) {
     tft->setTextSize(1);
   }
   else {
+    close_WiFi();
     appSetTime();
   }
 }
@@ -212,7 +216,7 @@ void connectToWiFi(struct WiFiAp * bestAP) {
   // delete old config
   WiFi.disconnect(true);
   //register event handler
-  WiFi.onEvent(WiFiEvent);
+  eventID = WiFi.onEvent(WiFiEvent);
 
   //Initiate connection
   WiFi.mode(WIFI_STA);
@@ -278,6 +282,7 @@ NTPClient timeClient(ntpUDP);
 // returns 1 if no known AP found
 int connect_to_wifi(boolean verbose, struct WiFiAp * bestAP, boolean do_scan, boolean set_tzindex) {
 int err, ecnt, this_wifi;
+    SPIFF_quiet = 1;	// set to 0 to Serial.print acc_pts.txt contents
     if(do_scan) {
       best_ap = this_wifi = wifi_scan(verbose);
     }
@@ -506,7 +511,7 @@ int selected;
 int get_wifi_credentials_from_user (void) {
 #if WEB_WIFI_SETUP
   // Connect to Wi-Fi network with SSID and password
-  Serial.print("Setting AP (Access Point)…");
+  Serial.print(F("Setting AP (Access Point)\n"));
   // Remove the password parameter, if you want the AP (Access Point) to be open
   // WiFi.softAP(ap_ssid, ap_pass);
   WiFi.softAP(ap_ssid);
@@ -657,7 +662,15 @@ int err, ecnt, this_wifi;
       delay(100);
     } while(err && ecnt < 10);
     connected = false;
-    WiFi.mode(WIFI_OFF);
+    close_WiFi();
     return 0;
+}
+
+void close_WiFi(void) {
+    if(eventID) {
+      WiFi.removeEvent(eventID);
+      eventID = 0;
+    }
+    WiFi.mode(WIFI_OFF);
 }
 
