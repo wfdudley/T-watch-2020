@@ -454,8 +454,8 @@ int selected;
   lv_obj_add_style(dd1, LV_CONT_PART_MAIN, &style_box);
   lv_obj_set_style_local_value_str(dd1, LV_CONT_PART_MAIN, LV_STATE_DEFAULT, "  Time Zone");
   // lv_obj_set_width(dd1, lv_obj_get_width_grid(h, disp_size <= LV_DISP_SIZE_SMALL ? 1 : 2, 1));
-  lv_obj_align(dd1, NULL, LV_ALIGN_CENTER, 0, -5);
-  lv_obj_set_width(dd1, 110);
+  lv_obj_align(dd1, NULL, LV_ALIGN_CENTER, -15, -5);
+  lv_obj_set_width(dd1, 150);
   buff[0] = '\0';
   // Serial.printf("sizeof_tz_opts = %d, local_tzindex = %d\n", sizeof_tz_opts, general_config.local_tzindex);
   for(int i = 0 ; i < sizeof_tz_opts ; i++) {
@@ -478,8 +478,8 @@ int selected;
   lv_obj_add_style(dd3, LV_CONT_PART_MAIN, &style_box);
   lv_obj_set_style_local_value_str(dd3, LV_CONT_PART_MAIN, LV_STATE_DEFAULT, "  SSID");
   // lv_obj_set_width(dd3, lv_obj_get_width_grid(h, disp_size <= LV_DISP_SIZE_SMALL ? 1 : 2, 1));
-  lv_obj_align(dd3, NULL, LV_ALIGN_CENTER,   0, -70);
-  lv_obj_set_width(dd3, 110);
+  lv_obj_align(dd3, NULL, LV_ALIGN_CENTER,   -15, -70);
+  lv_obj_set_width(dd3, 180);
   buff[0] = '\0';
   for(int i = 0 ; i < number_of_networks ; i++) {
     strncpy(buf, WiFi.SSID(i).c_str(), sizeof(ssid));
@@ -498,7 +498,7 @@ int selected;
   lv_obj_set_event_cb(ta4, ta_event_cb4);
   lv_obj_set_width(ta4, 150);
   lv_obj_align(ta4, NULL, LV_ALIGN_CENTER, 0, 80);	// order of operations matters!
-  lv_textarea_set_max_length(ta4, 20);
+  lv_textarea_set_max_length(ta4, 32);
   lv_textarea_set_one_line(ta4, true);
   memset(buff, '\0', sizeof(buff));
   lv_textarea_set_text(ta4, buff);
