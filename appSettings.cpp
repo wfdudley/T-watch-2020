@@ -623,7 +623,7 @@ int selected;
 
   lv_obj_t *btn1 = lv_btn_create(h, NULL);
   lv_obj_set_event_cb(btn1, button_handler);
-  lv_obj_align(btn1, NULL, LV_ALIGN_CENTER, -65, 45);
+  lv_obj_align(btn1, NULL, LV_ALIGN_CENTER, -62, 45);
 
   label = lv_label_create(btn1, NULL);
   lv_obj_set_size(btn1, 95, 50); //set the button size
@@ -679,7 +679,7 @@ int selected;
   if(general_config.twelve_hr_clock) { lv_switch_on(sw2, LV_ANIM_OFF); }
   Serial.printf("12 HR switch should be %s\n", (general_config.twelve_hr_clock) ? "ON" : "OFF");
   lv_obj_set_event_cb(sw2, twelve_hr_event_cb);
-  lv_obj_align(sw2, NULL, LV_ALIGN_CENTER, -2, 32);
+  lv_obj_align(sw2, NULL, LV_ALIGN_CENTER, -2, 50);
   lv_obj_set_style_local_value_str(sw2, LV_SWITCH_PART_BG, LV_STATE_DEFAULT, "12 Hour");
   lv_obj_set_style_local_value_align(sw2, LV_SWITCH_PART_BG, LV_STATE_DEFAULT, LV_ALIGN_OUT_RIGHT_MID);
   lv_obj_set_style_local_value_ofs_x(sw2, LV_SWITCH_PART_BG, LV_STATE_DEFAULT, LV_DPI/35);
