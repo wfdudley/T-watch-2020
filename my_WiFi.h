@@ -52,5 +52,6 @@ int read_acc_pts_file_and_compare_with_SSIDs (struct WiFiAp *);
 int connect_to_wifi(boolean, struct WiFiAp *, boolean, boolean);
 int connect_to_wifi_and_get_time (boolean);
 void append_new_access_point (char *, char *, uint32_t );
+void close_WiFi(void);
 
 #endif

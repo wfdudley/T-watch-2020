@@ -17,9 +17,12 @@
 
 #define DBGCLK 1
 
+WiFiEventId_t eventID;
+
 uint8_t Hh, Mm, Ss, wday, Day, Month;
 uint16_t Year;
 #define USE_SPIFFS_CPP 1
+extern boolean SPIFF_quiet;
 #define WE_HAVE_SPIFFS 0
 #if WE_HAVE_SPIFFS
 error: initializer-string for array of chars is too longerror: initializer-string for array of chars is too longerror: initializer-string for array of chars is too longFile ofile;
@@ -71,6 +74,7 @@ void appNTPTime(void) {
     tft->setTextSize(1);
   }
   else {
+    close_WiFi();
     appSetTime();
   }
 }
@@ -212,7 +216,7 @@ void connectToWiFi(struct WiFiAp * bestAP) {
   // delete old config
   WiFi.disconnect(true);
   //register event handler
-  WiFi.onEvent(WiFiEvent);
+  eventID = WiFi.onEvent(WiFiEvent);
 
   //Initiate connection
   WiFi.mode(WIFI_STA);
@@ -278,6 +282,7 @@ NTPClient timeClient(ntpUDP);
 // returns 1 if no known AP found
 int connect_to_wifi(boolean verbose, struct WiFiAp * bestAP, boolean do_scan, boolean set_tzindex) {
 int err, ecnt, this_wifi;
+    SPIFF_quiet = 1;	// set to 0 to Serial.print acc_pts.txt contents
     if(do_scan) {
       best_ap = this_wifi = wifi_scan(verbose);
     }
@@ -449,8 +454,8 @@ int selected;
   lv_obj_add_style(dd1, LV_CONT_PART_MAIN, &style_box);
   lv_obj_set_style_local_value_str(dd1, LV_CONT_PART_MAIN, LV_STATE_DEFAULT, "  Time Zone");
   // lv_obj_set_width(dd1, lv_obj_get_width_grid(h, disp_size <= LV_DISP_SIZE_SMALL ? 1 : 2, 1));
-  lv_obj_align(dd1, NULL, LV_ALIGN_CENTER, 0, -5);
-  lv_obj_set_width(dd1, 110);
+  lv_obj_align(dd1, NULL, LV_ALIGN_CENTER, -15, -5);
+  lv_obj_set_width(dd1, 150);
   buff[0] = '\0';
   // Serial.printf("sizeof_tz_opts = %d, local_tzindex = %d\n", sizeof_tz_opts, general_config.local_tzindex);
   for(int i = 0 ; i < sizeof_tz_opts ; i++) {
@@ -473,8 +478,8 @@ int selected;
   lv_obj_add_style(dd3, LV_CONT_PART_MAIN, &style_box);
   lv_obj_set_style_local_value_str(dd3, LV_CONT_PART_MAIN, LV_STATE_DEFAULT, "  SSID");
   // lv_obj_set_width(dd3, lv_obj_get_width_grid(h, disp_size <= LV_DISP_SIZE_SMALL ? 1 : 2, 1));
-  lv_obj_align(dd3, NULL, LV_ALIGN_CENTER,   0, -70);
-  lv_obj_set_width(dd3, 110);
+  lv_obj_align(dd3, NULL, LV_ALIGN_CENTER,   -15, -70);
+  lv_obj_set_width(dd3, 180);
   buff[0] = '\0';
   for(int i = 0 ; i < number_of_networks ; i++) {
     strncpy(buf, WiFi.SSID(i).c_str(), sizeof(ssid));
@@ -493,7 +498,7 @@ int selected;
   lv_obj_set_event_cb(ta4, ta_event_cb4);
   lv_obj_set_width(ta4, 150);
   lv_obj_align(ta4, NULL, LV_ALIGN_CENTER, 0, 80);	// order of operations matters!
-  lv_textarea_set_max_length(ta4, 20);
+  lv_textarea_set_max_length(ta4, 32);
   lv_textarea_set_one_line(ta4, true);
   memset(buff, '\0', sizeof(buff));
   lv_textarea_set_text(ta4, buff);
@@ -506,7 +511,7 @@ int selected;
 int get_wifi_credentials_from_user (void) {
 #if WEB_WIFI_SETUP
   // Connect to Wi-Fi network with SSID and password
-  Serial.print("Setting AP (Access Point)…");
+  Serial.print(F("Setting AP (Access Point)\n"));
   // Remove the password parameter, if you want the AP (Access Point) to be open
   // WiFi.softAP(ap_ssid, ap_pass);
   WiFi.softAP(ap_ssid);
@@ -657,7 +662,15 @@ int err, ecnt, this_wifi;
       delay(100);
     } while(err && ecnt < 10);
     connected = false;
-    WiFi.mode(WIFI_OFF);
+    close_WiFi();
     return 0;
+}
+
+void close_WiFi(void) {
+    if(eventID) {
+      WiFi.removeEvent(eventID);
+      eventID = 0;
+    }
+    WiFi.mode(WIFI_OFF);
 }
 

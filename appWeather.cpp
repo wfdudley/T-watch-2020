@@ -10,7 +10,6 @@
 
 #include <Wire.h>
 #include <Ethernet.h>
-#include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <AceTime.h>
 
@@ -29,9 +28,11 @@ extern WiFiClient espClient;
 
 extern char str_latitude[];
 extern char str_longitude[];
+extern char get_loc_city[];
 // 0 result means success
 // -1 result means default to home IP
 int get_lat_lon (void);
+int get_city_from_lat_long(char *, char *);
 float my_latitude, my_longitude;
 
 #define DBGWEATHER 0
@@ -170,7 +171,9 @@ int last_char_index, alert_summary_length, page2sumidx[10], owcres;
 int16_t x, y;
 char temp_unit = (general_config.metric_units) ? 'C' : 'F';
 const char *velocity_unit = (general_config.metric_units) ? "km/hr" : "mi/hr";
+  get_loc_city[0] = '\0';
   if(connect_to_wifi(verbose, &BestAP, true, true) && verbose) {
+      close_WiFi();
       Serial.printf("connect to wifi failed\n");
       tft->setTextColor(TFT_YELLOW, TFT_BLACK);
       tft->setTextSize(1);
@@ -214,7 +217,7 @@ const char *velocity_unit = (general_config.metric_units) ? "km/hr" : "mi/hr";
     tft->setTextColor(TFT_YELLOW, TFT_BLACK);
     tft->drawString("Connect to WiFi failed in 80 seconds!",  0, 5, 2);
     delay(3000);
-    WiFi.mode(WIFI_OFF);
+    close_WiFi();
     connected = false;
     return;
   }
@@ -244,6 +247,18 @@ const char *velocity_unit = (general_config.metric_units) ? "km/hr" : "mi/hr";
     Serial.printf("IP address -> str_latitude %s str_longitude %s\n", str_latitude, str_longitude);
   }
 #endif
+  if(!get_loc_city[0]) {
+    Serial.printf("about to call get_city(%s,%s)\n", str_latitude, str_longitude);
+    locr = get_city_from_lat_long(str_latitude, str_longitude);
+#if DBGWEATHER
+    if(locr) {
+      Serial.printf("couldn't get cityname from latitude and longitude\n");
+    }
+    else {
+      Serial.printf("str_latitude %s str_longitude %s -> city %s\n", str_latitude, str_longitude, get_loc_city);
+    }
+#endif
+  }
   if(str_latitude[0]) {
     my_latitude = atof(str_latitude);
   }
@@ -323,7 +338,13 @@ const char *velocity_unit = (general_config.metric_units) ? "km/hr" : "mi/hr";
 	lastmode = mode;
 	tft->fillScreen(TFT_BLACK);
 	tft->setTextColor(TFT_YELLOW, TFT_BLACK);
-	tft->drawCentreString("Weather Pg 1",  half_width, 0, 2);
+	if(get_loc_city[0]) {
+	  sprintf(buff, "%s Weather Pg 1", get_loc_city);
+	}
+	else {
+	  strcpy(buff, "Weather Pg 1");
+	}
+	tft->drawCentreString(buff,  half_width, 0, 2);
 	if(OWOC.alert) {
 	    if(OWOC.alert->summary && OWOC.alert->summary[0]) {
 		tft->setTextColor(TFT_RED, TFT_BLACK);
@@ -437,7 +458,13 @@ const char *velocity_unit = (general_config.metric_units) ? "km/hr" : "mi/hr";
 	lastmode = mode;
 	tft->fillScreen(TFT_BLACK);
 	tft->setTextColor(TFT_YELLOW, TFT_BLACK);
-	tft->drawCentreString("Weather Pg 2",  half_width, 0, 2);
+	if(get_loc_city[0]) {
+	  sprintf(buff, "%s Weather Pg 2", get_loc_city);
+	}
+	else {
+	  strcpy(buff, "Weather Pg 2");
+	}
+	tft->drawCentreString(buff,  half_width, 0, 2);
 	if(OWOC.alert) {
 	    last_char_index = 0;
 	    if(OWOC.alert->summary && OWOC.alert->summary[0]) {
@@ -655,6 +682,6 @@ ExitWeather:
     my_idle();
   }
   connected = false;
-  WiFi.mode(WIFI_OFF);
+  close_WiFi();
   tft->fillScreen(TFT_BLACK); // Clear screen
 }

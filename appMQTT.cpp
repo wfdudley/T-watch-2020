@@ -404,6 +404,7 @@ int mSelect;
 enum SWIPE_DIR swipe;
     if(1) {	// this connects to wifi, MQTT server, and runs MQTTcallback
       if(connect_to_wifi(verbose, &BestAP, true, true) && verbose) {
+	  close_WiFi();
 	  Serial.printf("connect to wifi failed\n");
 	  tft->setTextColor(TFT_YELLOW, TFT_BLACK);
 	  tft->drawString("Connect to WiFi Failed!",  0, 5, 2);
@@ -425,7 +426,7 @@ enum SWIPE_DIR swipe;
 	tft->setTextColor(TFT_YELLOW, TFT_BLACK);
 	tft->drawString("Connect to WiFi failed in 80 seconds!",  0, 5, 2);
 	delay(3000);
-	WiFi.mode(WIFI_OFF);
+	close_WiFi();
 	connected = false;
 	return;
       }
@@ -582,8 +583,9 @@ Exit:
     }
     Serial.printf("exit appMQTT()\n");
     tft->fillScreen(TFT_BLACK);
+    WiFi.disconnect(true);
+    close_WiFi();
     connected = false;
-    WiFi.mode(WIFI_OFF);
 }
 
 void mqtt_reconnect() {

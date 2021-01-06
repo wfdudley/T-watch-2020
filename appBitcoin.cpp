@@ -10,6 +10,7 @@ int verbose=1;
 int ecnt;
   if(1) {	// this connects to wifi, MQTT server, and runs MQTTcallback
     if(connect_to_wifi(verbose, &BestAP, true, true) && verbose) {
+	close_WiFi();
 	Serial.printf("connect to wifi failed\n");
 	tft->setTextColor(TFT_YELLOW, TFT_BLACK);
 	tft->drawString("Connect to WiFi Failed!",  0, 5, 2);
@@ -31,7 +32,7 @@ int ecnt;
       tft->setTextColor(TFT_YELLOW, TFT_BLACK);
       tft->drawString("Connect to WiFi failed in 80 seconds!",  0, 5, 2);
       delay(3000);
-      WiFi.mode(WIFI_OFF);
+      close_WiFi();
       connected = false;
       return;
     }
@@ -111,11 +112,10 @@ int ecnt;
 
   client.stop();
   WiFi.disconnect(true);
-  WiFi.mode(WIFI_OFF);
+  connected = false;
+  close_WiFi();
 
   while (!ttgo->getTouch(x, y)) {} // wait until you touching
   while (ttgo->getTouch(x, y)) {}
   ttgo->tft->fillScreen(TFT_BLACK);
-  connected = false;
-  WiFi.mode(WIFI_OFF);
 }
