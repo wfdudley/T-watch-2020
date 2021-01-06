@@ -3,6 +3,7 @@
 #include "personal_info.h"
 #include <WiFi.h>
 #include <HTTPClient.h>
+#include <ArduinoJson.h>
 
 static String payload;
 
@@ -12,11 +13,15 @@ int errcnt;
   errcnt = 0;
   do {
     HTTPClient http;
+// Serial.printf("g_l: line %d\n", __LINE__);
     http.begin(url);
+// Serial.printf("g_l: line %d\n", __LINE__);
     // start connection and send HTTP header
     int httpCode = http.GET();
     // httpCode will be negative on error
+// Serial.printf("g_l: line %d\n", __LINE__);
     if(httpCode > 0) {
+// Serial.printf("g_l: line %d\n", __LINE__);
 	// HTTP header has been send and server response header has been handled
 	if(httpCode == HTTP_CODE_OK
 	|| httpCode == 301) {	// success!
@@ -27,12 +32,16 @@ int errcnt;
 	    max_length = rlength;
 	  }
 	  if(result && max_length) {
+// Serial.printf("g_l: line %d\n", __LINE__);
 	    payload.toCharArray(result, max_length);
+// Serial.printf("g_l: line %d\n", __LINE__);
 	  }
 	}
 	else {
 	  Serial.printf("http.GET problem, code: %d\n", httpCode);
+// Serial.printf("g_l: line %d\n", __LINE__);
 	  payload = http.getString();
+// Serial.printf("g_l: line %d\n", __LINE__);
 	  Serial.println(payload);
 	  errcnt++;
 	}
@@ -44,6 +53,7 @@ int errcnt;
     }
     http.end();
   } while(errcnt && errcnt < 3);
+// Serial.printf("line %d\n", __LINE__);
   return payload;
 }
 
@@ -57,7 +67,7 @@ static const char *ip_apis[] = {
 
 char str_latitude[20];
 char str_longitude[20];
-char city[50];
+char get_loc_city[80];
 
 boolean is_non_routable_ip (char *my_ipaddress) {
   if(!strncmp(my_ipaddress, "192.168.", 8)
@@ -130,11 +140,11 @@ int result;
       Serial.printf("my longitude is %s\n", str_longitude);
       sprintf(request_url, "%s%s/city", "https://ipapi.co/", my_ipaddress);
       Serial.printf("trying %s\n", request_url);
-      get_thing(request_url, city, sizeof(city));
-      Serial.printf("my city is %s\n", city);
+      get_thing(request_url, get_loc_city, sizeof(get_loc_city));
+      Serial.printf("my city is %s\n", get_loc_city);
     }
     if(!strncmp(my_ipaddress, HOME_IP, home_ip_len)) {
-      strcpy(city, HOME_CITY);
+      strcpy(get_loc_city, HOME_CITY);
     }
     if(!str_latitude[0]) {
       strncpy(str_latitude, general_config.my_latitude, sizeof(str_latitude));
@@ -148,4 +158,48 @@ int result;
     }
   }
   return result;
+}
+
+// this is actually a full reverse geolocation lookup
+int get_city_from_lat_long(char *latitude, char *longitude) {
+char url[100];
+char json[600];
+  get_loc_city[0] = '\0';
+  sprintf(url, "https://us1.locationiq.com/v1/reverse.php?key=%s&format=json&lat=%s&lon=%s", LOCATIONIQ_KEY, latitude, longitude);
+  // Serial.printf("get_city... trying %s\n", url);
+  get_thing(url, json, sizeof(json));
+  DynamicJsonDocument doc(1024);
+  deserializeJson(doc, json);
+
+  const char* place_id = doc["place_id"]; // "332847685712"
+  const char* licence = doc["licence"]; // "https://locationiq.com/attribution"
+  const char* lat = doc["lat"]; // "40.098011"
+  const char* lon = doc["lon"]; // "-74.26592"
+  const char* display_name = doc["display_name"]; // "274, Jackson Pines Road, Jackson Township, Ocean County, New Jersey, 08527, USA"
+  // Serial.println(display_name);
+
+  JsonArray boundingbox = doc["boundingbox"];
+  const char* boundingbox_0 = boundingbox[0]; // "40.098011"
+  const char* boundingbox_1 = boundingbox[1]; // "40.098011"
+  const char* boundingbox_2 = boundingbox[2]; // "-74.26592"
+  const char* boundingbox_3 = boundingbox[3]; // "-74.26592"
+
+  float importance = doc["importance"]; // 0.225
+
+  JsonObject address = doc["address"];
+  const char* address_house_number = address["house_number"]; // "274"
+  const char* address_road = address["road"]; // "Jackson Pines Road"
+  const char* address_city = address["city"]; // "Jackson Township"
+  const char* address_county = address["county"]; // "Ocean County"
+  const char* address_state = address["state"]; // "New Jersey"
+  const char* address_postcode = address["postcode"]; // "08527"
+  const char* address_country = address["country"]; // "United States of America"
+  const char* address_country_code = address["country_code"]; // "us"
+  if(address["city"]) {
+    strncpy(get_loc_city, address["city"], sizeof(get_loc_city));
+    char *tp = strstr(get_loc_city, " Township");
+    if(tp) { *tp = '\0'; }
+    return 0;
+  }
+  return -1;
 }
