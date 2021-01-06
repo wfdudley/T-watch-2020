@@ -214,40 +214,9 @@ static void dd_event_cb1(lv_obj_t * obj, lv_event_t event)
 
 // the openweathermap.org "language" function is hardly worth the trouble.
 // owm doesn't translate most of the information into the selected language.
-// the only thing that seems to get converted is the "main" field in "current"
-// in particular, National Weather Service alerts are NOT translated.
-#if OWM_LANGUAGE_FEATURE
-#if 0
-static const char *languages[] = {"af","Afrikaans",
-				  "bg","Bulgarian",
-				  "cz","Czech",
-				  "de","German",
-				  "en","English",
-				  "fr","French",
-				  "he","Hebrew",
-				  "it","Italian",
-				  "ja","Japanese",
-				  "sp","Spanish",
-				  "zh_cn","Chinese, Trad."};
-#define NUM_LANG ((sizeof(languages)/sizeof(char *))/2)
-
-char *nextLanguage(char *cp, char *np, int n) {
-  // Serial.printf("nL(cp, np, %d), NUM_LANG = %d\n", n, NUM_LANG);
-  if(n<NUM_LANG) {
-    strcpy(cp, languages[n * 2]);
-    // Serial.printf("copying %s to cp\n", languages[n * 2]);
-    if(np) {
-      strcpy(np, languages[(n * 2) + 1]);
-      // Serial.printf("copying %s to np\n", languages[(n * 2) + 1]);
-    }
-    return cp;
-  }
-  else{
-    return(NULL);
-  }
-}
-#endif
-#endif
+// the only thing that seems to get converted is the "description" field in
+// "current". In particular, National Weather Service alerts are NOT translated.
+#define OWM_LANGUAGE_FEATURE 0
 
 static void gui_create(void) {
   tv = lv_tabview_create(lv_scr_act(), NULL);
@@ -268,6 +237,7 @@ static char buf[66];
 int selected;
   lv_obj_t *label;
   // lv_page_set_scrl_layout(PARENT, LV_LAYOUT_PRETTY_TOP);
+  lv_page_set_scrlbar_mode(PARENT, LV_SCRLBAR_MODE_OFF);
   lv_obj_t * h = lv_cont_create(PARENT, NULL);
   // lv_obj_set_width(h, LV_DPI * 2);
   lv_obj_set_width(h, 240);
@@ -356,6 +326,7 @@ static char buf[66];
 int selected;
   lv_obj_t *label;
   // lv_page_set_scrl_layout(PARENT, LV_LAYOUT_PRETTY_TOP);
+  lv_page_set_scrlbar_mode(PARENT, LV_SCRLBAR_MODE_OFF);
   lv_obj_t * h = lv_cont_create(PARENT, NULL);
   // lv_obj_set_width(h, LV_DPI * 2);
   lv_obj_set_width(h, 240);
