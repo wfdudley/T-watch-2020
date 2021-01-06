@@ -453,17 +453,18 @@ static void page1_create(lv_obj_t * parent) {
 static char buf[4];	// max 3 bytes for number plus 1 null
   lv_obj_t *label;
   lv_page_set_scrl_layout(parent, LV_LAYOUT_PRETTY_TOP);
+  lv_page_set_scrlbar_mode(parent, LV_SCRLBAR_MODE_OFF);
   lv_disp_size_t disp_size = lv_disp_get_size_category(NULL);
   // LV_DISP_SIZE_SMALL = disp_size = 0 !
   // lv_coord_t grid_w = lv_page_get_width_grid(parent, disp_size <= LV_DISP_SIZE_SMALL ? 1 : 2, 1);
   lv_obj_t * h = lv_cont_create(parent, NULL);
   lv_obj_set_width(h, LV_DPI * 2);
   // lv_obj_set_width(h, 240);
-  lv_obj_set_height(h, 200);
+  lv_obj_set_height(h, 173);
 
   lv_obj_t * slider1 = lv_slider_create(h, NULL);
   lv_obj_set_width(slider1, 200);
-  lv_obj_align(slider1, NULL, LV_ALIGN_CENTER, -20, -70);
+  lv_obj_align(slider1, NULL, LV_ALIGN_CENTER, -20, -60);
   lv_obj_set_event_cb(slider1, slider1_handler);
   lv_slider_set_range(slider1, 20, 255);
   lv_slider_set_value(slider1, general_config.default_brightness, LV_ANIM_OFF);
@@ -480,7 +481,7 @@ static char buf[4];	// max 3 bytes for number plus 1 null
 
   lv_obj_t * slider2 = lv_slider_create(h, NULL);
   lv_obj_set_width(slider2, 200);
-  lv_obj_align(slider2, NULL, LV_ALIGN_CENTER, -20, -25);
+  lv_obj_align(slider2, NULL, LV_ALIGN_CENTER, -20, -5);
   lv_obj_set_event_cb(slider2, slider2_handler);
   lv_slider_set_range(slider2, 5, 120);
   lv_slider_set_value(slider2, general_config.screensaver_timeout, LV_ANIM_OFF);
@@ -497,17 +498,17 @@ static char buf[4];	// max 3 bytes for number plus 1 null
 
   lv_obj_t *btn1 = lv_btn_create(h, NULL);
   lv_obj_set_event_cb(btn1, button_handler);
-  lv_obj_align(btn1, NULL, LV_ALIGN_CENTER, -65, 32);
+  lv_obj_align(btn1, NULL, LV_ALIGN_CENTER, -62, 45);
 
   label = lv_label_create(btn1, NULL);
-  lv_obj_set_size(btn1, 100, 50); //set the button size
+  lv_obj_set_size(btn1, 95, 50); //set the button size
   lv_label_set_text(label, "Done");
 
   sw1 = lv_switch_create(h, NULL);
   if(general_config.stepcounter_filter) { lv_switch_on(sw1, LV_ANIM_OFF); }
   Serial.printf("STEP switch should be %s\n", (general_config.stepcounter_filter) ? "ON" : "OFF");
   lv_obj_set_event_cb(sw1, stepc_chg_event_cb);
-  lv_obj_align(sw1, NULL, LV_ALIGN_CENTER, -2, 32);
+  lv_obj_align(sw1, NULL, LV_ALIGN_CENTER, -2, 50);
   lv_obj_set_style_local_value_str(sw1, LV_SWITCH_PART_BG, LV_STATE_DEFAULT, "StepCtr");
   lv_obj_set_style_local_value_align(sw1, LV_SWITCH_PART_BG, LV_STATE_DEFAULT, LV_ALIGN_OUT_RIGHT_MID);
   lv_obj_set_style_local_value_ofs_x(sw1, LV_SWITCH_PART_BG, LV_STATE_DEFAULT, LV_DPI/35);
@@ -517,16 +518,17 @@ static void mqtt1_create(lv_obj_t * parent) {
 static char buf[4];	// max 3 bytes for number plus 1 null
   lv_obj_t *label;
   lv_page_set_scrl_layout(parent, LV_LAYOUT_PRETTY_TOP);
+  lv_page_set_scrlbar_mode(parent, LV_SCRLBAR_MODE_OFF);
   lv_obj_t * h = lv_cont_create(parent, NULL);
   lv_obj_set_width(h, LV_DPI * 2);
   lv_obj_set_height(h, 200);
 
   lv_obj_t *btn1 = lv_btn_create(h, NULL);
   lv_obj_set_event_cb(btn1, button_handler);
-  lv_obj_align(btn1, NULL, LV_ALIGN_CENTER, -65, 32);
+  lv_obj_align(btn1, NULL, LV_ALIGN_CENTER, -62, 32);
 
   label = lv_label_create(btn1, NULL);
-  lv_obj_set_size(btn1, 100, 50); //set the button size
+  lv_obj_set_size(btn1, 95, 50); //set the button size
   lv_label_set_text(label, "Done");
 
   /* Create the text area for MQTT server IP */
@@ -565,16 +567,17 @@ static char buf[4];	// max 3 bytes for number plus 1 null
 static void mqtt2_create(lv_obj_t * parent) {
   lv_obj_t *label;
   lv_page_set_scrl_layout(parent, LV_LAYOUT_PRETTY_TOP);
+  lv_page_set_scrlbar_mode(parent, LV_SCRLBAR_MODE_OFF);
   lv_obj_t * h = lv_cont_create(parent, NULL);
   lv_obj_set_width(h, LV_DPI * 2);
   lv_obj_set_height(h, 200);
 
   lv_obj_t *btn1 = lv_btn_create(h, NULL);
   lv_obj_set_event_cb(btn1, button_handler);
-  lv_obj_align(btn1, NULL, LV_ALIGN_CENTER, -65, 32);
+  lv_obj_align(btn1, NULL, LV_ALIGN_CENTER, -62, 32);
 
   label = lv_label_create(btn1, NULL);
-  lv_obj_set_size(btn1, 100, 50); //set the button size
+  lv_obj_set_size(btn1, 95, 50); //set the button size
   lv_label_set_text(label, "Done");
 
   /* Create the text area for MQTT user */
@@ -613,16 +616,17 @@ char buf[32];
 int selected;
   lv_obj_t *label;
   lv_page_set_scrl_layout(parent, LV_LAYOUT_PRETTY_TOP);
+  lv_page_set_scrlbar_mode(parent, LV_SCRLBAR_MODE_OFF);
   lv_obj_t * h = lv_cont_create(parent, NULL);
   lv_obj_set_width(h, LV_DPI * 2);
-  lv_obj_set_height(h, 200);
+  lv_obj_set_height(h, 173);
 
   lv_obj_t *btn1 = lv_btn_create(h, NULL);
   lv_obj_set_event_cb(btn1, button_handler);
-  lv_obj_align(btn1, NULL, LV_ALIGN_CENTER, -65, 32);
+  lv_obj_align(btn1, NULL, LV_ALIGN_CENTER, -62, 45);
 
   label = lv_label_create(btn1, NULL);
-  lv_obj_set_size(btn1, 100, 50); //set the button size
+  lv_obj_set_size(btn1, 95, 50); //set the button size
   lv_label_set_text(label, "Done");
 
   /* Create the dropdown for local timezone */
@@ -630,7 +634,7 @@ int selected;
   lv_obj_add_style(dd1, LV_CONT_PART_MAIN, &style_box);
   lv_obj_set_style_local_value_str(dd1, LV_CONT_PART_MAIN, LV_STATE_DEFAULT, "   Local TZ");
   // lv_obj_set_width(dd1, lv_obj_get_width_grid(h, disp_size <= LV_DISP_SIZE_SMALL ? 1 : 2, 1));
-  lv_obj_align(dd1, NULL, LV_ALIGN_CENTER, -70, -40);
+  lv_obj_align(dd1, NULL, LV_ALIGN_CENTER, -66, -25);
   lv_obj_set_width(dd1, 110);
   buff[0] = '\0';
   // Serial.printf("sizeof_tz_opts = %d, local_tzindex = %d\n", sizeof_tz_opts, general_config.local_tzindex);
@@ -653,7 +657,7 @@ int selected;
   lv_obj_add_style(dd2, LV_CONT_PART_MAIN, &style_box);
   lv_obj_set_style_local_value_str(dd2, LV_CONT_PART_MAIN, LV_STATE_DEFAULT, "   Home TZ");
   // lv_obj_set_width(dd2, lv_obj_get_width_grid(h, disp_size <= LV_DISP_SIZE_SMALL ? 1 : 2, 1));
-  lv_obj_align(dd2, NULL, LV_ALIGN_CENTER,  40, -40);
+  lv_obj_align(dd2, NULL, LV_ALIGN_CENTER,  47, -25);
   lv_obj_set_width(dd2, 110);
   buff[0] = '\0';
   // Serial.printf("sizeof_tz_opts = %d, home_tzindex = %d\n", sizeof_tz_opts, general_config.home_tzindex);
@@ -675,7 +679,7 @@ int selected;
   if(general_config.twelve_hr_clock) { lv_switch_on(sw2, LV_ANIM_OFF); }
   Serial.printf("12 HR switch should be %s\n", (general_config.twelve_hr_clock) ? "ON" : "OFF");
   lv_obj_set_event_cb(sw2, twelve_hr_event_cb);
-  lv_obj_align(sw2, NULL, LV_ALIGN_CENTER, -2, 32);
+  lv_obj_align(sw2, NULL, LV_ALIGN_CENTER, -2, 50);
   lv_obj_set_style_local_value_str(sw2, LV_SWITCH_PART_BG, LV_STATE_DEFAULT, "12 Hour");
   lv_obj_set_style_local_value_align(sw2, LV_SWITCH_PART_BG, LV_STATE_DEFAULT, LV_ALIGN_OUT_RIGHT_MID);
   lv_obj_set_style_local_value_ofs_x(sw2, LV_SWITCH_PART_BG, LV_STATE_DEFAULT, LV_DPI/35);
