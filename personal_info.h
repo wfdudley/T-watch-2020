@@ -17,6 +17,8 @@
 // your personal keys
 // get this one from openweathermap.org
 #define ONECALLKEY "00000000001111111122222222333333"
+// get this free API key from locationiq.com
+#define LOCATIONIQ_KEY "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
 
 // if you have a home IP address, put it here (in quotes).  It will
 // save some time getting your location for weather when you're at home.
