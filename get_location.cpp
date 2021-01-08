@@ -165,6 +165,7 @@ int get_city_from_lat_long(char *latitude, char *longitude) {
 char url[100];
 char json[600];
   get_loc_city[0] = '\0';
+  if(strlen(LOCATIONIQ_KEY) == 0) { return -1; }
   sprintf(url, "https://us1.locationiq.com/v1/reverse.php?key=%s&format=json&lat=%s&lon=%s", LOCATIONIQ_KEY, latitude, longitude);
   // Serial.printf("get_city... trying %s\n", url);
   get_thing(url, json, sizeof(json));
