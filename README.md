@@ -61,7 +61,7 @@ and bits from SimpleWatch (the shipped demo), and added many new features.
   </LI>
   <LI> A "maze" game.  Swipe or tilt watch left, right, up, down to move your cursor.  Try to move it to the red endpoint.  CW circle gesture to exit.
   </LI>
-  <LI> A simple stopwatch
+  <LI> A simple stopwatch.  Beep function added 2021-01-13.
   </LI>
   <LI> A function to set the time from NTP.  If that fails, run's Dan Geiger's "SetTime" app.
   </LI>
