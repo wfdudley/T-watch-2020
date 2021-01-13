@@ -95,6 +95,7 @@ void appDelWiFi(void);		// delete one SSID from acc_pts.txt
 void weatherSettings(void);	// settings page for appWeather
 void appWiFiScan(void);		// wifi scanner tool
 void appColorPicker(void);
+void appShutdown(void);
 
 void LCARS_Time(uint8_t);
 void Basic_Time(uint8_t);
@@ -116,6 +117,7 @@ void bright_check (void);
 void my_idle(void);
 void draw_button_menu (uint8_t, struct menu_item *, uint8_t, uint8_t, bool, char *, struct mqdata *, uint8_t);
 void flash_menu_item (uint8_t, struct menu_item *, uint8_t, uint8_t, bool, int, int, struct mqdata *, boolean, uint8_t);
+void flash_menu_item_txt (uint8_t, struct menu_item *, uint8_t, uint8_t, bool, int, int, char *, boolean, uint8_t);
 void enable_rtc_alarm(void);
 void disable_rtc_alarm(void);
 void Serial_timestamp(void);
@@ -206,7 +208,7 @@ EXTERN struct menu_item watch_apps3[]
     { "Reset Step",  "", (void *)resetStepCounter },
     { ""          ,  "", NULL },
     { "Paint",       "", (void *)&appPaint },
-    { ""          ,  "", NULL },
+    { "Power Off",   "", (void *)&appShutdown },
     { "Man SetTime", "", (void *)&appSetTime },
     { "ColorPicker", "", (void *)&appColorPicker },
     { "Weather Set", "", (void *)weatherSettings },
