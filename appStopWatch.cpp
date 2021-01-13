@@ -52,7 +52,7 @@ boolean running;
 boolean has_run;
 boolean is_cleared;
 uint8_t min_123, min_triple, min_tens, old_min_123; // Fra4prg: beep minute classification
-uint8_t runmode; // Fra4prg: 0=no sound, 1=vib.+sound, 2=sound
+uint8_t beepmode; // Fra4prg: 0=no sound, 1=vib.+sound, 2=sound
 
 void clear_time(void) {
   et = 0;
@@ -75,7 +75,7 @@ int mSelect;
   has_run = false;
   is_cleared = true;
   old_min_123 = 0;  // Fra4prg
-  runmode = 0;  // Fra4prg
+  beepmode = 0;  // Fra4prg
 
   tft->fillScreen(TFT_BLACK);
   tft->setTextColor(TFT_GREEN, TFT_BLACK);
@@ -84,12 +84,8 @@ int mSelect;
   // tft->setTextFont(2);
   // put button(s) on the screen
 
-  // Fra4prg: new button (don't know how to usually change the lower text on the button)
-  flash_menu_item(3, swatch_menu, 1, 2, true, 0, 2, NULL, true, 0);
-  tft->fillRect(164, 50, 74, 20, TFT_BLUE);
-  tft->setTextColor(TFT_YELLOW, TFT_BLUE);
-  tft->drawCentreString("no sound", 200, 52, 2);
-  // Fra4prg: end new button
+  // Fra4prg: new button
+  flash_menu_item_txt(3, swatch_menu, 1, 2, true, 0, 2, "silent", true, 0);
   flash_menu_item(3, swatch_menu, 1, 2, true, 3, 0, NULL, true, 0);
   flash_menu_item(3, swatch_menu, 1, 2, true, 3, 1, NULL, true, 0);
   flash_menu_item(3, swatch_menu, 1, 2, true, 3, 2, NULL, true, 0);
@@ -99,28 +95,23 @@ int mSelect;
 //  if(mSelect > -1) {
 //    Serial.printf("mSelect = %d\n", mSelect);
 //  }
-    // Fra4prg: new button (don't know how to usually change the lower text on the button)
     if (mSelect == 2) {  // if user touched mode button
-      runmode++;
-      if (runmode>2) {runmode=0;};
+      beepmode++;
+      if (beepmode>2) { beepmode=0; };
       tft->fillRect(164, 50, 74, 20, TFT_BLUE);
-      switch (runmode) {
+      switch (beepmode) {
         case 0 :
-          tft->setTextColor(TFT_YELLOW, TFT_BLUE);
-          tft->drawCentreString(" No Sound ", 200, 52, 2);
+	  flash_menu_item_txt(3, swatch_menu, 1, 2, true, 0, 2, "silent", true, 0);
           break;
         case 1 :
-          tft->setTextColor(TFT_YELLOW, TFT_PURPLE);
-          tft->drawCentreString("Vib.+Sound", 200, 52, 2);
+	  flash_menu_item_txt(3, swatch_menu, 1, 2, true, 0, 2, "vib+beep", true, 0);
           break;
         case 2 :
-          tft->setTextColor(TFT_BLACK, TFT_GREEN);
-          tft->drawCentreString(" Sound ", 200, 52, 2);
+	  flash_menu_item_txt(3, swatch_menu, 1, 2, true, 0, 2, "beep", true, 0);
           break;
         default :
-          tft->setTextColor(TFT_YELLOW, TFT_BLUE);
-          tft->drawCentreString(" No Sound ", 200, 52, 2);
-          runmode=0;
+          beepmode=0;
+	  flash_menu_item_txt(3, swatch_menu, 1, 2, true, 0, 2, "silent", true, 0);
           break;
       }
     }
@@ -132,7 +123,7 @@ int mSelect;
       if(col == 1) {	// clear button
 	// Serial.println(F("clear"));
 	clear_time();
-  old_min_123 = 0;  // Fra4prg
+	old_min_123 = 0;  // Fra4prg
       }
       else if(col == 2) {	// exit
 	// Serial.println(F("exit"));
@@ -165,7 +156,7 @@ int mSelect;
     sprintf(buff, "%d:%02d:%02d.%03d", eh, em, es, ems);
     
     // Fra4prg: begin beep smart sound
-    if (runmode>0) {
+    if (beepmode>0) {
       min_tens = (em - (em % 10))/10;
       if ( (em-(min_tens*10)) == 0 ) {
         min_123 = 3;
@@ -182,7 +173,7 @@ int mSelect;
       // now play beeps:
       if (old_min_123!=min_123) {  // if new minute is detected
         old_min_123=min_123;
-        if (runmode==1) {
+        if (beepmode==1) {
           quickBuzz();
         }
         while(min_tens>0) {

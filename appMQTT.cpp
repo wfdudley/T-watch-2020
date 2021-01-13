@@ -99,6 +99,64 @@ uint16_t icolor;
   }
 }
 
+void flash_menu_item_txt (uint8_t ncols, struct menu_item *mqmenu_p, uint8_t font, uint8_t bigfont, bool leave_room_for_label, int row, int col, char * btn_txt, boolean flash, uint8_t ptr_null_grey) {
+uint8_t yvals[4], yh;
+uint16_t icolor;
+  if(leave_room_for_label) {
+    yvals[0] = 35;
+    yvals[1] = 85;
+    yvals[2] = 135;
+    yvals[3] = 185;
+    yh = 50;
+  }
+  else {
+    yvals[0] =   0;
+    yvals[1] =  60;
+    yvals[2] = 120;
+    yvals[3] = 180;
+    yh = 60;
+  }
+  int16_t bwidth;
+  int16_t xvals[3] = { 0, 83, 164 };
+  int16_t xtvals[3] = { 41, 120, 200 };
+  if(ncols > 3) { ncols = 3; }
+  if(ncols == 3) {
+    bwidth = 75;
+  }
+  else if(ncols == 2) {
+    xvals[1] = 123;
+    xtvals[0] = 61;
+    xtvals[1] = 184;
+    bwidth = 115;
+  }
+  else if(ncols == 1) {
+    xtvals[0] = 120;
+    bwidth = 239;
+  }
+  // note: space at the top do display what is typed
+  // was tft->fillRect(0, 35, 80, 50, TFT_BLUE);
+  // number keys are 80 x 50, four rows of three
+  // x=0, 81, 161, y=35, 85, 135, 185
+  tft->setTextColor(TFT_GREEN);
+  int ino = col + (row * ncols);
+  if(flash) {
+    icolor = TFT_LIGHTGREY;
+    tft->fillRoundRect(xvals[col], yvals[row], bwidth, yh-5, 6, icolor);
+    tft->drawCentreString( mqmenu_p[ino].name, xtvals[col], yvals[row]+5, font);
+    delay(100);
+  }
+  icolor = (!strlen(mqmenu_p[ino].name)) ? TFT_BLACK
+      : ((ptr_null_grey ^ (mqmenu_p[ino].next_menu != NULL))
+      ||!strcmp(mqmenu_p[ino].name, "Done")
+      ||!strcmp(mqmenu_p[ino].name, "Exit")) ? TFT_DARKGREY
+	  : TFT_BLUE ;
+  tft->fillRoundRect(xvals[col], yvals[row], bwidth, yh-5, 6, icolor);
+  tft->drawCentreString( mqmenu_p[ino].name, xtvals[col], yvals[row]+5, font);
+  if(btn_txt) {
+    tft->drawCentreString( btn_txt, xtvals[col], yvals[row]+20, (strlen(btn_txt) < 10) ? bigfont : font);
+  }
+}
+
 void draw_button_menu (uint8_t ncols, struct menu_item *mqmenu_p, uint8_t font, uint8_t bigfont, bool leave_room_for_label, char *top_label, struct mqdata *menu_data_p, uint8_t ptr_null_grey) {
 uint8_t yvals[4], yh, row, col;
 uint16_t icolor;
