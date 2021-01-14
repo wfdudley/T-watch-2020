@@ -13,8 +13,8 @@
 #include "sounds/C5_L.h"
 #include "sounds/E5_L.h"
 #include "sounds/G5_L.h"
-#include "sounds/SWEEP.h"
 #include "sounds/TRIPLE.h"
+#include "sounds/SWEEP.h"
 
 const unsigned char* const beep_array[] PROGMEM = {
     beep__182_mp3,
@@ -29,8 +29,8 @@ const unsigned char* const beep_array[] PROGMEM = {
     C5_L_mp3,
     E5_L_mp3,
     G5_L_mp3,
-    SWEEP_mp3,
-    TRIPLE_mp3
+    TRIPLE_mp3,
+    SWEEP_mp3
 };
 
 const uint16_t beep_sizes[] = {
@@ -46,6 +46,6 @@ const uint16_t beep_sizes[] = {
     sizeof(C5_L_mp3),
     sizeof(E5_L_mp3),
     sizeof(G5_L_mp3),
-    sizeof(SWEEP_mp3),
-    sizeof(TRIPLE_mp3)
+    sizeof(TRIPLE_mp3),
+    sizeof(SWEEP_mp3)
 };
