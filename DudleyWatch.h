@@ -209,7 +209,7 @@ EXTERN struct menu_item watch_apps3[]
     { ""          ,  "", NULL },
     { "Paint",       "", (void *)&appPaint },
     { "Power Off",   "", (void *)&appShutdown },
-    { "Man SetTime", "", (void *)&appSetTime },
+    { ""          ,  "", NULL },
     { "ColorPicker", "", (void *)&appColorPicker },
     { "Weather Set", "", (void *)weatherSettings },
     { "Apps 1",      "", (void *)&switch_menu },
