@@ -16,3 +16,5 @@
 #include "icons/13n.h"
 #include "icons/50d.h"
 #include "icons/50n.h"
+#include "icons/tea_cup.h"
+#include "icons/tea_bag.h"
