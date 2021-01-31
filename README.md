@@ -1,6 +1,8 @@
 # T-watch-2020
 a watch project for the TTGO T-watch-2020 version 1
 
+This work is licensed under the BSD 3-clause license.  See LICENSE.txt.
+
 This builds with Arduino IDE version 1.8.13.  It also requires:
 <UL>
   <LI><A HREF="https://github.com/Xinyuan-LilyGO/TTGO_TWatch_Library" TARGET=_blank>The "official" watch library</A>
