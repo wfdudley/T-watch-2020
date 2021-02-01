@@ -195,7 +195,18 @@ To compute 2 + 3, do: 2, swipe down, 3, +
       <IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/2020-12-22_wifi_scan.jpg"><br>WiFi scanner App
     </TD>
     <TD>
-      &nbsp;
+      <IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/SW1.JPG"><br>Stop Watch App
+    </TD>
+  </TR>
+  <TR>
+    <TD>
+      <IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/TT1.JPG"><br>Stop Watch App, Tea Timer function
+    </TD>
+    <TD>
+      <IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/TT2.JPG"><br>Stop Watch App, Tea Timer function
+    </TD>
+    <TD>
+      <IMG SRC="https://github.com/wfdudley/T-watch-2020/blob/master/images/TT3.JPG"><br>Stop Watch App, Tea Timer function
     </TD>
   </TR>
 </TABLE>
