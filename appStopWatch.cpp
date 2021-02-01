@@ -6,42 +6,40 @@
 // added Tea Timer Function
 // completely reprogrammed as simple state machine
 //
-// Added "Smart Sound" option ("HeliTimer") by Fra4prg
-// "Smart Sound" enables you to hear the number of minutes without having to look on the display.
-// The idea behind this is that human brain can identify the number of 3 beeps as triple without counting them
-// even if they are very short and fast.
-// So up to 3 beeps are played slowly and preceeding triples are faster.
-// For every 10 minutes a sweep sound is preceeding.
-// A new top left button switches modes between [no sound] - [vibration + sound] - [only sound]
-// Some examples to show the sequence:
-// Minute  1: C5
-// Minute  2: C5-E5
-// Minute  3: C5-E5-G5
-// Minute  4: triple - C5
-// Minute  5: triple - C5-E5
-// ...
-// Minute  9: triple - triple - C5-E5-G5
-// Minute 10: sweep
-// ...
-// Minute 18: sweep - triple - triple - C5-E5
-// and so on...
-// As you can see this works well for short times up to 10 minutes then it gets weird...
-// The idea came up when I was flying model helicopters where I had to control the flight time 
-// due to small batteries and could not loose visual contact to my heli model.
-// So I made a small Arduino based timer called HeliTimer.
-// But this function fits perfect to the T-watch :-)
-//
-// Added "TeaTimer" option by Fra4prg
-// With the top left button you can switch between Stop Watch (counting up) and Tea Timeer,
-// counting down from a preset time. Set the time with new buttons plus and minus, switch between
-// setting Minutes/Hours/Seconds with the Set button.
-// When Tea Timer count down reaches zero then a melody is played to remember you to pull the tea bag 
-// out of your cup (or what else you were waiting for).
-// The melody is played again ervery minute until you press the clear button. 
-// Time is flashing between red and orange, also the Icon flashes between cup and bag.
-// --> It's time to pull the tea bag out of your cup!
-// After 30 seconds of goodwill time the sum of time is shown,
-//
+/* Added "Smart Sound" option ("HeliTimer") by Fra4prg 2021 01 13
+   "Smart Sound" enables you to hear the number of minutes without having to look on the display.
+   The idea behind this is that human brain can identify the number of 3 beeps as triple without counting them
+   even if they are very short and fast.
+   So up to 3 beeps are played slowly and preceeding triples are faster.
+   For every 10 minutes a sweep sound is preceeding.
+   A new top left button switches modes between [no sound] - [vibration + sound] - [only sound]
+   Some examples to show the sequence:
+   Minute  1: C5
+   Minute  2: C5-E5
+   Minute  3: C5-E5-G5
+   Minute  4: triple - C5
+   Minute  5: triple - C5-E5
+   ...
+   Minute  9: triple - triple - C5-E5-G5
+   Minute 10: sweep
+   ...
+   Minute 18: sweep - triple - triple - C5-E5
+   and so on...
+   As you can see this works well for short times up to 10 minutes then it gets weird...
+   The idea came up when I was flying model helicopters where I had to control the flight time due to small batteries and could not loose visual contact to my heli model.
+   So I made a small Arduino based timer called HeliTimer.
+   But this function fits perfect to the T-watch :-)
+*/
+/* Added "TeaTimer" option by Fra4prg 2021 01 31
+   With the top left button you can switch between Stop Watch (counting up) and Tea Timer, counting down from a preset time. Set the time with new buttons plus and minus, switch between setting Minutes/Hours/Seconds with the Set button.
+
+   When Tea Timer count down reaches zero then a melody is played to remember you to pull the tea bag out of your cup (or what else you were waiting for).
+
+   The melody is played again ervery minute until you press the clear button. 
+   Time is flashing between red and orange, also the Icon flashes between cup and bag.  --> It's time to pull the tea bag out of your cup!
+
+   After 30 seconds of goodwill time the sum of time is shown,
+*/
 // Due to increased complexity I changed the structure into a simple state machine
 
 
