@@ -33,6 +33,7 @@ void get_time_in_tz(uint32_t tzoneId) {
   dday   = localTime.day();
   mmonth = localTime.month();
   yyear  = localTime.year();
+  gdow   = localTime.dayOfWeek();
 }
 
 void convert_alarm_time_to_gmt(int8_t *ahhp, int8_t *ammp) {
